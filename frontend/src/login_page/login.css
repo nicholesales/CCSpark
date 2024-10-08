@@ -1,0 +1,91 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Arial', sans-serif; 
+  }
+  
+  .login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa; 
+  }
+  
+  .login-box {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .login-box h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #343a40; 
+  }
+  
+  .login-box label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 7px;
+    color: #000000; 
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .login-box .form-control {
+    height: 20px;
+    width: 94.5%;
+    margin-bottom: 7px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .login-box .form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); 
+  }
+  
+  
+  .login-box button {
+    width: 100%;
+    height: 45px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+  }
+  
+  .login-box button:hover {
+    background-color: #0056b3; 
+  }
+  
+  .login-box button:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5); 
+  }
+  
+  .login-box .placeholder {
+    color: #000000; 
+  }
+  
+  
+  .login-box .error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    text-align: center;
+  }
