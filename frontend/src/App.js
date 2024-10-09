@@ -2,7 +2,8 @@ import './App.css';
 import React, { useState } from 'react'; // Import useState
 import Login from './login_page/login.js';
 import Admin from './admin_page/admin.js';
-import Chatbot from './chatbot_page/chatbot.js'
+import Chatbot from './chatbot_page/chatbot.js';
+import Landing from './landing_page/landing.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           element={<Admin handleLogout={handleLogout} />} // Pass handleLogout
         />
         <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/landing" element={<Landing />} />
       </Routes>
     </Router>
   );

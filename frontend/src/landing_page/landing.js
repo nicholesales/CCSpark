@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 
-import './App.css';
+import './landing.css';
 import chatIcon from "./ChatIcon.svg";
 import image1 from './roomThumbnail/rm1.jpg';
 import image2 from "./roomThumbnail/rm2.jpg";
@@ -90,10 +90,10 @@ function ViewHandler({ imagesource }) {
 function App() {
     const [show, setShow] = useState(false);
     return (
-        <>
+        <div className="container-fluid container-height-adjustment">
             <RoomGrid setShow={setShow} />
             <ChatIcon />
-        </>
+        </div>
     );
 }
 
