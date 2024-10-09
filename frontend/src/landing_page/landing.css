@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+}
+
+body {
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    overflow-y: hidden;
+    background-color: black;
+}
+
+.col {
+    height: 100%;
+}
+
+.row {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    flex: 1;
+}
+
+.row-container {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* overflow: hidden; */
+}
+
+
+.thumbnail {
+    background-size: cover;
+    background-position: center;
+    filter: brightness(40%);
+}
+
+.thumbnail:hover {
+    filter: brightness(100%);
+    transform: scale(1.02);
+}
+
+.root-container,
+.col {
+    max-width: 100vw;
+}
+
+.container-height-adjustment {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 !important
+}
+
+.subdivider-left {
+    height: inherit;
+    width: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    z-index: 999;
+}
+
+.subdivider-right {
+    width: 89%;
+    height: 100%;
+    display: grid;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    /* Start hidden */
+    animation: fadeIn 1s ease-in forwards;
+    /* 2s duration, ease-in timing */
+    transition: fadeIn 1s ease-in forwards;
+}
+
+.chaticon {
+    position: absolute;
+    right: 3%;
+    bottom: 3%;
+    height: 100px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9999px;
+    background-color: antiquewhite;
+}
+
+.chaticon-image {
+    width: 70%;
+    height: 70%;
+}
