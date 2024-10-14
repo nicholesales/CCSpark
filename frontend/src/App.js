@@ -26,7 +26,7 @@ function App() {
           element={<Admin handleLogout={handleLogout} />} // Pass handleLogout
         />
         <Route path="/chatbot" element={<Chatbot />} />
-        <Route path="/landing" element={<Landing />} />
+        <Route path="/" element={<Landing />} />
       </Routes>
     </Router>
   );
