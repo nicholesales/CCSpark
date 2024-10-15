@@ -32,13 +32,18 @@
     color: white;
   }
 
-  .user {
+  .user, .bot {
     max-width: 75%;
   }
   
   .user-chat {
     display: flex;
     flex-direction: row-reverse;
+  }
+
+  .bot-chat {
+    display: flex;
+    flex-direction: row;
   }
 
   .chatbot-message.bot {
