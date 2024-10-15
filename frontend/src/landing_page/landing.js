@@ -68,8 +68,10 @@ function RoomGrid({ show, setShow }) {
 function ChatIcon() {
     return (
         <>
-            <div className="chaticon">
-                <img className="chaticon-image" src={chatIcon}></img>
+            <div >
+                <a className="chaticon" href="/chatbot">
+                    <img className="chaticon-image" src={chatIcon}></img>
+                </a>
             </div>
         </>
     )

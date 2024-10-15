@@ -22,7 +22,7 @@
     padding: 8px;
     margin-bottom: 10px;
     border-radius: 8px;
-    max-width: 75%;
+    width: 100%;
     word-wrap: break-word;
   }
   
@@ -31,7 +31,16 @@
     background-color: #0084ff;
     color: white;
   }
+
+  .user {
+    max-width: 75%;
+  }
   
+  .user-chat {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
   .chatbot-message.bot {
     align-self: flex-start;
     background-color: #e4e6eb;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './chatbot.css';  
+import './chatbot.css';
 
 const Chatbot = () => {
   const [conversation, setConversation] = useState([]);  // Store entire conversation
@@ -38,8 +38,10 @@ const Chatbot = () => {
     <div className="chatbot-container">
       <div className="chatbot-messages">
         {conversation.map((message, index) => (
-          <div key={index} className={`chatbot-message ${message.sender}`}>
-            {message.text}
+          <div className={`${message.sender}-chat`}>
+            <div key={index} className={`chatbot-message ${message.sender}`}>
+              {message.text}
+            </div>
           </div>
         ))}
       </div>
