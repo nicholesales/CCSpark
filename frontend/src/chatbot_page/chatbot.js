@@ -1,6 +1,30 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './chatbot.css';
+import userIcon from "./icons/user-icon.png";
+import botIcon from "./icons/bot-icon.png";
+
+
+function UserIconHandler({sender}) {
+    return (
+      <>
+        <div className="icon-container user-icon-container">
+          <img className="icon user-icon" src={userIcon}></img>
+        </div>
+      </>
+    )
+}
+
+
+function BotIconHandler({sender}) {
+  return (
+    <>
+      <div className="icon-container bot-icon-container">
+        <img className="icon bot-icon" src={botIcon}></img>
+      </div>
+    </>
+  )
+}
 
 const Chatbot = () => {
   const [conversation, setConversation] = useState([]);  // Store entire conversation
@@ -87,12 +111,44 @@ const Chatbot = () => {
           value="I Asked A FAQ 5"
           onClick={() => faqButtonSubmit('What is the fifth most frequent asked question?')}
         />
+        <input
+          className='faq-button'
+          type="button"
+          value="I Asked A FAQ 6"
+          onClick={() => faqButtonSubmit('What is the first most frequent asked question?')}>
+        </input>
+        <input
+          className='faq-button'
+          type="button"
+          value="I Asked A FAQ 7"
+          onClick={() => faqButtonSubmit('What is the second most frequent asked question?')}
+        />
+        <input
+          className='faq-button'
+          type="button"
+          value="I Asked A FAQ 8"
+          onClick={() => faqButtonSubmit('What is the third most frequent asked question?')}
+        />
+        <input
+          className='faq-button'
+          type="button"
+          value="I Asked A FAQ 9"
+          onClick={() => faqButtonSubmit('What is the fourth most frequent asked question?')}
+        />
+        <input
+          className='faq-button'
+          type="button"
+          value="I Asked A FAQ 10"
+          onClick={() => faqButtonSubmit('What is the fifth most frequent asked question?')}
+        />
       </div>
       <div className='parent-container-chatbot'>
         <div className="chatbot-container">
           <div className="chatbot-messages">
             {conversation.map((message, index) => (
               <div className={`${message.sender}-chat`}>
+                {message.sender === "bot" && <BotIconHandler sender={message.sender} />}
+                {message.sender === "user" && <UserIconHandler sender={message.sender} />}
                 <div key={index} className={`chatbot-message ${message.sender}`}>
                   {message.text}
                 </div>
