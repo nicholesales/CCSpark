@@ -1,3 +1,15 @@
+:root {
+    /* Main Palette */
+    --midnight-green: #00393A;
+    --ash-gray: #B6CDCE;
+    --light-yellow: #FCE99B;
+    --sky-blue: #4FC8DC;
+    --light-gray: #D7FDFD;
+
+    /* Component Colors */
+    --left-subdivider-bg: #0d1313;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -56,16 +68,18 @@ body {
 
 .subdivider-left {
     height: inherit;
-    width: 15%;
+    width: 17%;
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: left;
     z-index: 999;
+    background-color: var(--left-subdivider-bg);
 }
 
 .subdivider-right {
-    width: 89%;
-    height: 100%;
+    width: 83%;
+    height: 100vh;
     display: grid;
 }
 
@@ -90,9 +104,9 @@ body {
 .chaticon {
     position: absolute;
     right: 3%;
-    bottom: 3%;
-    height: 100px;
-    width: 100px;
+    bottom: 4%;
+    height: 5%;
+    width: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -100,7 +114,16 @@ body {
     background-color: antiquewhite;
 }
 
-.chaticon-image {
-    width: 70%;
-    height: 70%;
+.go-to-chatbot  {
+    text-decoration: none;
+    color: black;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.logo-container {
+    height: 100px;
+}
+
+.logo {
+    height: inherit;
 }

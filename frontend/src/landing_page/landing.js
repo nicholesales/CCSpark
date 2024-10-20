@@ -3,13 +3,13 @@ import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 
 import './landing.css';
-import chatIcon from "./ChatIcon.svg";
 import image1 from './roomThumbnail/rm1.jpg';
 import image2 from "./roomThumbnail/rm2.jpg";
 import image3 from "./roomThumbnail/rm3.jpg";
 import image4 from "./roomThumbnail/rm4.jpg";
 import image5 from "./roomThumbnail/rm5.jpg";
 import image6 from "./roomThumbnail/rm6.jpg";
+import logo from "./chat.png";
 import panorama1 from "./cylindricalPhotos/panorama1.jpg";
 import panorama2 from "./cylindricalPhotos/panorama2.jpg";
 import panorama3 from "./cylindricalPhotos/panorama3.jpg";
@@ -30,13 +30,17 @@ function RoomThumbnail({ thumbnailURL, changePanorama }) {
     )
 }
 
-function RoomGrid({ show, setShow }) {
+function RoomGrid() {
 
     const [imageSource, setImageSource] = useState(panorama1);
 
     return (
         <>
             <div className="subdivider-left">
+                <div className="logo-container">
+                    <img className="logo" src={logo}>
+                    </img>
+                </div>
                 <div className="row-container">
                     <div className="row">
                         <RoomThumbnail thumbnailURL={image1} changePanorama={() => setImageSource(panorama1)} />
@@ -68,11 +72,11 @@ function RoomGrid({ show, setShow }) {
 function ChatIcon() {
     return (
         <>
-            <div >
-                <a className="chaticon" href="/chatbot">
-                    <img className="chaticon-image" src={chatIcon}></img>
-                </a>
-            </div>
+            <a className="go-to-chatbot" href="/chatbot">
+                <div className="chaticon">
+                    Go To Chatbot -&gt;
+                </div>
+            </a>
         </>
     )
 }
@@ -90,12 +94,13 @@ function ViewHandler({ imagesource }) {
 }
 
 function App() {
-    const [show, setShow] = useState(false);
     return (
-        <div className="container-fluid container-height-adjustment">
-            <RoomGrid setShow={setShow} />
-            <ChatIcon />
-        </div>
+        <>
+            <div className="container-fluid container-height-adjustment">
+                <RoomGrid />
+                <ChatIcon />
+            </div>
+        </>
     );
 }
 
