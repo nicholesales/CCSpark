@@ -4,7 +4,7 @@ import './chatbot.css';
 import userIcon from "./icons/user-icon.png";
 import botIcon from "./icons/bot-icon.png";
 
-const GOOGLE_SPEECH_API_KEY = '';
+const GOOGLE_SPEECH_API_KEY = 'AIzaSyCkyn8mO5Dl-mZingmprLUTJP0MEDHP96A';
 
 function UserIconHandler({sender}) {
     return (
@@ -59,8 +59,8 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      //const res = await axios.post('http://localhost:8000/api/chatbot/', { question });
-      const chatbotResponse = { sender: 'bot', text: "res.data.response" };
+      const res = await axios.post('http://localhost:8000/api/chatbot/', { question });
+      const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
       setError('');
