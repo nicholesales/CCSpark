@@ -6,7 +6,7 @@ import botIcon from "./icons/bot-icon.png";
 import chatIcon from "./icons/chat.png";
 import './sidebar.css'; // Import CSS for styling
 
-const GOOGLE_SPEECH_API_KEY = 'AIzaSyCkyn8mO5Dl-mZingmprLUTJP0MEDHP96A';
+const GOOGLE_SPEECH_API_KEY = '';
 
 function UserIconHandler({ sender }) {
   return (
