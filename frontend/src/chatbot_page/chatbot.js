@@ -3,18 +3,20 @@ import axios from 'axios';
 import './chatbot.css';
 import userIcon from "./icons/user-icon.png";
 import botIcon from "./icons/bot-icon.png";
+import chatIcon from "./icons/chat.png";
+import './sidebar.css'; // Import CSS for styling
 
 const GOOGLE_SPEECH_API_KEY = '';
 
-function UserIconHandler({sender}) {
-    return (
-      <div className="icon-container user-icon-container">
-        <img className="icon user-icon" src={userIcon} alt="User Icon" />
-      </div>
-    )
+function UserIconHandler({ sender }) {
+  return (
+    <div className="icon-container user-icon-container">
+      <img className="icon user-icon" src={userIcon} alt="User Icon" />
+    </div>
+  )
 }
 
-function BotIconHandler({sender}) {
+function BotIconHandler({ sender }) {
   return (
     <div className="icon-container bot-icon-container">
       <img className="icon bot-icon" src={botIcon} alt="Bot Icon" />
@@ -39,7 +41,12 @@ const Chatbot = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [stream, setStream] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const handleCheckboxChange = (event) => {
+    // Collapse the sidebar if checked, expand if unchecked
+    setIsCollapsed(event.target.checked);
+  };
   useEffect(() => {
     return () => {
       if (stream) {
@@ -72,13 +79,17 @@ const Chatbot = () => {
     setQuestion('');
   };
 
+  const handleSidebarToggle = async () => {
+
+  }
+
   const faqButtonSubmit = async (predefinedQuestion) => {
     const userMessage = { sender: 'user', text: predefinedQuestion };
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/chatbot/', { question: predefinedQuestion });
-      const chatbotResponse = { sender: 'bot', text: res.data.response };
+      // const res = await axios.post('http://localhost:8000/api/chatbot/', { question: predefinedQuestion });
+      const chatbotResponse = { sender: 'bot', text: "res.data.response" };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
       setError('');
@@ -90,11 +101,11 @@ const Chatbot = () => {
 
   const startRecording = async () => {
     try {
-      const audioStream = await navigator.mediaDevices.getUserMedia({ 
+      const audioStream = await navigator.mediaDevices.getUserMedia({
         audio: {
           channelCount: 1,
           sampleRate: 48000
-        } 
+        }
       });
       setStream(audioStream);
 
@@ -137,7 +148,7 @@ const Chatbot = () => {
           }
 
           const data = await response.json();
-          
+
           if (data.results && data.results.length > 0) {
             const transcription = data.results
               .map(result => result.alternatives[0].transcript)
@@ -188,16 +199,49 @@ const Chatbot = () => {
 
   return (
     <div className='full-container-chatbot'>
-      <div className='faq-side-panel'>
-        {[...Array(10)].map((_, index) => (
+      <div className='for-mobile-only '>
+        <div className="sidebar-container">
           <input
-            key={index}
-            className='faq-button'
-            type="button"
-            value={`I Asked A FAQ ${index + 1}`}
-            onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
-          />
-        ))}
+            type="checkbox"
+            id="checkbox"
+            checked={isCollapsed}
+            onChange={handleCheckboxChange} />
+          <label htmlFor='checkbox' className='toggle'>
+            <div className='bars' id="bar1"></div>
+            <div className='bars' id="bar2"></div>
+            <div className='bars' id="bar3"></div>
+          </label>
+          <div className={`sidebar ${!isCollapsed ? 'collapsed' : ''}`}>
+            <div className='faq-buttons'>
+              {[...Array(10)].map((_, index) => (
+                <input
+                  key={index}
+                  className='faq-button'
+                  type="button"
+                  value={`I Asked A FAQ ${index + 1} to make this shit longer just to test the responsiveness type thingamajig`}
+                  onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='faq-side-panel'>
+        <div className='vic-logo-container'>
+          <img className='vic-logo' src={chatIcon}>
+          </img>
+        </div>
+        <div className='faq-buttons'>
+          {[...Array(10)].map((_, index) => (
+            <input
+              key={index}
+              className='faq-button'
+              type="button"
+              value={`I Asked A FAQ ${index + 1} to make this shit longer just to test the responsiveness type thingamajig`}
+              onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
+            />
+          ))}
+        </div>
       </div>
       <div className='parent-container-chatbot'>
         <div className="chatbot-container">
@@ -217,7 +261,7 @@ const Chatbot = () => {
             <input
               type="text"
               value={question}
-              onChange={(e) => {setQuestion(e.target.value); setError("")}}
+              onChange={(e) => { setQuestion(e.target.value); setError("") }}
               placeholder="Ask a question..."
               className="chatbot-input"
             />

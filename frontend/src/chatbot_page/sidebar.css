@@ -1,0 +1,125 @@
+/* Sidebar.css */
+.sidebar-container {
+    position: relative; /* Make the container a relative parent */
+}
+
+.toggle {
+    position: absolute; /* Make the checkbox absolute */
+    z-index: 999; /* Bring the checkbox to the front */
+    margin-right: 0; /* Remove the margin */
+}
+
+.sidebar {
+    width: 250px; /* Width of the sidebar */
+    background-color: #333;
+    color: white;
+    transition: width 0.3s, opacity 0.3s; /* Add opacity transition */
+}
+
+.sidebar.collapsed {
+    width: 0; /* Width when collapsed */
+    opacity: 0; /* Make it invisible */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px; /* Space between checkbox and label */
+    z-index: 999;
+}
+
+/* From Uiverse.io by vinodjangid07 */
+#checkbox {
+    display: none;
+}
+
+.toggle {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition-duration: .5s;
+}
+
+.bars {
+    width: 100%;
+    height: 4px;
+    background-color: rgb(176, 92, 255);
+    border-radius: 4px;
+}
+
+#bar2 {
+    transition-duration: .8s;
+}
+
+#bar1,
+#bar3 {
+    width: 70%;
+}
+
+/* #checkbox:checked + .toggle .bars {
+    position: absolute;
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle #bar2 {
+    transform: scaleX(0);
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle #bar1 {
+    width: 100%;
+    transform: rotate(45deg);
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle #bar3 {
+    width: 100%;
+    transform: rotate(-45deg);
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle {
+    transition-duration: .5s;
+    transform: rotate(180deg);
+} */
+
+#checkbox:checked + .toggle .bars {
+    position: absolute;
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle #bar2 {
+    transform: scaleX(0);
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle #bar1 {
+    width: 100%;
+    transform: rotate(45deg);
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle #bar3 {
+    width: 100%;
+    transform: rotate(-45deg);
+    transition-duration: .5s;
+}
+
+#checkbox:checked + .toggle {
+    transition-duration: .5s;
+    transform: rotate(180deg);
+}
