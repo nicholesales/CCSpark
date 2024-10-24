@@ -1,12 +1,21 @@
 /* Sidebar.css */
 .sidebar-container {
     position: relative; /* Make the container a relative parent */
+    height: 100%;
 }
 
 .toggle {
     position: absolute; /* Make the checkbox absolute */
     z-index: 999; /* Bring the checkbox to the front */
     margin-right: 0; /* Remove the margin */
+    height: 100%;
+}
+
+.checkbox-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0px 0px 0px 10px;
 }
 
 .sidebar {
@@ -57,7 +66,7 @@ input[type="checkbox"] {
 .bars {
     width: 100%;
     height: 4px;
-    background-color: rgb(176, 92, 255);
+    background-color: rgba(8, 24, 68, 0.336);
     border-radius: 4px;
 }
 
@@ -69,33 +78,6 @@ input[type="checkbox"] {
 #bar3 {
     width: 70%;
 }
-
-/* #checkbox:checked + .toggle .bars {
-    position: absolute;
-    transition-duration: .5s;
-}
-
-#checkbox:checked + .toggle #bar2 {
-    transform: scaleX(0);
-    transition-duration: .5s;
-}
-
-#checkbox:checked + .toggle #bar1 {
-    width: 100%;
-    transform: rotate(45deg);
-    transition-duration: .5s;
-}
-
-#checkbox:checked + .toggle #bar3 {
-    width: 100%;
-    transform: rotate(-45deg);
-    transition-duration: .5s;
-}
-
-#checkbox:checked + .toggle {
-    transition-duration: .5s;
-    transform: rotate(180deg);
-} */
 
 #checkbox:checked + .toggle .bars {
     position: absolute;

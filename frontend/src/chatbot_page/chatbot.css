@@ -2,11 +2,12 @@
   --text-color: #F2FFFD;
   --background-color: #0d0d27;
   --user-message-background-color: #232267;
-  --highlights-color: #C8E7E9;
+  --submit-btn-bgcolor: #263d7c;
+  --inputs-color: #C8E7E9;
   --highlights-color-2: #D7FDFD;
   --accents-color: #FFDCF9;
 
-/* https://coolors.co/ffdcf9-f2fffd-c8e7e9-11103e-d7fdfd */
+  /* https://coolors.co/ffdcf9-f2fffd-c8e7e9-11103e-d7fdfd */
 }
 
 .for-mobile-only {
@@ -17,20 +18,79 @@
   background-color: var(--background-color);
 }
 
+.chatbot-submit {
+  border: none;
+  /* Remove default border */
+  background-color: #f0f0f0;
+  /* Button background color */
+  display: flex;
+  /* Use flexbox to center the image */
+  align-items: center;
+  /* Center vertically */
+  justify-content: center;
+  /* Center horizontally */
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /* Mobile CSS */
 @media (max-width: 600px) {
+  .chatbot-submit .send-logo {
+    width: 60%; /* Make the image responsive to button width */
+    height: auto; /* Maintain aspect ratio */
+  }
+
   .for-mobile-only {
     display: flex;
     background-color: #a6d1f1;
-
     height: 8%;
+    align-items: center;
   }
 
   .faq-side-panel {
-      width: 200px; /* Collapsed width */
-      display: none;
+    display: none;
   }
-  
+
+  .faq-title-container {
+    display: flex;
+    margin: 0px 5px 10px 5px;
+    padding: 20px 0px 0px 0px;
+    justify-content: center;
+  }
+
+  .faq-title {
+    color: var(--text-color);
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+  }
+
+  .vic-logo-parent {
+    height: 100%;
+    width: 100%;
+  }
+
+  .vic-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .vic-logo-container .vic-icon {
+    height: 80%;
+    width: auto;
+  }
+
   .full-container-chatbot {
     width: 100vw;
     height: 100vh;
@@ -53,17 +113,17 @@
     width: 90%;
     height: 85%;
     /* border: 2px solid #ccc; */
-    margin-top: 3%;
+    margin-top: 4%;
     border-radius: 10px;
     /* padding: 10px; */
-    background-color: #2c2c2c;
+    /* background-color: #2c2c2c; */
   }
 
   .chatbot-messages {
     flex-grow: 1;
     overflow-y: auto;
     padding: 1%;
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
   }
 
   .user-chat {
@@ -71,7 +131,7 @@
     flex-direction: row-reverse;
     margin-bottom: 1%;
   }
-  
+
   .bot-chat {
     display: flex;
     flex-direction: row;
@@ -93,7 +153,7 @@
     color: white;
     height: 100%;
   }
-  
+
   .chatbot-message.bot {
     align-self: flex-start;
     background-color: #e4e6eb;
@@ -101,10 +161,11 @@
   }
 
   .icon-container {
-    width: 10%;
+    width: 8%;
     height: fit-content;
     padding: 1%;
     border-radius: 50%;
+    background-color: #0084ff;
   }
 
   .icon {
@@ -113,57 +174,106 @@
 
   .chatbot-input {
     flex-grow: 1;
-    padding: 10px;
-    border-style: none;
-    border-radius: 5px;
+    background-color: var(--inputs-color);
+    padding: 20px;
+    border-style: solid;
+    border-radius: 50px;
     white-space: normal;
+    max-height: 150px;
+    /* Maximum height (optional) */
+    overflow-y: auto;
+    /* Enable vertical scrolling if needed */
+    resize: none;
+    /* Disable manual resizing */
+    box-sizing: border-box;
+    /* Include padding in width/height */
   }
 
   .chatbot-input-container {
     display: flex;
     padding: 5px;
-    background-color: white;
-    border-radius: 5px;
+    /* background-color: white; */
+    border-radius: 200px;
+    align-items: center;
   }
 
   .chatbot-submit {
-    margin-left: 10px;
-    padding: 10px;
-    background-color: #0084ff;
+    margin-left: 4px;
+    padding: 9px 9px 9px 9px;
+    background-color: var(--submit-btn-bgcolor);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 100px;
     cursor: pointer;
+    width: 13%;
+    height: fit-content;
+  }
+
+
+  .faq-buttons {
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: 10px;
+    overflow-y: scroll;
+    height: 90vh;
+  }
+
+  .faq-button {
+    margin: 10px;
+    height: 100px;
+    border-radius: 20px;
+    border-style: none;
+    box-shadow: 2px 2px #7593ae;
+    padding: 10px 10px;
+    white-space: normal;
+  }
+
+  .user-icon-container {
+    margin-left: 2%;
+    background-color: #a6d1f1;
+  }
+
+  .bot-icon-container {
+    margin-right: 2%;
+    background-color: #a6d1f1;
   }
 
   /* New styles for the microphone button */
   .chatbot-mic-button {
-    background-color: transparent;
+    background-color: var(--inputs-color);
+    border-radius: 50px;
     border: none;
     cursor: pointer;
     padding: 5px;
-    margin-right: 10px;
+    margin: 10px 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.3s ease;
   }
-  
+
   .chatbot-mic-button:hover {
     background-color: #f0f0f0;
     border-radius: 50%;
   }
-  
+
   .chatbot-mic-button.recording {
     background-color: #ffcccb;
     border-radius: 50%;
   }
-  
+
   .chatbot-mic-button svg {
     width: 24px;
     height: 24px;
   }
 }
+
+
+
+
+
+
+
 
 /* --------------------------------------------------------------- */
 /* Desktop / Tablet CSS */
@@ -171,6 +281,7 @@
   .for-mobile-only {
     display: none;
   }
+
   .chatbot-container {
     display: flex;
     flex-direction: column;
@@ -182,93 +293,110 @@
     padding: 10px;
     background-color: #2c2c2c;
   }
-  
+
   .chatbot-messages {
     flex-grow: 1;
     overflow-y: auto;
     padding: 10px;
-    border-bottom: 1px solid #ddd;
   }
-  
+
   .chatbot-message {
     padding: 1.5%;
     border-radius: 8px;
     width: 100%;
     word-wrap: break-word;
   }
-  
+
   .user,
   .bot {
     max-width: 75%;
   }
-  
+
   .user-chat {
     display: flex;
     flex-direction: row-reverse;
     margin-bottom: 1%;
   }
-  
+
   .bot-chat {
     display: flex;
     flex-direction: row;
     margin-bottom: 4%;
   }
-  
+
   .chatbot-message.user {
     align-self: center;
     background-color: #1a7faa;
     color: white;
     height: 100%;
   }
-  
+
   .chatbot-message.bot {
     align-self: flex-start;
     background-color: #e4e6eb;
     color: black;
   }
-  
+
   .chatbot-input-container {
     display: flex;
-    padding: 10px;
-    background-color: white;
-    border-radius: 5px;
+    padding: 5px;
+    /* background-color: white; */
+    /* border-radius: 200px; */
+    align-items: center;
   }
-  
+
   .chatbot-input {
     flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    background-color: var(--inputs-color);
+    padding: 20px;
+    /* border-style: solid; */
+    border-radius: 50px;
     white-space: normal;
+    max-height: 150px;
+    /* Maximum height (optional) */
+    overflow-y: auto;
+    /* Enable vertical scrolling if needed */
+    resize: none;
+    /* Disable manual resizing */
+    box-sizing: border-box;
+    /* Include padding in width/height */
   }
-  
+
+  .chatbot-submit .send-logo {
+    width: 60%;
+    height: auto;
+    /* Maintain aspect ratio */
+  }
+
   .chatbot-submit {
-    margin-left: 10px;
-    padding: 10px;
-    background-color: #0084ff;
+    margin-left: 4px;
+    padding: 9px 10px 9px 9px;
+    background-color: var(--submit-btn-bgcolor);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 100px;
     cursor: pointer;
+    width: 10%;
+    height: fit-content;
   }
-  
+
   .chatbot-submit:hover {
     background-color: #006bbf;
   }
-  
+
   .chatbot-error {
     text-align: center;
     color: red;
     margin-top: 10px;
   }
-  
+
   .full-container-chatbot {
     width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: row;
   }
-  
+
   .faq-side-panel {
     width: 20%;
     display: flex;
@@ -278,63 +406,67 @@
     background-color: #191f30;
     padding: 0 30px;
   }
-  
+
   .parent-container-chatbot {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  
+
   .user-icon-container {
     margin-left: 2%;
     background-color: #a6d1f1;
   }
-  
+
   .bot-icon-container {
     margin-right: 2%;
     background-color: #a6d1f1;
   }
-  
+
   .icon-container {
     width: 5%;
     height: fit-content;
     padding: 1%;
     border-radius: 50%;
   }
-  
+
   .icon {
     width: 100%;
   }
-  
+
   /* New styles for the microphone button */
   .chatbot-mic-button {
-    background-color: transparent;
+    background-color: var(--inputs-color);
+    border-radius: 50px;
     border: none;
     cursor: pointer;
     padding: 5px;
-    margin-right: 10px;
+    margin: 0px 10px 0px 10px;
+    height: 80%;
+    width: 10%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.3s ease;
   }
-  
+
   .chatbot-mic-button:hover {
     background-color: #f0f0f0;
-    border-radius: 50%;
+    border-radius: 50px;
+    box-shadow: inset;
   }
-  
+
   .chatbot-mic-button.recording {
     background-color: #ffcccb;
     border-radius: 50%;
   }
-  
+
   .chatbot-mic-button svg {
     width: 24px;
     height: 24px;
   }
-  
+
   .vic-logo-container {
     display: flex;
     align-items: center;
@@ -342,26 +474,41 @@
     height: 10%;
     align-self: center;
   }
-  
+
   .vic-logo {
     height: 100%;
   }
-  
+
   .faq-buttons {
     display: flex;
     flex-direction: column;
     scrollbar-width: 10px;
     overflow-y: scroll;
+    padding: 0px 0px 20px 0px 
   }
-  
+
   .faq-button {
-    margin: 10px ;
+    margin: 10px;
     height: 100px;
     border-radius: 20px;
     border-style: none;
     box-shadow: 2px 2px #7593ae;
     padding: 10px 10px;
     white-space: normal;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+    font-size: medium;
+  }
+
+  .faq-title-container {
+    display: flex;
+    margin: 10px 0px;
+    justify-content: center;
+  }
+
+  .faq-title {
+    color: var(--text-color);
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
   }
 }
-

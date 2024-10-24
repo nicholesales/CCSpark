@@ -4,6 +4,7 @@ import './chatbot.css';
 import userIcon from "./icons/user-icon.png";
 import botIcon from "./icons/bot-icon.png";
 import chatIcon from "./icons/chat.png";
+import sendIcon from "./icons/send-btn.png";
 import './sidebar.css'; // Import CSS for styling
 
 const GOOGLE_SPEECH_API_KEY = '';
@@ -71,6 +72,7 @@ const Chatbot = () => {
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
       setError('');
+      setQuestion('');
     } catch (err) {
       console.error(err);
       setError('Something went wrong. Please try again.');
@@ -93,6 +95,7 @@ const Chatbot = () => {
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
       setError('');
+      setIsCollapsed(!isCollapsed);
     } catch (err) {
       console.error(err);
       setError('Something went wrong. Please try again.');
@@ -201,35 +204,48 @@ const Chatbot = () => {
     <div className='full-container-chatbot'>
       <div className='for-mobile-only '>
         <div className="sidebar-container">
-          <input
-            type="checkbox"
-            id="checkbox"
-            checked={isCollapsed}
-            onChange={handleCheckboxChange} />
-          <label htmlFor='checkbox' className='toggle'>
-            <div className='bars' id="bar1"></div>
-            <div className='bars' id="bar2"></div>
-            <div className='bars' id="bar3"></div>
-          </label>
+          <div className='checkbox-container'>
+            <input
+              type="checkbox"
+              id="checkbox"
+              checked={isCollapsed}
+              onChange={handleCheckboxChange} />
+            <label htmlFor='checkbox' className='toggle'>
+              <div className='bars' id="bar1"></div>
+              <div className='bars' id="bar2"></div>
+              <div className='bars' id="bar3"></div>
+            </label>
+          </div>
           <div className={`sidebar ${!isCollapsed ? 'collapsed' : ''}`}>
+            <div className='faq-title-container'>
+              <div className='faq-title'>Frequently Asked Questions</div>
+            </div>
             <div className='faq-buttons'>
               {[...Array(10)].map((_, index) => (
                 <input
                   key={index}
                   className='faq-button'
                   type="button"
-                  value={`I Asked A FAQ ${index + 1} to make this shit longer just to test the responsiveness type thingamajig`}
+                  value={`I Asked A FAQ ${index + 1} that is about something lorem ipsum dolor et `}
                   onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
                 />
               ))}
             </div>
           </div>
         </div>
+        <div className='vic-logo-parent'>
+          <div className='vic-logo-container'>
+            <img className='icon vic-icon' src={chatIcon} />
+          </div>
+        </div>
       </div>
       <div className='faq-side-panel'>
         <div className='vic-logo-container'>
-          <img className='vic-logo' src={chatIcon}>
+          <img className='vic-logo' src={chatIcon} alt='logo'>
           </img>
+        </div>
+        <div className='faq-title-container'>
+          <div className='faq-title'>Frequently Asked Questions</div>
         </div>
         <div className='faq-buttons'>
           {[...Array(10)].map((_, index) => (
@@ -237,7 +253,7 @@ const Chatbot = () => {
               key={index}
               className='faq-button'
               type="button"
-              value={`I Asked A FAQ ${index + 1} to make this shit longer just to test the responsiveness type thingamajig`}
+              value={`I Asked FAQ ${index + 1} that is about something lorem ipsum dolor et `}
               onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
             />
           ))}
@@ -258,11 +274,11 @@ const Chatbot = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="chatbot-input-container">
-            <input
-              type="text"
+            <textarea
               value={question}
+              rows={1}
               onChange={(e) => { setQuestion(e.target.value); setError("") }}
-              placeholder="Ask a question..."
+              placeholder="Ask your question..."
               className="chatbot-input"
             />
             <button
@@ -273,7 +289,8 @@ const Chatbot = () => {
               <MicIcon color={isRecording ? 'red' : 'black'} />
             </button>
             <button type="submit" className="chatbot-submit">
-              Send
+              <img className='send-logo' src={sendIcon} alt='send-icon'>
+              </img>
             </button>
           </form>
 
