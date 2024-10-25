@@ -12,7 +12,7 @@ import image3 from "./roomThumbnail/rm3.jpg";
 import image4 from "./roomThumbnail/rm4.jpg";
 import image5 from "./roomThumbnail/rm5.jpg";
 import image6 from "./roomThumbnail/rm6.jpg";
-import logo from "./chat.png";
+import logo from "./mema-logo.png";
 import panorama1 from "./cylindricalPhotos/panorama1.jpg";
 import panorama2 from "./cylindricalPhotos/panorama2.jpg";
 import panorama3 from "./cylindricalPhotos/panorama3.jpg";
