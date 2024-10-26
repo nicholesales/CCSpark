@@ -1,9 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
-import Slider from 'react-slick';
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 import './landing.css';
 import image1 from './roomThumbnail/rm1.jpg';
