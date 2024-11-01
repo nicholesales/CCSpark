@@ -44,13 +44,19 @@ INSTALLED_APPS = [
     'chatbot_page',
 ]
 
-#MongoDB setup
+#MongoDB setup/encryption
 import os
+import environ
 from dotenv import load_dotenv
-load_dotenv()
 
 # MongoDB URI from .env
+load_dotenv()
 MONGODB_URI = os.getenv("MONGODB_URI")
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+ENCRYPTION_KEY = env("ENCRYPTION_KEY")
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
