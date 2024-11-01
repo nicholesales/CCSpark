@@ -9,7 +9,7 @@ import image3 from "./roomThumbnail/rm3.jpg";
 import image4 from "./roomThumbnail/rm4.jpg";
 import image5 from "./roomThumbnail/rm5.jpg";
 import image6 from "./roomThumbnail/rm6.jpg";
-import logo from "./mema-logo.png";
+import logo from "./CCSpark-logo.png";
 import panorama1 from "./cylindricalPhotos/comp_lab.png";
 import panorama2 from "./cylindricalPhotos/dept.png";
 import panorama3 from "./cylindricalPhotos/MAC_lab.png";

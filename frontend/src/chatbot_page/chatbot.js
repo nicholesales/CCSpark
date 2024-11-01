@@ -3,7 +3,7 @@ import axios from 'axios';
 import './chatbot.css';
 import userIcon from "./icons/user-icon.png";
 import botIcon from "./icons/bot-icon.png";
-import chatIcon from "./icons/mema-logo.png";
+import chatIcon from "./icons/vic-logo.png";
 import sendIcon from "./icons/send-btn.png";
 import './sidebar.css'; // Import CSS for styling
 
