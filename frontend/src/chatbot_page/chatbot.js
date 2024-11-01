@@ -90,8 +90,8 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      // const res = await axios.post('http://localhost:8000/api/chatbot/', { question: predefinedQuestion });
-      const chatbotResponse = { sender: 'bot', text: "res.data.response" };
+      const res = await axios.post('http://localhost:8000/api/chatbot/', { question: predefinedQuestion });
+      const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
       setError('');
@@ -166,7 +166,7 @@ const Chatbot = () => {
         }
       };
 
-      recorder.start(1000); // Collect data in 1-second chunks
+      recorder.start(500); // Collect data in 1-second chunks
     } catch (error) {
       console.error('Error accessing microphone:', error);
       setError('Error accessing microphone. Please check your permissions.');
