@@ -44,8 +44,6 @@ body {
     flex-direction: column;
 }
 
-.desktop-only {}
-
 .thumbnail {
     background-size: cover;
     background-position: center;

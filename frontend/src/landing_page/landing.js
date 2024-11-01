@@ -10,10 +10,10 @@ import image4 from "./roomThumbnail/rm4.jpg";
 import image5 from "./roomThumbnail/rm5.jpg";
 import image6 from "./roomThumbnail/rm6.jpg";
 import logo from "./mema-logo.png";
-import panorama1 from "./cylindricalPhotos/panorama1.jpg";
-import panorama2 from "./cylindricalPhotos/panorama2.jpg";
-import panorama3 from "./cylindricalPhotos/panorama3.jpg";
-import panorama4 from "./cylindricalPhotos/panorama4.jpg";
+import panorama1 from "./cylindricalPhotos/comp_lab.png";
+import panorama2 from "./cylindricalPhotos/dept.png";
+import panorama3 from "./cylindricalPhotos/MAC_lab.png";
+import panorama4 from "./cylindricalPhotos/oracle_room.png";
 import panorama5 from "./cylindricalPhotos/panorama5.jpg";
 import panorama6 from "./cylindricalPhotos/panorama6.jpg";
 
