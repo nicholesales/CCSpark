@@ -25,6 +25,25 @@
     transition: width 0.3s, opacity 0.3s; /* Add opacity transition */
 }
 
+@media (max-width: 799px) {
+    .sidebar {
+        height: 80vh;
+        overflow-y: scroll;
+    }
+    
+    .faq-buttons {
+        overflow-y: hidden;
+    }
+}
+
+@media (min-width: 800px) {
+    .sidebar {
+        height: 80vh;
+        overflow-y: scroll;
+    }
+}
+
+
 .sidebar.collapsed {
     width: 0; /* Width when collapsed */
     opacity: 0; /* Make it invisible */
