@@ -1,185 +1,220 @@
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  .admin-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #3f4d63;
-    color: white;
-    padding: 10px 20px;
-  }
-  
-  .navbar-brand {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .logout-btn {
-    background-color: #ff4d4d;
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .logout-btn:hover {
-    background-color: #ff6666;
-  }
-  
-  
-  .content {
-    display: flex;
-    flex: 1;
-  }
-  
-  
-  .filters {
-    background-color: #354052;
-    padding: 20px;
-    width: 250px;
-    color: white;
-  }
-  
-  .filters h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .filters ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .filters li {
-    margin-bottom: 15px;
-  }
-  
-  .filters input[type="radio"] {
-    margin-right: 10px;
-  }
-  
-  .apply-filter-btn {
-    background-color: #ff9933;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .apply-filter-btn:hover {
-    background-color: #ffb366;
-  }
-  
-  
-  .filter-results {
-    background-color: #f5f5f5;
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
-  .query-section {
-    background-color: #00ff4c;
-    margin-bottom: 20px;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  
-  .query-category {
-    background-color: #3f4d63;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .query-box {
-    background-color: #ffe72f;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-  }
-  
-  .query-box p {
-    margin: 0;
-    padding: 5px 0;
-  }
-  
-  .action-buttons {
-    margin-top: 10px;
-  }
-  
-  .edit-btn, .delete-btn {
-    background-color: #3f4d63;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    margin-right: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .delete-btn {
-    background-color: #ff4d4d;
-  }
-  
-  .edit-btn:hover, .delete-btn:hover {
-    opacity: 0.8;
-  }
-  
-  .add-question-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 50%;
-    font-size: 20px;
-  }
-  
-  .add-question-form {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    background-color: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    border-radius: 10px;
-  }
-  
-  .add-question-form input {
-    width: 100%;
-    margin: 10px 0;
-  }
-  
-  .save-btn {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .cancel-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    margin-left: 10px;
-  }
-  
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3f4d63;
+  color: white;
+  padding: 10px 20px;
+}
+
+
+.navbar .welcome-message {
+  font-size: 18px;
+}
+
+.navbar .navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logout-btn {
+  background-color: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #ff6666;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+}
+
+.filters {
+  background-color: #354052;
+  padding: 20px;
+  width: 250px;
+  color: white;
+}
+
+.filters h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.filters ul {
+  list-style: none;
+  padding: 0;
+}
+
+.filters li {
+  margin-bottom: 15px;
+}
+
+.filters input[type="radio"] {
+  margin-right: 10px;
+}
+
+.apply-filter-btn {
+  background-color: #ff9933;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.apply-filter-btn:hover {
+  background-color: #ffb366;
+}
+
+.filter-results {
+  background-color: #f5f5f5;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.query-section {
+  background-color: #00ff4c;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.query-category {
+  background-color: #3f4d63;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.query-box {
+  background-color: #ffe72f;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.query-box p {
+  margin: 0;
+  padding: 5px 0;
+}
+
+.action-buttons {
+  margin-top: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  background-color: #3f4d63;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #ff4d4d;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  opacity: 0.8;
+}
+
+.add-question-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.add-question-form,
+.edit-question-form {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  width: 300px;
+}
+
+.add-question-form h3,
+.edit-question-form h3 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.add-question-form label,
+.edit-question-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.add-question-form select,
+.add-question-form input,
+.edit-question-form select,
+.edit-question-form input {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+  margin-left: 10px;
+}
+
+.add-question-form input::placeholder,
+.edit-question-form input::placeholder {
+  color: #888;
+}
