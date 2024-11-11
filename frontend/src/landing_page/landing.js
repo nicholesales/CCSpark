@@ -182,7 +182,7 @@ function activeThumbnailChange(id) {
     const thumbnail = document.getElementById(id);
     var otherThumbnails;
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
         otherThumbnails = document.getElementById(i);
         otherThumbnails.classList.remove("active-thumbnail");
         otherThumbnails.classList.add("hoverable")
