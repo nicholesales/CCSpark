@@ -99,7 +99,6 @@ function Admin({ handleLogout }) {
           body: JSON.stringify(updatedQuery),
         });
   
-        // Debugging: Log the response
         const result = await response.json(); // Parse response for error handling
         if (response.ok) {
           setQueries(queries.map(query => (query._id === editingQueryId ? { ...query, ...updatedQuery } : query)));
@@ -133,6 +132,7 @@ function Admin({ handleLogout }) {
   return (
     <div className="admin-container">
       <nav className="navbar">
+      <span className="welcome-message">Welcome, Admin</span>
         <div className="navbar-brand">CCSpark</div>
         <button className="logout-btn" onClick={logout}>LOG OUT</button>
       </nav>
@@ -216,26 +216,35 @@ function Admin({ handleLogout }) {
         {showAddForm && (
           <div className="add-question-form">
             <h3>Add New Question</h3>
-            <label>Category</label>
-            <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+            >
               <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
               <option value="CCS Student Orgs">CCS Student Orgs</option>
               <option value="CCS Events">CCS Events</option>
             </select>
-            <label>Question</label>
-            <input 
-              type="text" 
-              value={newQuestion} 
-              onChange={(e) => setNewQuestion(e.target.value)} 
-              placeholder="Enter your question" 
+            
+            <label htmlFor="question">Question</label>
+            <input
+              id="question"
+              type="text"
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              placeholder="Enter your question"
             />
-            <label>Answer</label>
-            <input 
-              type="text" 
-              value={newAnswer} 
-              onChange={(e) => setNewAnswer(e.target.value)} 
-              placeholder="Enter the answer" 
+            
+            <label htmlFor="answer">Answer</label>
+            <input
+              id="answer"
+              type="text"
+              value={newAnswer}
+              onChange={(e) => setNewAnswer(e.target.value)}
+              placeholder="Enter the answer"
             />
+            
             <button className="save-btn" onClick={addQuestion}>Save</button>
             <button className="cancel-btn" onClick={() => setShowAddForm(false)}>Cancel</button>
           </div>
@@ -244,26 +253,35 @@ function Admin({ handleLogout }) {
         {showEditForm && ( // Add Edit Form UI
           <div className="edit-question-form">
             <h3>Edit Question</h3>
-            <label>Category</label>
-            <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)}>
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+            >
               <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
               <option value="CCS Student Orgs">CCS Student Orgs</option>
               <option value="CCS Events">CCS Events</option>
             </select>
-            <label>Question</label>
-            <input 
-              type="text" 
-              value={newQuestion} 
-              onChange={(e) => setNewQuestion(e.target.value)} 
-              placeholder="Enter your question" 
+
+            <label htmlFor="question">Question</label>
+            <input
+              id="question"
+              type="text"
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              placeholder="Edit your question"
             />
-            <label>Answer</label>
-            <input 
-              type="text" 
-              value={newAnswer} 
-              onChange={(e) => setNewAnswer(e.target.value)} 
-              placeholder="Enter the answer" 
+
+            <label htmlFor="answer">Answer</label>
+            <input
+              id="answer"
+              type="text"
+              value={newAnswer}
+              onChange={(e) => setNewAnswer(e.target.value)}
+              placeholder="Edit the answer"
             />
+
             <button className="save-btn" onClick={updateQuestion}>Update</button>
             <button className="cancel-btn" onClick={() => setShowEditForm(false)}>Cancel</button>
           </div>
