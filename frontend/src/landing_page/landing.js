@@ -3,19 +3,17 @@ import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 
 import './landing.css';
-import image1 from './assets/roomThumbnail/rm1.jpg';
-import image2 from "./assets/roomThumbnail/rm2.jpg";
-import image3 from "./assets/roomThumbnail/rm3.jpg";
-import image4 from "./assets/roomThumbnail/rm4.jpg";
-import image5 from "./assets/roomThumbnail/rm5.jpg";
-import image6 from "./assets/roomThumbnail/rm6.jpg";
+import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
+import image2 from "./assets/roomThumbnail/dept_thumbnail.png";
+import image3 from "./assets/roomThumbnail/maclab_thumbnail.png";
+import image4 from "./assets/roomThumbnail/oracle_thumbnail.png";
+import image5 from "./assets/roomThumbnail/lecture_thumbnail.png";
 import logo from "./assets/CCSpark-logo.png";
 import panorama1 from "./assets/cylindricalPhotos/comp_lab_smaller.png";
 import panorama2 from "./assets/cylindricalPhotos/dept_smaller.png";
 import panorama3 from "./assets/cylindricalPhotos/mac_lab_smaller.png";
 import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
 import panorama5 from "./assets/cylindricalPhotos/panorama5.jpg";
-import panorama6 from "./assets/cylindricalPhotos/panorama6.jpg";
 
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
@@ -79,8 +77,7 @@ function RoomGrid() {
         <><strong>CCS Department</strong></>,
         <><strong>MAC Laboratory</strong></>,
         <><strong>Oracle Laboratory</strong></>,
-        <><strong>Lecture Room</strong></>,
-        <><strong>ITSO</strong></>
+        <><strong>Lecture Room</strong></>
     ];
 
     const locations = [
@@ -88,17 +85,15 @@ function RoomGrid() {
         ["2nd Floor Arlegui Bldg."],
         ["A207"],
         ["A222", "A223"],
-        ["A211", "A213", "A215"],
-        ["2nd Floor ARlegui Bldg. (near A225???)"]
+        ["A211", "A213", "A215"]
     ];
 
     const descriptions = [
-        <>This is the <strong>computer laboratory</strong></>,
+        <>This is the <strong>computer laboratory.</strong> There are a total of <strong>7</strong> computer laboratories in the 2nd floor that looks like this but the CCS only uses 3 of the computer laboratories, the rest are for the other programs such as Engineering, and Architecture. </>,
         <>This is the <strong>CCS Department</strong>. Faculty is here.</>,
         <>This is the <strong>MAC Laboratory</strong> which has been recently renovated</>,
         <>This is the <strong>Oracle Laboratory</strong> where softwares made by the company Oracle can be used.</>,
-        <>The <strong>Lecture Room</strong> is a well-equipped educational space designed to accommodate up to 40 students, with additional auxiliary seating available for special sessions. Each room is furnished with essential teaching tools including a wall-mounted whiteboard and a ceiling-mounted retractable projector screen for versatile instruction methods. To maintain a comfortable learning environment during the standard 2-hour lecture periods, the room is equipped with dual air-conditioning units that ensure consistent temperature control. The organized seating arrangement provides clear sightlines to both the whiteboard and projection screen, creating an optimal setting for both traditional lectures and multimedia presentations.</>,
-        <>The ITSO Room is where you can go to to address any technical concern such as:<br></br> <ul> <li>installation of apps,</li> <li>lack of internet connection</li> </ul></>
+        <>The <strong>Lecture Room</strong> is a well-equipped educational space designed to accommodate up to 40 students, with additional auxiliary seating available for special sessions. Each room is furnished with essential teaching tools including a wall-mounted whiteboard and a ceiling-mounted retractable projector screen for versatile instruction methods. To maintain a comfortable learning environment during the standard 2-hour lecture periods, the room is equipped with dual air-conditioning units that ensure consistent temperature control. The organized seating arrangement provides clear sightlines to both the whiteboard and projection screen, creating an optimal setting for both traditional lectures and multimedia presentations.</>
     ];
 
     const [imageSource, setImageSource] = useState(panorama1);
@@ -112,8 +107,7 @@ function RoomGrid() {
         image2,
         image3,
         image4,
-        image5,
-        image6
+        image5
     ];
 
     const panoramaImages = [
@@ -121,8 +115,7 @@ function RoomGrid() {
         panorama2,
         panorama3,
         panorama4,
-        panorama5,
-        panorama6
+        panorama5
     ];
 
     return (

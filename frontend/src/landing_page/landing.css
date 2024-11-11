@@ -49,9 +49,10 @@ body {
 }
 
 .thumbnail {
+    color:rgba(126, 194, 236);
     background-size: cover;
     background-position: center;
-    filter: brightness(40%);
+    filter: brightness(100%);
     font-weight: bolder;
     position: relative;
     display: flex;
@@ -68,12 +69,10 @@ body {
 }
 
 .hoverable:hover {
-    filter: brightness(100%);
+    filter: brightness(40%);
     transform: scale(1.02);
-}
-
-.hoverable:hover {
     font-size: 2em;
+    color: white;
 }
 
 .active-thumbnail {
@@ -95,7 +94,7 @@ body {
 }
 
 .thumbnail-desc {
-    position: absolute;
+    z-index: 9999;
     color: white;
     filter: brightness(100%) !important;
 }
