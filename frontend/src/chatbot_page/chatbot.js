@@ -44,6 +44,14 @@ const Chatbot = () => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  var faqs = [
+    <>What are the programs covered by the CCS Department?</>,
+    <></>,
+    <></>,
+    <></>,
+    <></>,
+    <></>
+  ]
   const handleCheckboxChange = (event) => {
     // Collapse the sidebar if checked, expand if unchecked
     setIsCollapsed(event.target.checked);
@@ -227,7 +235,7 @@ const Chatbot = () => {
                   className='faq-button'
                   type="button"
                   value={`I Asked A FAQ ${index + 1} that is about something lorem ipsum dolor et `}
-                  onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
+                  onClick={() => faqButtonSubmit(`This is the question`)}
                 />
               ))}
             </div>

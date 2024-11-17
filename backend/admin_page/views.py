@@ -21,21 +21,25 @@ def get_queries(request):
         queries = list(collection.find())
         for query in queries:
             query['_id'] = str(query['_id'])  # Convert ObjectId to string
-            # Decrypt the data
+            # Decrypt the question and answer fields only
             query['question'] = decrypt_data(query['question'])
             query['answer'] = decrypt_data(query['answer'])
+            # Ensure category is passed as it is (not encrypted)
+            query['category'] = query.get('category', 'No Category Specified')
         return JsonResponse(queries, safe=False)
 
 @csrf_exempt
 def add_query(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        # Encrypt the data before saving
+        # Encrypt question and answer fields, leave category as is
         encrypted_question = encrypt_data(data['question'])
         encrypted_answer = encrypt_data(data['answer'])
+        category = data['category']  # Store category without encryption
         collection.insert_one({
             'question': encrypted_question,
-            'answer': encrypted_answer
+            'answer': encrypted_answer,
+            'category': category
         })
         return JsonResponse({'status': 'success'})
 
@@ -43,14 +47,16 @@ def add_query(request):
 def edit_query(request, query_id):
     if request.method == 'PUT':
         data = json.loads(request.body)
-        # Encrypt the updated data
+        # Encrypt the updated question and answer, leave category as is
         encrypted_question = encrypt_data(data['question'])
         encrypted_answer = encrypt_data(data['answer'])
+        category = data['category']
         collection.update_one(
             {'_id': ObjectId(query_id)}, 
             {'$set': {
                 'question': encrypted_question,
-                'answer': encrypted_answer
+                'answer': encrypted_answer,
+                'category': category
             }}
         )
         return JsonResponse({'status': 'success'})
