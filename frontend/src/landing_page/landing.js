@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons';
 
 import './landing.css';
 import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
@@ -15,25 +17,22 @@ import panorama3 from "./assets/cylindricalPhotos/mac_lab_smaller.png";
 import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
 import panorama5 from "./assets/cylindricalPhotos/lecture_room_smaller.png";
 
+const GOOGLE_TTS_API_KEY = '';
+
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
 
     const checkViewport = () => {
         if (window.innerHeight > window.innerWidth) {
-            setIsVisible(true); // Show the div
+            setIsVisible(true);
         } else {
-            setIsVisible(false); // Hide the div
+            setIsVisible(false);
         }
     };
 
     useEffect(() => {
-        // Check on initial render
         checkViewport();
-
-        // Add event listener for window resize
         window.addEventListener('resize', checkViewport);
-
-        // Cleanup event listener on component unmount
         return () => {
             window.removeEventListener('resize', checkViewport);
         };
@@ -54,7 +53,6 @@ function TopDiv() {
 }
 
 function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive }) {
-
     return (
         <>
             <div
@@ -101,29 +99,89 @@ function RoomGrid() {
     const [location, setLocation] = useState(locations[0]);
     const [description, setDescription] = useState(descriptions[0]);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [audio, setAudio] = useState(null);
 
-    const images = [
-        image1,
-        image2,
-        image3,
-        image4,
-        image5
-    ];
+    const speakDescription = async () => {
+        if (isSpeaking) {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            setIsSpeaking(false);
+            return;
+        }
 
-    const panoramaImages = [
-        panorama1,
-        panorama2,
-        panorama3,
-        panorama4,
-        panorama5
-    ];
+        try {
+            // Convert the React elements to plain text
+            const plainText = description.props.children.map(child => {
+                if (typeof child === 'string') return child;
+                if (child.type === 'strong') return child.props.children;
+                return '';
+            }).join('');
+
+            const response = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize?key=' + GOOGLE_TTS_API_KEY, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    input: {
+                        text: plainText
+                    },
+                    voice: {
+                        languageCode: 'en-US',
+                        name: 'en-US-Neural2-D'
+                    },
+                    audioConfig: {
+                        audioEncoding: 'MP3',
+                        pitch: 0,
+                        speakingRate: 1
+                    }
+                })
+            });
+
+            const data = await response.json();
+            const audioContent = data.audioContent;
+            
+            const audioBlob = new Blob(
+                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))], 
+                { type: 'audio/mp3' }
+            );
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audioElement = new Audio(audioUrl);
+            
+            setAudio(audioElement);
+            audioElement.play();
+            setIsSpeaking(true);
+
+            audioElement.onended = () => {
+                setIsSpeaking(false);
+                URL.revokeObjectURL(audioUrl);
+            };
+
+        } catch (error) {
+            console.error('TTS Error:', error);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        };
+    }, [audio, description]);
+
+    const images = [image1, image2, image3, image4, image5];
+    const panoramaImages = [panorama1, panorama2, panorama3, panorama4, panorama5];
 
     return (
         <>
             <div className="subdivider-left">
                 <div className="logo-container">
-                    <img className="logo" src={logo}>
-                    </img>
+                    <img className="logo" src={logo} alt="logo"/>
                 </div>
                 <div className="row-container">
                     {images.map((thumbnailURL, index) => (
@@ -152,6 +210,13 @@ function RoomGrid() {
             <div className="subdivider-right">
                 <div className="room-title">
                     {roomName}
+                    <button 
+                        onClick={speakDescription}
+                        className={`speaker-button ${isSpeaking ? 'speaking' : ''}`}
+                        aria-label={isSpeaking ? 'Stop speaking' : 'Start speaking'}
+                    >
+                        <FontAwesomeIcon icon={isSpeaking ? faVolumeUp : faVolumeOff} />
+                    </button>
                 </div>
                 <div className="location-contents">
                     <div className="location-title">
@@ -210,7 +275,6 @@ function ViewHandler({ imagesource }) {
     }), [imagesource]);
 
     return (
-        // Landscape mobile ui
         <View360 className="is-5by3 fade-in" projection={projection} />
     );
 }
@@ -221,7 +285,6 @@ function App() {
             <TopDiv />
             <div className="container-fluid container-height-adjustment">
                 <RoomGrid />
-                
             </div>
         </>
     );
