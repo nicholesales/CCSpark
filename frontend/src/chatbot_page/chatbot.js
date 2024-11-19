@@ -43,6 +43,7 @@ const Chatbot = () => {
   const [stream, setStream] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [placeholder, setPlaceholder] = useState('Ask a question...');
 
   var faqs = [
     <>What are the programs covered by the CCS Department?</>,
@@ -112,39 +113,43 @@ const Chatbot = () => {
 
   const startRecording = async () => {
     try {
-      const audioStream = await navigator.mediaDevices.getUserMedia({
+      const audioStream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
           channelCount: 1,
-          sampleRate: 48000
-        }
+          sampleRate: 48000,
+          sampleSize: 16
+        } 
       });
       setStream(audioStream);
-
-      const recorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' });
+  
+      const recorder = new MediaRecorder(audioStream, {
+        mimeType: 'audio/webm;codecs=opus',
+        audioBitsPerSecond: 48000
+      });
+      
       setMediaRecorder(recorder);
       setIsRecording(true);
-
-      const audioChunks = [];
-      recorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-      };
-
-      recorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      setPlaceholder('Recording...');
+  
+      const processAudioChunk = async (chunk) => {
+        const audioBlob = new Blob([chunk], { type: 'audio/webm;codecs=opus' });
         const audioBase64 = await blobToBase64(audioBlob);
-
+  
         const requestBody = {
           config: {
             encoding: 'WEBM_OPUS',
             sampleRateHertz: 48000,
             languageCode: 'en-US',
-            model: 'default'
+            model: 'default',
+            audioChannelCount: 1,
+            enableAutomaticPunctuation: false,
+            enableWordTimeOffsets: false
           },
           audio: {
             content: audioBase64.split(',')[1]
           }
         };
-
+  
         try {
           const response = await fetch(`https://speech.googleapis.com/v1/speech:recognize?key=${GOOGLE_SPEECH_API_KEY}`, {
             method: 'POST',
@@ -153,42 +158,99 @@ const Chatbot = () => {
             },
             body: JSON.stringify(requestBody),
           });
-
+  
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-
+  
           const data = await response.json();
-
+          
           if (data.results && data.results.length > 0) {
             const transcription = data.results
               .map(result => result.alternatives[0].transcript)
-              .join('\n');
-            setQuestion(transcription);
-          } else {
-            setError('No speech detected. Please try again.');
+              .join(' ');
+            
+            setQuestion(prev => {
+              return (prev + ' ' + transcription).trim();
+            });
+            setPlaceholder(prev => (prev + ' ' + transcription).trim());
           }
         } catch (error) {
-          console.error('Error:', error);
-          setError('Error processing speech. Please try again.');
+          console.error('Error details:', error);
         }
       };
-
-      recorder.start(500); // Collect data in 1-second chunks
+  
+      let timesliceMs = 2000; 
+      let chunks = [];
+  
+      recorder.ondataavailable = async (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+          await processAudioChunk(event.data);
+        }
+      };
+  
+      recorder.onstop = () => {
+        chunks = [];
+      };
+  
+      recorder.start(timesliceMs);
+  
+      const intervalId = setInterval(() => {
+        if (recorder.state === 'recording') {
+          recorder.stop();
+          chunks = [];
+          recorder.start(timesliceMs);
+        }
+      }, timesliceMs * 1); 
+  
+      recorder.intervalId = intervalId;
+      
     } catch (error) {
-      console.error('Error accessing microphone:', error);
+      console.error('Microphone error details:', error);
       setError('Error accessing microphone. Please check your permissions.');
     }
   };
-
+  
   const stopRecording = () => {
     if (mediaRecorder) {
-      mediaRecorder.stop();
+      if (mediaRecorder.intervalId) {
+        clearInterval(mediaRecorder.intervalId);
+      }
+      
+      if (mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
     }
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
     }
     setIsRecording(false);
+    setPlaceholder('Ask a question...');
+  };
+  
+  useEffect(() => {
+    return () => {
+      if (mediaRecorder) {
+        if (mediaRecorder.intervalId) {
+          clearInterval(mediaRecorder.intervalId);
+        }
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      }
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [mediaRecorder, stream]);
+  
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
   };
 
   const toggleRecording = () => {
@@ -197,15 +259,6 @@ const Chatbot = () => {
     } else {
       startRecording();
     }
-  };
-
-  // Helper function to convert Blob to Base64
-  const blobToBase64 = (blob) => {
-    return new Promise((resolve, _) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
-    });
   };
 
   return (
