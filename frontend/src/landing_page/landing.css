@@ -385,35 +385,21 @@ body {
     }
 }
 
-.speaker-button {
-    margin-left: 10px;  /* Reduced margin */
-    margin-top: 7px;
-    padding: 5px;     /* Reduced padding */
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 32px;  /* Increased font size */
-    transition: transform 0.2s;
-    display: inline-flex;
+.thumbnail-desc {
+    display: flex;
     align-items: center;
- }
- 
- .speaker-button svg {
-    color: black;
-    width: 25px;  /* Increased width */
-    height: 32px; /* Increased height */
- }
- 
- .speaker-button:hover {
-    transform: scale(1.1);
- }
- 
- .speaker-button.speaking {
-    animation: pulse 1s infinite;
- }
- 
- @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
- }
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.speaker-icon {
+    margin-left: 8px;
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}

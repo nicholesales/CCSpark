@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 import './landing.css';
 import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
@@ -17,7 +17,7 @@ import panorama3 from "./assets/cylindricalPhotos/mac_lab_smaller.png";
 import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
 import panorama5 from "./assets/cylindricalPhotos/lecture_room_smaller.png";
 
-const GOOGLE_TTS_API_KEY = '';
+const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
 
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
@@ -43,8 +43,8 @@ function TopDiv() {
             {isVisible && (
                 <div className="top-div" id="topDiv">
                     <div className="landscape-warning">
-                        Please rotate your screen to <b> Landscape </b> to view the Virtual Tour or go to chatbot
-                        <ChatIcon/>
+                        Please rotate your screen to <b>Landscape</b> to view the Virtual Tour or go to chatbot
+                        <ChatIcon />
                     </div>
                 </div>
             )}
@@ -52,21 +52,28 @@ function TopDiv() {
     );
 }
 
-function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive }) {
+function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive, isSpeaking }) {
     return (
         <>
             <div
                 className={amIActive ? "col thumbnail active-thumbnail" : "col thumbnail hoverable"}
-                style={{ backgroundImage: 'url(' + thumbnailURL + ')' }}
+                style={{ backgroundImage: `url(${thumbnailURL})` }}
                 onClick={changePanorama}
                 id={divID}
             >
                 <div className="thumbnail-desc">
                     {roomname}
+                    {isSpeaking && (
+                        <FontAwesomeIcon 
+                            icon={faVolumeUp} 
+                            className="speaker-icon ml-2"
+                            style={{ marginLeft: '8px' }}
+                        />
+                    )}
                 </div>
             </div>
         </>
-    )
+    );
 }
 
 function RoomGrid() {
@@ -101,19 +108,39 @@ function RoomGrid() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [audio, setAudio] = useState(null);
+    const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
-    const speakDescription = async () => {
-        if (isSpeaking) {
-            if (audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
-            setIsSpeaking(false);
-            return;
+    useEffect(() => {
+        const handleUserInteraction = () => {
+            setHasUserInteracted(true);
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+        };
+
+        document.addEventListener('click', handleUserInteraction);
+        document.addEventListener('keydown', handleUserInteraction);
+
+        return () => {
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+        };
+    }, []);
+
+    const stopCurrentAudio = () => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
         }
+        setIsSpeaking(false);
+    };
 
+    const speakDescription = async (description) => {
         try {
-            // Convert the React elements to plain text
+            if (!hasUserInteracted) return;
+
+            // Always stop the current audio first
+            stopCurrentAudio();
+
             const plainText = description.props.children.map(child => {
                 if (typeof child === 'string') return child;
                 if (child.type === 'strong') return child.props.children;
@@ -126,9 +153,7 @@ function RoomGrid() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    input: {
-                        text: plainText
-                    },
+                    input: { text: plainText },
                     voice: {
                         languageCode: 'en-US',
                         name: 'en-US-Neural2-D'
@@ -152,30 +177,53 @@ function RoomGrid() {
             const audioElement = new Audio(audioUrl);
             
             setAudio(audioElement);
-            audioElement.play();
-            setIsSpeaking(true);
-
+            
             audioElement.onended = () => {
                 setIsSpeaking(false);
                 URL.revokeObjectURL(audioUrl);
             };
 
+            audioElement.play().then(() => {
+                setIsSpeaking(true);
+            }).catch((error) => {
+                console.error('Audio playback error:', error);
+                setIsSpeaking(false);
+            });
+            
         } catch (error) {
             console.error('TTS Error:', error);
+            setIsSpeaking(false);
         }
     };
 
     useEffect(() => {
         return () => {
-            if (audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
+            stopCurrentAudio();
         };
-    }, [audio, description]);
+    }, [audio]);
 
     const images = [image1, image2, image3, image4, image5];
     const panoramaImages = [panorama1, panorama2, panorama3, panorama4, panorama5];
+
+    const handleRoomChange = async (index) => {
+        if (index === activeIndex) {
+            // If clicking the same room, toggle audio
+            if (isSpeaking) {
+                stopCurrentAudio();
+            } else {
+                await speakDescription(descriptions[index]);
+            }
+        } else {
+            // If clicking a different room, update everything and start new audio
+            setActiveIndex(index);
+            setImageSource(panoramaImages[index]);
+            setRoomName(roomnames[index]);
+            setLocation(locations[index]);
+            setDescription(descriptions[index]);
+            activeThumbnailChange(index);
+            await speakDescription(descriptions[index]);
+        }
+    };
 
     return (
         <>
@@ -188,17 +236,11 @@ function RoomGrid() {
                         <div className="row" key={index}>
                             <RoomThumbnail
                                 thumbnailURL={thumbnailURL}
-                                changePanorama={() => {
-                                    setActiveIndex(index);
-                                    setImageSource(panoramaImages[index]);
-                                    setRoomName(roomnames[index]);
-                                    setLocation(locations[index]);
-                                    setDescription(descriptions[index]);
-                                    activeThumbnailChange(index);
-                                }}
+                                changePanorama={() => handleRoomChange(index)}
                                 roomname={roomnames[index]}
                                 divID={index}
                                 amIActive={activeIndex === index}
+                                isSpeaking={isSpeaking && activeIndex === index}
                             />
                         </div>
                     ))}
@@ -210,13 +252,6 @@ function RoomGrid() {
             <div className="subdivider-right">
                 <div className="room-title">
                     {roomName}
-                    <button 
-                        onClick={speakDescription}
-                        className={`speaker-button ${isSpeaking ? 'speaking' : ''}`}
-                        aria-label={isSpeaking ? 'Stop speaking' : 'Start speaking'}
-                    >
-                        <FontAwesomeIcon icon={isSpeaking ? faVolumeUp : faVolumeOff} />
-                    </button>
                 </div>
                 <div className="location-contents">
                     <div className="location-title">
@@ -224,8 +259,8 @@ function RoomGrid() {
                     </div>
                     <div className="location-list-container">
                         <ul className="location-list">
-                            {location.map((location, index) => (
-                                <li className="location-item" key={index}>{location}</li>
+                            {location.map((loc, index) => (
+                                <li className="location-item" key={index}>{loc}</li>
                             ))}
                         </ul>
                     </div>
@@ -233,7 +268,7 @@ function RoomGrid() {
                 <div className="description-container">
                     <div className="description-content">
                         <p className="description">
-                        {description}
+                            {description}
                         </p>
                     </div>
                 </div>
@@ -265,7 +300,7 @@ function ChatIcon() {
                 </div>
             </a>
         </>
-    )
+    );
 }
 
 function ViewHandler({ imagesource }) {
