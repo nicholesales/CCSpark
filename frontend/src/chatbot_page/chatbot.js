@@ -4,7 +4,7 @@ import './chatbot.css';
 import userIcon from "./icons/user-icon.png";
 import botIcon from "./icons/bot-icon.png";
 import chatIcon from "./icons/vic-logo.png";
-import sendIcon from "./icons/send-btn.png";
+import sendIcon from "./icons/send.png";
 import './sidebar.css'; // Import CSS for styling
 
 const GOOGLE_SPEECH_API_KEY = '';
@@ -33,6 +33,18 @@ const MicIcon = ({ color }) => (
     <line x1="8" y1="23" x2="16" y2="23"></line>
   </svg>
 );
+
+function BackToLanding() {
+  return (
+      <>
+          <a className="go-to-landing" href="/">
+              <div className="landing-icon">
+                  Back to Virtual Tour
+              </div>
+          </a>
+      </>
+  );
+}
 
 const Chatbot = () => {
   const [conversation, setConversation] = useState([]);
@@ -299,8 +311,10 @@ const Chatbot = () => {
             <img className='icon vic-icon' src={chatIcon} />
           </div>
         </div>
+        <BackToLanding/>
       </div>
       <div className='faq-side-panel'>
+        <BackToLanding/>
         <div className='vic-logo-container'>
           <img className='vic-logo' src={chatIcon} alt='logo'>
           </img>
@@ -339,8 +353,14 @@ const Chatbot = () => {
               value={question}
               rows={1}
               onChange={(e) => { setQuestion(e.target.value); setError("") }}
-              placeholder="Ask your question..."
+              placeholder={placeholder}
               className="chatbot-input"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault(); // Prevent the default behavior of adding a new line
+                  handleSubmit(e); // Call the submit handler
+                }
+              }}
             />
             <button
               type="button"

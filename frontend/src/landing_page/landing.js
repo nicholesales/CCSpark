@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import './landing.css';
 import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
@@ -64,8 +64,8 @@ function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActiv
                 <div className="thumbnail-desc">
                     {roomname}
                     {isSpeaking && (
-                        <FontAwesomeIcon 
-                            icon={faVolumeUp} 
+                        <FontAwesomeIcon
+                            icon={faVolumeUp}
                             className="speaker-icon ml-2"
                             style={{ marginLeft: '8px' }}
                         />
@@ -109,6 +109,7 @@ function RoomGrid() {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [audio, setAudio] = useState(null);
     const [hasUserInteracted, setHasUserInteracted] = useState(false);
+    const [isClosableVisible, setIsClosableVisible] = useState(true); // State for closable div
 
     useEffect(() => {
         const handleUserInteraction = () => {
@@ -168,16 +169,16 @@ function RoomGrid() {
 
             const data = await response.json();
             const audioContent = data.audioContent;
-            
+
             const audioBlob = new Blob(
-                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))], 
+                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))],
                 { type: 'audio/mp3' }
             );
             const audioUrl = URL.createObjectURL(audioBlob);
             const audioElement = new Audio(audioUrl);
-            
+
             setAudio(audioElement);
-            
+
             audioElement.onended = () => {
                 setIsSpeaking(false);
                 URL.revokeObjectURL(audioUrl);
@@ -189,7 +190,7 @@ function RoomGrid() {
                 console.error('Audio playback error:', error);
                 setIsSpeaking(false);
             });
-            
+
         } catch (error) {
             console.error('TTS Error:', error);
             setIsSpeaking(false);
@@ -225,11 +226,15 @@ function RoomGrid() {
         }
     };
 
+    const closeClosableDiv = () => {
+        setIsClosableVisible(false); // Hide the closable div
+    };
+
     return (
         <>
             <div className="subdivider-left">
                 <div className="logo-container">
-                    <img className="logo" src={logo} alt="logo"/>
+                    <img className="logo" src={logo} alt="logo" />
                 </div>
                 <div className="row-container">
                     {images.map((thumbnailURL, index) => (
@@ -272,6 +277,15 @@ function RoomGrid() {
                         </p>
                     </div>
                 </div>
+                {isClosableVisible && (
+                    <div className="closable-bg">
+                        <div className="closable-div">
+                            <span className="closable-text"><strong>Welcome to CCSpark!</strong><p>At the right, you can pick which room you want to view. </p>
+                            <p>At the bottom right, you can go to the Chatbot and ask questions about the CCS Department.</p></span>
+                            <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={closeClosableDiv} />
+                        </div>
+                    </div>
+                )}
                 <ChatIcon />
             </div>
         </>

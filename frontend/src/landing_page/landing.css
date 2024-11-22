@@ -157,6 +157,47 @@ body {
     transition: fadeIn 1s ease-in forwards;
 }
 
+.closable-bg {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0; /* Adjust as needed */
+    left: 0; /* Adjust as needed */
+    z-index: 1000; /* Ensure it appears above other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(34, 34, 34, 0.801);
+}
+
+.closable-div {
+    background-color: #fde871; /* Light yellow background */
+    color: #000000; /* Black text */
+    padding: 1%;
+    border: 1px solid #f5c6cb; /* Border color */
+    border-radius: 5px;
+    display: flex;
+    width: 20vw;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.close-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    height: 3%;
+    width: 7%;
+}
+
+.closable-text {
+    margin: 0;
+}
+
+.closable-text p {
+    margin-bottom: 3%;
+    margin-top: 5%;
+}
+
 @media (max-width: 799px) {
     .chaticon {
         height: 80%;
@@ -212,7 +253,7 @@ body {
     }
 
     .location-item::before {
-        content: "❯";
+        content: "*";
         /* Or any other symbol you prefer */
         color: #4c52aa;
         /* Match your design */
@@ -265,9 +306,8 @@ body {
     }
 
     .room-title {
-        margin-top: 6%;
-        padding-bottom: 4%;
-        font-size: 2em;
+        margin: 4% 0% 2% 0%;
+        font-size: 1.5em;
         height: auto;
         text-align: center;
         display: flex;
@@ -300,22 +340,23 @@ body {
     }
 
     .location-item::before {
-        content: "❯";
+        content: "*";
         /* Or any other symbol you prefer */
         color: #4c52aa;
         /* Match your design */
         padding-right: 8px;
-        font-size: 0.8em;
+        font-size: 1.1em;
         /* Adjust size as needed */
     }
 
     .description {
-        font-size: 1.3em;
+        font-size: 1.4rem;
     }
 
     .go-to-chatbot {
         text-decoration: none;
         color: black;
+        margin-bottom: 5%;
     }
 
     .logo-container {
@@ -360,7 +401,7 @@ body {
 .description-container {
     height: auto;
     overflow-y: scroll;
-    margin: 2%;
+    margin: 10% 2% 10% 2%;
     /* Firefox */
     scrollbar-width: thin;
     scrollbar-color: #888 transparent;
