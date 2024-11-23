@@ -199,6 +199,9 @@ body {
 }
 
 @media (max-width: 799px) {
+    .container-height-adjustment {
+        display: none;
+    }
     .chaticon {
         height: 80%;
         width: auto;
@@ -287,6 +290,20 @@ body {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (min-width: 800px) {
     .chaticon {
         height: fit-content;
@@ -307,7 +324,7 @@ body {
 
     .room-title {
         margin: 4% 0% 2% 0%;
-        font-size: 1.5em;
+        font-size: 1rem;
         height: auto;
         text-align: center;
         display: flex;
@@ -328,7 +345,7 @@ body {
     }
 
     .location-title {
-        font-size: 1.5em;
+        font-size: 1rem;
         font-weight: 700;
         padding-bottom: 6%;
         margin: 4% 0% 0% 4%;
@@ -337,6 +354,7 @@ body {
     .location-list {
         list-style: none;
         /* Remove default bullets */
+
     }
 
     .location-item::before {
@@ -345,26 +363,27 @@ body {
         color: #4c52aa;
         /* Match your design */
         padding-right: 8px;
-        font-size: 1.1em;
+        font-size: 1rem;
         /* Adjust size as needed */
     }
 
     .description {
-        font-size: 1.4rem;
+        font-size: 0.8rem;
     }
 
     .go-to-chatbot {
         text-decoration: none;
         color: black;
         margin-bottom: 5%;
+        font-size: 0.7rem;
     }
 
     .logo-container {
-        height: 100px;
+        height: 10%;
     }
     
     .logo {
-        height: inherit;
+        height: 100%;
     }
 }
 

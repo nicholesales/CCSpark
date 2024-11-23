@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useContext, createContext } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,6 +18,45 @@ import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
 import panorama5 from "./assets/cylindricalPhotos/lecture_room_smaller.png";
 
 const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
+
+const FontSizeContext = createContext();
+
+// Provider Component
+const FontSizeProvider = ({ children }) => {
+    const [fontSize, setFontSize] = useState("16px");
+
+    const isMobileDevice = () => {
+        return /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) ||
+            ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    };
+
+    const applyFontSize = () => {
+        const size = isMobileDevice() ? "14px" : "30px";
+        setFontSize(size);
+        document.documentElement.style.fontSize = size;
+    };
+
+    useEffect(() => {
+        applyFontSize();
+
+        const handleResize = () => applyFontSize();
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return (
+        <FontSizeContext.Provider value={fontSize}>
+            {children}
+        </FontSizeContext.Provider>
+    );
+};
+
+// Hook to use font size
+const useFontSize = () => {
+    return useContext(FontSizeContext);
+};
+
 
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
@@ -281,7 +320,7 @@ function RoomGrid() {
                     <div className="closable-bg">
                         <div className="closable-div">
                             <span className="closable-text"><strong>Welcome to CCSpark!</strong><p>At the right, you can pick which room you want to view. </p>
-                            <p>At the bottom right, you can go to the Chatbot and ask questions about the CCS Department.</p></span>
+                                <p>At the bottom right, you can go to the Chatbot and ask questions about the CCS Department.</p></span>
                             <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={closeClosableDiv} />
                         </div>
                     </div>
@@ -331,10 +370,12 @@ function ViewHandler({ imagesource }) {
 function App() {
     return (
         <>
-            <TopDiv />
-            <div className="container-fluid container-height-adjustment">
-                <RoomGrid />
-            </div>
+            <FontSizeProvider>
+                <TopDiv />
+                <div className="container-fluid container-height-adjustment">
+                    <RoomGrid />
+                </div>
+            </FontSizeProvider>
         </>
     );
 }
