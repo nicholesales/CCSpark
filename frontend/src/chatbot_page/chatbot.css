@@ -2,7 +2,6 @@
   --text-color: #000000;
   --background-color: #0d0d27;
   --user-message-background-color: #232267;
-  --submit-btn-bgcolor: #42d1eb;
   --inputs-color: #C8E7E9;
   --highlights-color-2: #D7FDFD;
   --accents-color: #FFDCF9;
@@ -91,8 +90,8 @@
   }
 
   .faq-title {
-    color: var(--text-color);
     text-align: center;
+    font-size: 1.1rem;
   }
 
   .vic-logo-parent {
@@ -228,7 +227,7 @@
   .chatbot-submit {
     margin-left: 4px;
     padding: 9px 9px 9px 9px;
-    background-color: var(--submit-btn-bgcolor);
+    background-color: #42d1eb;
     color: white;
     border: none;
     border-radius: 100px;
@@ -439,7 +438,7 @@
   .chatbot-submit {
     margin-left: 4px;
     padding: 9px 10px 9px 9px;
-    background-color: var(--submit-btn-bgcolor);
+    background-color: #42d1eb;
     color: white;
     border: none;
     border-radius: 100px;
@@ -577,7 +576,7 @@
   }
 
   .faq-title {
-    color: var(--text-color);
     text-align: center;
+    font-size: 1.3rem;
   }
 }

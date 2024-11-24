@@ -102,10 +102,6 @@ const Chatbot = () => {
     setQuestion('');
   };
 
-  const handleSidebarToggle = async () => {
-
-  }
-
   const faqButtonSubmit = async (predefinedQuestion) => {
     const userMessage = { sender: 'user', text: predefinedQuestion };
     setConversation((prevConversation) => [...prevConversation, userMessage]);

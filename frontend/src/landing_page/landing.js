@@ -319,14 +319,32 @@ function RoomGrid() {
                 {isClosableVisible && (
                     <div className="closable-bg">
                         <div className="closable-div">
-                            <span className="closable-text"><strong>Welcome to CCSpark!</strong><p>At the right, you can pick which room you want to view. </p>
-                                <p>At the bottom right, you can go to the Chatbot and ask questions about the CCS Department.</p></span>
-                            <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={closeClosableDiv} />
+                            <div className="closable-title-div">
+                                <span className="closable-text">
+                                    <p className="closable-title">
+                                        <strong>Welcome to CCSpark!</strong>
+                                    </p>
+                                </span>
+                                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={closeClosableDiv} />
+                            </div>
+                            <div className="closable-content-div">
+                                <div className="closable-left">
+                                    <p className="closable-content"><strong>At this side</strong>, you can pick which room you want to view by clicking the images</p>
+                                </div>
+                                <div className="closable-center">
+                                    <p className="closable-content">This area has a <strong>panoramic image</strong>, you can drag the image to the left and right to view the room.</p>
+                                </div>
+                                <div className="closable-right">
+                                    <p className="closable-content"><strong>At this side</strong>, you can see the descriptions of the room and a button to go to the chatbot if you have any questions.</p>
+                                </div>
+                            </div>
+
+                            
                         </div>
                     </div>
                 )}
                 <ChatIcon />
-            </div>
+            </div >
         </>
     );
 }
