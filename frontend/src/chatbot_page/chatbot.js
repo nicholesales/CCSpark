@@ -6,6 +6,7 @@ import botIcon from "./icons/bot-icon.png";
 import chatIcon from "./icons/vic-logo.png";
 import sendIcon from "./icons/send.png";
 import './sidebar.css'; // Import CSS for styling
+import ReactMarkdown from 'react-markdown';
 
 const GOOGLE_SPEECH_API_KEY = '';
 
@@ -88,7 +89,7 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/chatbot/', { question });
+      const res = await axios.post('http://52.62.64.107/api/chatbot/', { question });
       const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
@@ -107,7 +108,7 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/chatbot/', { question: predefinedQuestion });
+      const res = await axios.post('http://52.62.64.107/api/chatbot/', { question: predefinedQuestion });
       const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
@@ -338,7 +339,7 @@ const Chatbot = () => {
                 {message.sender === "bot" && <BotIconHandler sender={message.sender} />}
                 {message.sender === "user" && <UserIconHandler sender={message.sender} />}
                 <div className={`chatbot-message ${message.sender}`}>
-                  {message.text}
+                <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               </div>
             ))}
