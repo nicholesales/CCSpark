@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-s$8tfhkfs3)d&u79m#tpl7na^=2hqn4=bp@-ud70e^h)=^+y@1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["52.62.64.107", '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['52.62.64.107', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -71,7 +71,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # React app's URL
-    '52.62.64.107', # Ubuntu Server's IP
+    'http://52.62.64.107:8000', # Ubuntu Server's IP
 ]
 
 ROOT_URLCONF = 'project_files.urls'
