@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useContext, createContext } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import './landing.css';
 import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
@@ -18,6 +18,45 @@ import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
 import panorama5 from "./assets/cylindricalPhotos/lecture_room_smaller.png";
 
 const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
+
+const FontSizeContext = createContext();
+
+// Provider Component
+const FontSizeProvider = ({ children }) => {
+    const [fontSize, setFontSize] = useState("16px");
+
+    const isMobileDevice = () => {
+        return /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) ||
+            ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    };
+
+    const applyFontSize = () => {
+        const size = isMobileDevice() ? "14px" : "30px";
+        setFontSize(size);
+        document.documentElement.style.fontSize = size;
+    };
+
+    useEffect(() => {
+        applyFontSize();
+
+        const handleResize = () => applyFontSize();
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return (
+        <FontSizeContext.Provider value={fontSize}>
+            {children}
+        </FontSizeContext.Provider>
+    );
+};
+
+// Hook to use font size
+const useFontSize = () => {
+    return useContext(FontSizeContext);
+};
+
 
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
@@ -64,8 +103,8 @@ function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActiv
                 <div className="thumbnail-desc">
                     {roomname}
                     {isSpeaking && (
-                        <FontAwesomeIcon 
-                            icon={faVolumeUp} 
+                        <FontAwesomeIcon
+                            icon={faVolumeUp}
                             className="speaker-icon ml-2"
                             style={{ marginLeft: '8px' }}
                         />
@@ -109,6 +148,7 @@ function RoomGrid() {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [audio, setAudio] = useState(null);
     const [hasUserInteracted, setHasUserInteracted] = useState(false);
+    const [isClosableVisible, setIsClosableVisible] = useState(true); // State for closable div
 
     useEffect(() => {
         const handleUserInteraction = () => {
@@ -168,16 +208,16 @@ function RoomGrid() {
 
             const data = await response.json();
             const audioContent = data.audioContent;
-            
+
             const audioBlob = new Blob(
-                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))], 
+                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))],
                 { type: 'audio/mp3' }
             );
             const audioUrl = URL.createObjectURL(audioBlob);
             const audioElement = new Audio(audioUrl);
-            
+
             setAudio(audioElement);
-            
+
             audioElement.onended = () => {
                 setIsSpeaking(false);
                 URL.revokeObjectURL(audioUrl);
@@ -189,7 +229,7 @@ function RoomGrid() {
                 console.error('Audio playback error:', error);
                 setIsSpeaking(false);
             });
-            
+
         } catch (error) {
             console.error('TTS Error:', error);
             setIsSpeaking(false);
@@ -225,11 +265,15 @@ function RoomGrid() {
         }
     };
 
+    const closeClosableDiv = () => {
+        setIsClosableVisible(false); // Hide the closable div
+    };
+
     return (
         <>
             <div className="subdivider-left">
                 <div className="logo-container">
-                    <img className="logo" src={logo} alt="logo"/>
+                    <img className="logo" src={logo} alt="logo" />
                 </div>
                 <div className="row-container">
                     {images.map((thumbnailURL, index) => (
@@ -272,8 +316,35 @@ function RoomGrid() {
                         </p>
                     </div>
                 </div>
+                {isClosableVisible && (
+                    <div className="closable-bg">
+                        <div className="closable-div">
+                            <div className="closable-title-div">
+                                <span className="closable-text">
+                                    <p className="closable-title">
+                                        <strong>Welcome to CCSpark!</strong>
+                                    </p>
+                                </span>
+                                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={closeClosableDiv} />
+                            </div>
+                            <div className="closable-content-div">
+                                <div className="closable-left">
+                                    <p className="closable-content"><strong>At this side</strong>, you can pick which room you want to view by clicking the images</p>
+                                </div>
+                                <div className="closable-center">
+                                    <p className="closable-content">This area has a <strong>panoramic image</strong>, you can drag the image to the left and right to view the room.</p>
+                                </div>
+                                <div className="closable-right">
+                                    <p className="closable-content"><strong>At this side</strong>, you can see the descriptions of the room and a button to go to the chatbot if you have any questions.</p>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                )}
                 <ChatIcon />
-            </div>
+            </div >
         </>
     );
 }
@@ -317,10 +388,12 @@ function ViewHandler({ imagesource }) {
 function App() {
     return (
         <>
-            <TopDiv />
-            <div className="container-fluid container-height-adjustment">
-                <RoomGrid />
-            </div>
+            <FontSizeProvider>
+                <TopDiv />
+                <div className="container-fluid container-height-adjustment">
+                    <RoomGrid />
+                </div>
+            </FontSizeProvider>
         </>
     );
 }
