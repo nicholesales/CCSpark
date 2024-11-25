@@ -6,6 +6,7 @@ import botIcon from "./icons/bot-icon.png";
 import chatIcon from "./icons/vic-logo.png";
 import sendIcon from "./icons/send.png";
 import './sidebar.css'; // Import CSS for styling
+import ReactMarkdown from 'react-markdown';
 
 const GOOGLE_SPEECH_API_KEY = '';
 
@@ -338,7 +339,7 @@ const Chatbot = () => {
                 {message.sender === "bot" && <BotIconHandler sender={message.sender} />}
                 {message.sender === "user" && <UserIconHandler sender={message.sender} />}
                 <div className={`chatbot-message ${message.sender}`}>
-                  {message.text}
+                <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               </div>
             ))}
