@@ -157,6 +157,17 @@ function Admin({ handleLogout }) {
                 type="radio"
                 name="filter"
                 id="faculty"
+                value="Frequently Asked Questions"
+                checked={selectedFilter === 'Frequently Asked Questions'}
+                onChange={() => setSelectedFilter('Frequently Asked Questions')}
+              />
+              <label htmlFor="faculty">Frequently Asked Questions</label>
+            </li>
+            <li>
+              <input
+                type="radio"
+                name="filter"
+                id="faculty"
                 value="CCS Faculty-related Queries"
                 checked={selectedFilter === 'CCS Faculty-related Queries'}
                 onChange={() => setSelectedFilter('CCS Faculty-related Queries')}
@@ -225,6 +236,7 @@ function Admin({ handleLogout }) {
               <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
               <option value="CCS Student Orgs">CCS Student Orgs</option>
               <option value="CCS Events">CCS Events</option>
+              <option value="Frequently Asked Questions">FAQs</option>
             </select>
             
             <label htmlFor="question">Question</label>
