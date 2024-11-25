@@ -8,7 +8,7 @@ import sendIcon from "./icons/send.png";
 import './sidebar.css'; // Import CSS for styling
 import ReactMarkdown from 'react-markdown';
 
-const GOOGLE_SPEECH_API_KEY = '';
+const GOOGLE_SPEECH_API_KEY = process.env.REACT_APP_GOOGLE_SPEECH_API_KEY; // Load API key from .env
 
 function UserIconHandler({ sender }) {
   return (
@@ -56,7 +56,34 @@ const Chatbot = () => {
   const [stream, setStream] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [placeholder, setPlaceholder] = useState('Ask a question...');
+  const [placeholder, setPlaceholder] = useState('Ask a question...');  
+
+  useEffect(() => {
+    const fetchInitialMessage = async () => {
+      try {
+        const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', { 
+          question: 'Introduce yourself. State your purpose on how you can help the user' 
+        });
+        
+        const chatbotResponse = { 
+          sender: 'bot', 
+          text: res.data.response 
+        };
+  
+        setConversation([chatbotResponse]);
+      } catch (err) {
+        console.error(err);
+        // Fallback to a default message if API call fails
+        const defaultMessage = { 
+          sender: 'bot', 
+          text: 'Hello! I am V.I.C, your virtual chatbot assistant. How can I help you today?' 
+        };
+        setConversation([defaultMessage]);
+      }
+    };
+  
+    fetchInitialMessage();
+  }, []);
 
   var faqs = [
     <>What are the programs covered by the CCS Department?</>,
