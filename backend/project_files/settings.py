@@ -71,7 +71,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # React app's URL
-    'http://52.62.64.107:8000', # Ubuntu Server's IP
+    # 'http://52.62.64.107:8000', # Ubuntu Server's IP
 ]
 
 ROOT_URLCONF = 'project_files.urls'
