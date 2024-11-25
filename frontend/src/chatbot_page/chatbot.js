@@ -89,7 +89,7 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/chatbot/', { question });
+      const res = await axios.post('http://52.62.64.107/api/chatbot/', { question });
       const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
@@ -108,7 +108,7 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://localhost:8000/api/chatbot/', { question: predefinedQuestion });
+      const res = await axios.post('http://52.62.64.107/api/chatbot/', { question: predefinedQuestion });
       const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
