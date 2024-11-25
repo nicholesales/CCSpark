@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useContext, createContext } from "react";
 import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import './landing.css';
 import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
@@ -17,7 +17,46 @@ import panorama3 from "./assets/cylindricalPhotos/mac_lab_smaller.png";
 import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
 import panorama5 from "./assets/cylindricalPhotos/lecture_room_smaller.png";
 
-const GOOGLE_TTS_API_KEY = '';
+const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
+
+const FontSizeContext = createContext();
+
+// Provider Component
+const FontSizeProvider = ({ children }) => {
+    const [fontSize, setFontSize] = useState("16px");
+
+    const isMobileDevice = () => {
+        return /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) ||
+            ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+    };
+
+    const applyFontSize = () => {
+        const size = isMobileDevice() ? "14px" : "30px";
+        setFontSize(size);
+        document.documentElement.style.fontSize = size;
+    };
+
+    useEffect(() => {
+        applyFontSize();
+
+        const handleResize = () => applyFontSize();
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return (
+        <FontSizeContext.Provider value={fontSize}>
+            {children}
+        </FontSizeContext.Provider>
+    );
+};
+
+// Hook to use font size
+const useFontSize = () => {
+    return useContext(FontSizeContext);
+};
+
 
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
@@ -43,8 +82,8 @@ function TopDiv() {
             {isVisible && (
                 <div className="top-div" id="topDiv">
                     <div className="landscape-warning">
-                        Please rotate your screen to <b> Landscape </b> to view the Virtual Tour or go to chatbot
-                        <ChatIcon/>
+                        Please rotate your screen to <b>Landscape</b> to view the Virtual Tour or go to chatbot
+                        <ChatIcon />
                     </div>
                 </div>
             )}
@@ -52,21 +91,28 @@ function TopDiv() {
     );
 }
 
-function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive }) {
+function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive, isSpeaking }) {
     return (
         <>
             <div
                 className={amIActive ? "col thumbnail active-thumbnail" : "col thumbnail hoverable"}
-                style={{ backgroundImage: 'url(' + thumbnailURL + ')' }}
+                style={{ backgroundImage: `url(${thumbnailURL})` }}
                 onClick={changePanorama}
                 id={divID}
             >
                 <div className="thumbnail-desc">
                     {roomname}
+                    {isSpeaking && (
+                        <FontAwesomeIcon
+                            icon={faVolumeUp}
+                            className="speaker-icon ml-2"
+                            style={{ marginLeft: '8px' }}
+                        />
+                    )}
                 </div>
             </div>
         </>
-    )
+    );
 }
 
 function RoomGrid() {
@@ -101,19 +147,40 @@ function RoomGrid() {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [audio, setAudio] = useState(null);
+    const [hasUserInteracted, setHasUserInteracted] = useState(false);
+    const [isClosableVisible, setIsClosableVisible] = useState(true); // State for closable div
 
-    const speakDescription = async () => {
-        if (isSpeaking) {
-            if (audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
-            setIsSpeaking(false);
-            return;
+    useEffect(() => {
+        const handleUserInteraction = () => {
+            setHasUserInteracted(true);
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+        };
+
+        document.addEventListener('click', handleUserInteraction);
+        document.addEventListener('keydown', handleUserInteraction);
+
+        return () => {
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+        };
+    }, []);
+
+    const stopCurrentAudio = () => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
         }
+        setIsSpeaking(false);
+    };
 
+    const speakDescription = async (description) => {
         try {
-            // Convert the React elements to plain text
+            if (!hasUserInteracted) return;
+
+            // Always stop the current audio first
+            stopCurrentAudio();
+
             const plainText = description.props.children.map(child => {
                 if (typeof child === 'string') return child;
                 if (child.type === 'strong') return child.props.children;
@@ -126,9 +193,7 @@ function RoomGrid() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    input: {
-                        text: plainText
-                    },
+                    input: { text: plainText },
                     voice: {
                         languageCode: 'en-US',
                         name: 'en-US-Neural2-D'
@@ -143,62 +208,83 @@ function RoomGrid() {
 
             const data = await response.json();
             const audioContent = data.audioContent;
-            
+
             const audioBlob = new Blob(
-                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))], 
+                [Uint8Array.from(atob(audioContent), c => c.charCodeAt(0))],
                 { type: 'audio/mp3' }
             );
             const audioUrl = URL.createObjectURL(audioBlob);
             const audioElement = new Audio(audioUrl);
-            
+
             setAudio(audioElement);
-            audioElement.play();
-            setIsSpeaking(true);
 
             audioElement.onended = () => {
                 setIsSpeaking(false);
                 URL.revokeObjectURL(audioUrl);
             };
 
+            audioElement.play().then(() => {
+                setIsSpeaking(true);
+            }).catch((error) => {
+                console.error('Audio playback error:', error);
+                setIsSpeaking(false);
+            });
+
         } catch (error) {
             console.error('TTS Error:', error);
+            setIsSpeaking(false);
         }
     };
 
     useEffect(() => {
         return () => {
-            if (audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
+            stopCurrentAudio();
         };
-    }, [audio, description]);
+    }, [audio]);
 
     const images = [image1, image2, image3, image4, image5];
     const panoramaImages = [panorama1, panorama2, panorama3, panorama4, panorama5];
+
+    const handleRoomChange = async (index) => {
+        if (index === activeIndex) {
+            // If clicking the same room, toggle audio
+            if (isSpeaking) {
+                stopCurrentAudio();
+            } else {
+                await speakDescription(descriptions[index]);
+            }
+        } else {
+            // If clicking a different room, update everything and start new audio
+            setActiveIndex(index);
+            setImageSource(panoramaImages[index]);
+            setRoomName(roomnames[index]);
+            setLocation(locations[index]);
+            setDescription(descriptions[index]);
+            activeThumbnailChange(index);
+            await speakDescription(descriptions[index]);
+        }
+    };
+
+    const closeClosableDiv = () => {
+        setIsClosableVisible(false); // Hide the closable div
+    };
 
     return (
         <>
             <div className="subdivider-left">
                 <div className="logo-container">
-                    <img className="logo" src={logo} alt="logo"/>
+                    <img className="logo" src={logo} alt="logo" />
                 </div>
                 <div className="row-container">
                     {images.map((thumbnailURL, index) => (
                         <div className="row" key={index}>
                             <RoomThumbnail
                                 thumbnailURL={thumbnailURL}
-                                changePanorama={() => {
-                                    setActiveIndex(index);
-                                    setImageSource(panoramaImages[index]);
-                                    setRoomName(roomnames[index]);
-                                    setLocation(locations[index]);
-                                    setDescription(descriptions[index]);
-                                    activeThumbnailChange(index);
-                                }}
+                                changePanorama={() => handleRoomChange(index)}
                                 roomname={roomnames[index]}
                                 divID={index}
                                 amIActive={activeIndex === index}
+                                isSpeaking={isSpeaking && activeIndex === index}
                             />
                         </div>
                     ))}
@@ -210,13 +296,6 @@ function RoomGrid() {
             <div className="subdivider-right">
                 <div className="room-title">
                     {roomName}
-                    <button 
-                        onClick={speakDescription}
-                        className={`speaker-button ${isSpeaking ? 'speaking' : ''}`}
-                        aria-label={isSpeaking ? 'Stop speaking' : 'Start speaking'}
-                    >
-                        <FontAwesomeIcon icon={isSpeaking ? faVolumeUp : faVolumeOff} />
-                    </button>
                 </div>
                 <div className="location-contents">
                     <div className="location-title">
@@ -224,8 +303,8 @@ function RoomGrid() {
                     </div>
                     <div className="location-list-container">
                         <ul className="location-list">
-                            {location.map((location, index) => (
-                                <li className="location-item" key={index}>{location}</li>
+                            {location.map((loc, index) => (
+                                <li className="location-item" key={index}>{loc}</li>
                             ))}
                         </ul>
                     </div>
@@ -233,12 +312,39 @@ function RoomGrid() {
                 <div className="description-container">
                     <div className="description-content">
                         <p className="description">
-                        {description}
+                            {description}
                         </p>
                     </div>
                 </div>
+                {isClosableVisible && (
+                    <div className="closable-bg">
+                        <div className="closable-div">
+                            <div className="closable-title-div">
+                                <span className="closable-text">
+                                    <p className="closable-title">
+                                        <strong>Welcome to CCSpark!</strong>
+                                    </p>
+                                </span>
+                                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={closeClosableDiv} />
+                            </div>
+                            <div className="closable-content-div">
+                                <div className="closable-left">
+                                    <p className="closable-content"><strong>At this side</strong>, you can pick which room you want to view by clicking the images</p>
+                                </div>
+                                <div className="closable-center">
+                                    <p className="closable-content">This area has a <strong>panoramic image</strong>, you can drag the image to the left and right to view the room.</p>
+                                </div>
+                                <div className="closable-right">
+                                    <p className="closable-content"><strong>At this side</strong>, you can see the descriptions of the room and a button to go to the chatbot if you have any questions.</p>
+                                </div>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                )}
                 <ChatIcon />
-            </div>
+            </div >
         </>
     );
 }
@@ -265,7 +371,7 @@ function ChatIcon() {
                 </div>
             </a>
         </>
-    )
+    );
 }
 
 function ViewHandler({ imagesource }) {
@@ -282,10 +388,12 @@ function ViewHandler({ imagesource }) {
 function App() {
     return (
         <>
-            <TopDiv />
-            <div className="container-fluid container-height-adjustment">
-                <RoomGrid />
-            </div>
+            <FontSizeProvider>
+                <TopDiv />
+                <div className="container-fluid container-height-adjustment">
+                    <RoomGrid />
+                </div>
+            </FontSizeProvider>
         </>
     );
 }

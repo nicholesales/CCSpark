@@ -157,7 +157,98 @@ body {
     transition: fadeIn 1s ease-in forwards;
 }
 
+.closable-bg {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0; /* Adjust as needed */
+    left: 0; /* Adjust as needed */
+    z-index: 1000; /* Ensure it appears above other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(34, 34, 34, 0.801);
+}
+
+.closable-div {
+    background-color: #fde871; /* Light yellow background */
+    color: #000000; /* Black text */
+    padding: 1%;
+    border: 1px solid #f5c6cb; /* Border color */
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.closable-title-div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.closable-content-div {
+    display: flex;
+    flex-direction: row;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.closable-left {
+    width: 20%;
+    background-color: #35aeeb;
+    padding: 2%;
+}
+
+.closable-center {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #161616;
+    color: #e4e1e1;
+    padding: 2%;
+    text-align: center;
+}
+
+.closable-right {
+    width: 30%;
+    background-color: #6dc3ee;
+    padding: 2%;
+    text-align: right;
+}
+
+.close-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    height: 3%;
+    width: 7%;
+}
+
+.closable-content {
+    font-size: 0.8rem;
+}
+.closable-text {
+    margin: 0;
+    font-size: 0.7rem;
+}
+
+.closable-text p {
+    margin-bottom: 3%;
+    margin-top: 5%;
+}
+
+.closable-title {
+    font-size: 1rem;
+}
+
 @media (max-width: 799px) {
+    .container-height-adjustment {
+        display: none;
+    }
     .chaticon {
         height: 80%;
         width: auto;
@@ -212,7 +303,7 @@ body {
     }
 
     .location-item::before {
-        content: "❯";
+        content: "*";
         /* Or any other symbol you prefer */
         color: #4c52aa;
         /* Match your design */
@@ -246,6 +337,20 @@ body {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (min-width: 800px) {
     .chaticon {
         height: fit-content;
@@ -265,9 +370,8 @@ body {
     }
 
     .room-title {
-        margin-top: 6%;
-        padding-bottom: 4%;
-        font-size: 2em;
+        margin: 4% 0% 2% 0%;
+        font-size: 1rem;
         height: auto;
         text-align: center;
         display: flex;
@@ -288,7 +392,7 @@ body {
     }
 
     .location-title {
-        font-size: 1.5em;
+        font-size: 1rem;
         font-weight: 700;
         padding-bottom: 6%;
         margin: 4% 0% 0% 4%;
@@ -297,33 +401,36 @@ body {
     .location-list {
         list-style: none;
         /* Remove default bullets */
+
     }
 
     .location-item::before {
-        content: "❯";
+        content: "*";
         /* Or any other symbol you prefer */
         color: #4c52aa;
         /* Match your design */
         padding-right: 8px;
-        font-size: 0.8em;
+        font-size: 1rem;
         /* Adjust size as needed */
     }
 
     .description {
-        font-size: 1.3em;
+        font-size: 0.8rem;
     }
 
     .go-to-chatbot {
         text-decoration: none;
         color: black;
+        margin-bottom: 5%;
+        font-size: 0.7rem;
     }
 
     .logo-container {
-        height: 100px;
+        height: 10%;
     }
     
     .logo {
-        height: inherit;
+        height: 100%;
     }
 }
 
@@ -360,7 +467,7 @@ body {
 .description-container {
     height: auto;
     overflow-y: scroll;
-    margin: 2%;
+    margin: 10% 2% 10% 2%;
     /* Firefox */
     scrollbar-width: thin;
     scrollbar-color: #888 transparent;
@@ -385,35 +492,21 @@ body {
     }
 }
 
-.speaker-button {
-    margin-left: 10px;  /* Reduced margin */
-    margin-top: 7px;
-    padding: 5px;     /* Reduced padding */
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 32px;  /* Increased font size */
-    transition: transform 0.2s;
-    display: inline-flex;
+.thumbnail-desc {
+    display: flex;
     align-items: center;
- }
- 
- .speaker-button svg {
-    color: black;
-    width: 25px;  /* Increased width */
-    height: 32px; /* Increased height */
- }
- 
- .speaker-button:hover {
-    transform: scale(1.1);
- }
- 
- .speaker-button.speaking {
-    animation: pulse 1s infinite;
- }
- 
- @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
- }
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.speaker-icon {
+    margin-left: 8px;
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
