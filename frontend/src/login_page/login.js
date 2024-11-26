@@ -11,7 +11,7 @@ function Login({ setIsAuthenticated }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://13.238.141.127/api/login/', {
+      const response = await axios.post('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/login/', {
         username,
         password
       });

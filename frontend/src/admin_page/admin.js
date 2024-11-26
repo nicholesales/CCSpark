@@ -21,7 +21,7 @@ function Admin({ handleLogout }) {
   }, []);
 
   const fetchQueries = async () => {
-    const response = await fetch('http://13.238.141.127/api/queries/'); // Adjust according to your Django server
+    const response = await fetch('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/'); // Adjust according to your Django server
     const data = await response.json();
     setQueries(data);
   };
@@ -43,7 +43,7 @@ function Admin({ handleLogout }) {
         answer: newAnswer,
       };
 
-      await fetch('http://13.238.141.127/api/queries/add/', {
+      await fetch('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/add/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function Admin({ handleLogout }) {
   };
 
   const deleteQuery = async (queryId) => {
-    const response = await fetch(`http://13.238.141.127/api/queries/delete/${queryId}/`, {
+    const response = await fetch(`http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/delete/${queryId}/`, {
       method: 'DELETE',
     });
 
@@ -91,7 +91,7 @@ function Admin({ handleLogout }) {
           category: newCategory,
         };
   
-        const response = await fetch(`http://13.238.141.127/api/queries/edit/${editingQueryId}/`, {
+        const response = await fetch(`http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/edit/${editingQueryId}/`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
