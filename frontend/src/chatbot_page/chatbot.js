@@ -61,7 +61,7 @@ const Chatbot = () => {
   useEffect(() => {
     const fetchInitialMessage = async () => {
       try {
-        const res = await axios.post('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/chatbot/', { 
+        const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', { 
           question: 'Introduce yourself. State your purpose on how you can help the user' 
         });
         
@@ -116,7 +116,7 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/chatbot/', { question });
+      const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', { question });
       const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
@@ -135,7 +135,7 @@ const Chatbot = () => {
     setConversation((prevConversation) => [...prevConversation, userMessage]);
 
     try {
-      const res = await axios.post('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/chatbot/', { question: predefinedQuestion });
+      const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', { question: predefinedQuestion });
       const chatbotResponse = { sender: 'bot', text: res.data.response };
 
       setConversation((prevConversation) => [...prevConversation, chatbotResponse]);
