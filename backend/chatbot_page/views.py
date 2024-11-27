@@ -64,7 +64,7 @@ def chatbot_view(request):
                 },
                 *conversation_history  # Send the entire conversation history
             ],
-            model="llama3-8b-8192",
+            model="llama-3.2-1b-preview",
             max_tokens=520,
         )
 
