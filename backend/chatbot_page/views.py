@@ -65,7 +65,7 @@ def chatbot_view(request):
                 *conversation_history  # Send the entire conversation history
             ],
             model="llama-3.1-70b-versatile",
-            max_tokens=32768,
+            max_tokens=8000,
         )
 
         # Get chatbot response
