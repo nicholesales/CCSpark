@@ -62,7 +62,7 @@ const Chatbot = () => {
     const fetchInitialMessage = async () => {
       try {
         const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', { 
-          question: 'Introduce yourself. State your purpose on how you can help the user' 
+          question: 'Introduce yourself. make it short and concise.' 
         });
         
         const chatbotResponse = { 
