@@ -62,8 +62,7 @@ const Chatbot = () => {
     const fetchInitialMessage = async () => {
       try {
         const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', { 
-          question: 'Introduce yourself. make it short and concise.' 
-        });
+          question: 'Introduce yourself. make it short and concise. Also add this specific text in bold format: (Disclaimer: My answers may not be up-to-date with the latest information about the CCS Department.)'});
         
         const chatbotResponse = { 
           sender: 'bot', 
