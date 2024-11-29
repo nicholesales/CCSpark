@@ -274,6 +274,7 @@ function Admin({ handleLogout }) {
               <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
               <option value="CCS Student Orgs">CCS Student Orgs</option>
               <option value="CCS Events">CCS Events</option>
+              <option value="Frequently Asked Questions">FAQs</option>
             </select>
 
             <label htmlFor="question">Question</label>

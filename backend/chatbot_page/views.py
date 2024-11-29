@@ -23,20 +23,40 @@ groq_api_key = os.getenv('GROQ_API_KEY')
 groq_client = Groq(api_key=groq_api_key)
 
 # Fetch FAQs from MongoDB and format them
-def get_faq_data():
-    faqs = list(collection.find({}, {"_id": 0}))  # Exclude MongoDB's _id field
-    formatted_data = ""
+def get_faq_data(category=None):
+    query = {}
+    if category:
+        query['category'] = category  # Filter by category if provided
+
+    faqs = list(collection.find(query, {"_id": 0}))  # Exclude MongoDB's _id field
+    faq_data = []
     for faq in faqs:
         # Decrypt the question and answer before formatting
-        question = decrypt_data(faq['question'])  # Ensure question is encrypted in the database
-        answer = decrypt_data(faq['answer'])      # Ensure answer is encrypted in the database
+        question = decrypt_data(faq['question'])
+        answer = decrypt_data(faq['answer'])
         
-        formatted_data += f"Question: {question}\n"
-        formatted_data += f"Answer: {answer}\n\n"
-    return formatted_data
+        faq_data.append({
+            'question': question,
+            'answer': answer
+        })
+    return faq_data
 
 # Store conversation history
 conversation_history = []
+
+@api_view(['GET'])
+def fetch_faqs(request):
+    try:
+        category = request.GET.get('category', None)
+        
+        # Fetch and format FAQ data, filtering by category if provided
+        faqs = get_faq_data(category)
+        
+        # Return the FAQs in the form of a list, suitable for frontend
+        return Response({'faqs': faqs}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print("Error:", str(e))
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def chatbot_view(request):
@@ -50,7 +70,9 @@ def chatbot_view(request):
             return Response({'error': 'No question provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Get FAQ data from MongoDB
-        formatted_data = get_faq_data()
+        # Example: filter FAQs by a specific category (e.g., CCS Faculty-related queries)
+        category = request.data.get('category', None)
+        formatted_data = get_faq_data(category)
 
         # Append the user's message to the conversation history
         conversation_history.append({"role": "user", "content": question})
