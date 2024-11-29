@@ -51,12 +51,12 @@ const Chatbot = () => {
   const [conversation, setConversation] = useState([]);
   const [question, setQuestion] = useState('');
   const [error, setError] = useState('');
-  const [faqValue, setFaqValue] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [stream, setStream] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [placeholder, setPlaceholder] = useState('Ask a question...');  
+  const [placeholder, setPlaceholder] = useState('Ask a question...'); 
+  const [faqs, setFaqs] = useState([]); 
 
   useEffect(() => {
     const fetchInitialMessage = async () => {
@@ -83,15 +83,7 @@ const Chatbot = () => {
   
     fetchInitialMessage();
   }, []);
-
-  var faqs = [
-    <>What are the programs covered by the CCS Department?</>,
-    <></>,
-    <></>,
-    <></>,
-    <></>,
-    <></>
-  ]
+  
   const handleCheckboxChange = (event) => {
     // Collapse the sidebar if checked, expand if unchecked
     setIsCollapsed(event.target.checked);
@@ -296,113 +288,133 @@ const Chatbot = () => {
     }
   };
 
-  return (
-    <div className='full-container-chatbot'>
-      <div className='for-mobile-only '>
-        <div className="sidebar-container">
-          <div className='checkbox-container'>
-            <input
-              type="checkbox"
-              id="checkbox"
-              checked={isCollapsed}
-              onChange={handleCheckboxChange} />
-            <label htmlFor='checkbox' className='toggle'>
-              <div className='bars' id="bar1"></div>
-              <div className='bars' id="bar2"></div>
-              <div className='bars' id="bar3"></div>
-            </label>
+  // Add this updated effect and render logic:
+useEffect(() => {
+  const fetchFAQs = async () => {
+    try {
+      const res = await axios.get('http://127.0.0.1:8000/api/faqs/', {
+        params: { category: 'Frequently Asked Questions' }
+      });
+      const faqsData = res.data.faqs.map(faq => faq.question);
+      setFaqs(faqsData); // Dynamically set FAQs
+    } catch (err) {
+      console.error("Error fetching FAQs:", err);
+    }
+  };
+  fetchFAQs();
+}, []);
+console.log(faqs); // Add this to check if the data is present
+
+return (
+  <div className='full-container-chatbot'>
+    {/* Mobile Sidebar */}
+    <div className='for-mobile-only'>
+      <div className="sidebar-container">
+        <div className='checkbox-container'>
+          <input
+            type="checkbox"
+            id="checkbox"
+            checked={isCollapsed}
+            onChange={handleCheckboxChange} />
+          <label htmlFor='checkbox' className='toggle'>
+            <div className='bars' id="bar1"></div>
+            <div className='bars' id="bar2"></div>
+            <div className='bars' id="bar3"></div>
+          </label>
+        </div>
+        <div className={`sidebar ${!isCollapsed ? 'collapsed' : ''}`}>
+          <div className='faq-title-container'>
+            <div className='faq-title'>Frequently Asked Questions</div>
           </div>
-          <div className={`sidebar ${!isCollapsed ? 'collapsed' : ''}`}>
-            <div className='faq-title-container'>
-              <div className='faq-title'>Frequently Asked Questions</div>
-            </div>
-            <div className='faq-buttons'>
-              {[...Array(10)].map((_, index) => (
-                <input
-                  key={index}
-                  className='faq-button'
-                  type="button"
-                  value={`I Asked A FAQ ${index + 1} that is about something lorem ipsum dolor et `}
-                  onClick={() => faqButtonSubmit(`This is the question`)}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className='vic-logo-parent'>
-          <div className='vic-logo-container'>
-            <img className='icon vic-icon' src={chatIcon} />
-          </div>
-        </div>
-        <BackToLanding/>
-      </div>
-      <div className='faq-side-panel'>
-        <BackToLanding/>
-        <div className='vic-logo-container'>
-          <img className='vic-logo' src={chatIcon} alt='logo'>
-          </img>
-        </div>
-        <div className='faq-title-container'>
-          <div className='faq-title'>Frequently Asked Questions</div>
-        </div>
-        <div className='faq-buttons'>
-          {[...Array(10)].map((_, index) => (
-            <input
-              key={index}
-              className='faq-button'
-              type="button"
-              value={`I Asked FAQ ${index + 1} that is about something lorem ipsum dolor et `}
-              onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
-            />
-          ))}
-        </div>
-      </div>
-      <div className='parent-container-chatbot'>
-        <div className="chatbot-container">
-          <div className="chatbot-messages">
-            {conversation.map((message, index) => (
-              <div key={index} className={`${message.sender}-chat`}>
-                {message.sender === "bot" && <BotIconHandler sender={message.sender} />}
-                {message.sender === "user" && <UserIconHandler sender={message.sender} />}
-                <div className={`chatbot-message ${message.sender}`}>
-                <ReactMarkdown>{message.text}</ReactMarkdown>
-                </div>
-              </div>
+          <div className='faq-buttons'>
+            {faqs.map((faq, index) => (
+              <input
+                key={index}
+                className='faq-button'
+                type="button"
+                value={faq}
+                onClick={() => faqButtonSubmit(faq)}
+              />
             ))}
           </div>
-
-          <form onSubmit={handleSubmit} className="chatbot-input-container">
-            <textarea
-              value={question}
-              rows={1}
-              onChange={(e) => { setQuestion(e.target.value); setError("") }}
-              placeholder={placeholder}
-              className="chatbot-input"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault(); // Prevent the default behavior of adding a new line
-                  handleSubmit(e); // Call the submit handler
-                }
-              }}
-            />
-            <button
-              type="button"
-              onClick={toggleRecording}
-              className={`chatbot-mic-button ${isRecording ? 'recording' : ''}`}
-            >
-              <MicIcon color={isRecording ? 'red' : 'black'} />
-            </button>
-            <button type="submit" className="chatbot-submit">
-              <img className='send-logo' src={sendIcon} alt='send-icon'>
-              </img>
-            </button>
-          </form>
-
-          {error && <div className="chatbot-error">{error}</div>}
         </div>
       </div>
+      <div className='vic-logo-parent'>
+        <div className='vic-logo-container'>
+          <img className='icon vic-icon' src={chatIcon} alt='Chat Icon' />
+        </div>
+      </div>
+      <BackToLanding />
     </div>
-  );
-};
+
+    {/* Web Sidebar */}
+    <div className='faq-side-panel'>
+      <BackToLanding />
+      <div className='vic-logo-container'>
+        <img className='vic-logo' src={chatIcon} alt='logo' />
+      </div>
+      <div className='faq-title-container'>
+        <div className='faq-title'>Frequently Asked Questions</div>
+      </div>
+      <div className='faq-buttons'>
+        {faqs.map((faq, index) => (
+          <input
+            key={index}
+            className='faq-button'
+            type="button"
+            value={faq}
+            onClick={() => faqButtonSubmit(faq)}
+          />
+        ))}
+      </div>
+    </div>
+
+    {/* Main Chatbot Container */}
+    <div className='parent-container-chatbot'>
+      <div className="chatbot-container">
+        <div className="chatbot-messages">
+          {conversation.map((message, index) => (
+            <div key={index} className={`${message.sender}-chat`}>
+              {message.sender === "bot" && <BotIconHandler sender={message.sender} />}
+              {message.sender === "user" && <UserIconHandler sender={message.sender} />}
+              <div className={`chatbot-message ${message.sender}`}>
+                <ReactMarkdown>{message.text}</ReactMarkdown>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <form onSubmit={handleSubmit} className="chatbot-input-container">
+          <textarea
+            value={question}
+            rows={1}
+            onChange={(e) => { setQuestion(e.target.value); setError("") }}
+            placeholder={placeholder}
+            className="chatbot-input"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent the default behavior of adding a new line
+                handleSubmit(e); // Call the submit handler
+              }
+            }}
+          />
+          <button
+            type="button"
+            onClick={toggleRecording}
+            className={`chatbot-mic-button ${isRecording ? 'recording' : ''}`}
+          >
+            <MicIcon color={isRecording ? 'red' : 'black'} />
+          </button>
+          <button type="submit" className="chatbot-submit">
+            <img className='send-logo' src={sendIcon} alt='send-icon' />
+          </button>
+        </form>
+
+        {error && <div className="chatbot-error">{error}</div>}
+      </div>
+    </div>
+  </div>
+);
+}
 
 export default Chatbot;
