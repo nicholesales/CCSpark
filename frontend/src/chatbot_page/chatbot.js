@@ -52,6 +52,7 @@ const Chatbot = () => {
   const [internalContext, setInternalContext] = useState([]); // For bot context
   const [question, setQuestion] = useState('');
   const [error, setError] = useState('');
+  const [faqs, setFaqs] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [stream, setStream] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -59,7 +60,6 @@ const Chatbot = () => {
   const [placeholder, setPlaceholder] = useState('Ask a question...');
   const chatbotMessagesRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const [faqs, setFaqs] = useState([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -95,15 +95,6 @@ const Chatbot = () => {
 
     fetchInitialMessage();
   }, []);
-
-  faqs = [
-    <>What are the programs covered by the CCS Department?</>,
-    <></>,
-    <></>,
-    <></>,
-    <></>,
-    <></>
-  ]
 
   const handleCheckboxChange = (event) => {
     // Collapse the sidebar if checked, expand if unchecked
@@ -370,8 +361,7 @@ const Chatbot = () => {
 
   return (
     <div className='full-container-chatbot'>
-      {/* Mobile Sidebar */}
-      <div className='for-mobile-only'>
+      <div className='for-mobile-only '>
         <div className="sidebar-container">
           <div className='checkbox-container'>
             <input
@@ -389,109 +379,47 @@ const Chatbot = () => {
             <div className='faq-title-container'>
               <div className='faq-title'>Frequently Asked Questions</div>
             </div>
-            <div className={`sidebar ${!isCollapsed ? 'collapsed' : ''}`}>
-              <div className='faq-title-container'>
-                <div className='faq-title'>Frequently Asked Questions</div>
-              </div>
-              <div className='faq-buttons'>
-                {[...Array(10)].map((_, index) => (
-                  <input
-                    key={index}
-                    className='faq-button'
-                    type="button"
-                    value={`I Asked A FAQ ${index + 1} that is about something lorem ipsum dolor et `}
-                    onClick={() => faqButtonSubmit(`This is the question`)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className='vic-logo-parent'>
-            <div className='vic-logo-container'>
-              <img className='icon vic-icon' src={chatIcon} />
-            </div>
-          </div>
-          <BackToLanding />
-        </div>
-        <div className='faq-side-panel'>
-          <BackToLanding />
-          <div className='vic-logo-container'>
-            <img className='vic-logo' src={chatIcon} alt='logo'>
-            </img>
-          </div>
-          <div className='faq-title-container'>
-            <div className='faq-title'>Frequently Asked Questions</div>
-          </div>
-          <div className='faq-buttons'>
-            {[...Array(10)].map((_, index) => (
-              <input
-                key={index}
-                className='faq-button'
-                type="button"
-                value={`I Asked FAQ ${index + 1} that is about something lorem ipsum dolor et `}
-                onClick={() => faqButtonSubmit(`What is the ${index + 1}${index === 0 ? 'st' : index === 1 ? 'nd' : index === 2 ? 'rd' : 'th'} most frequent asked question?`)}
-              />
-            ))}
-          </div>
-        </div>
-        <div className='parent-container-chatbot'>
-          <div className="chatbot-container">
-            <div className="chatbot-messages">
-              {conversation.map((message, index) => (
-                <div key={index} className={`${message.sender}-chat`}>
-                  {message.sender === "bot" && <BotIconHandler sender={message.sender} />}
-                  {message.sender === "user" && <UserIconHandler sender={message.sender} />}
-                  <div className={`chatbot-message ${message.sender}`}>
-                    <ReactMarkdown>{message.text}</ReactMarkdown>
-                  </div>
-                </div>
+            <div className='faq-buttons'>
+              {faqs.map((faq, index) => (
+                <input
+                  key={index}
+                  className='faq-button'
+                  type="button"
+                  value={faq}
+                  onClick={() => faqButtonSubmit(faq)}
+                />
               ))}
-              <div className='faq-buttons'>
-                {faqs.map((faq, index) => (
-                  <input
-                    key={index}
-                    className='faq-button'
-                    type="button"
-                    value={faq}
-                    onClick={() => faqButtonSubmit(faq)}
-                  />
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
             </div>
           </div>
         </div>
         <div className='vic-logo-parent'>
           <div className='vic-logo-container'>
-            <img className='icon vic-icon' src={chatIcon} alt='Chat Icon' />
+            <img className='icon vic-icon' src={chatIcon} />
           </div>
         </div>
         <BackToLanding />
       </div>
-
-      {/* Web Sidebar */}
       <div className='faq-side-panel'>
         <BackToLanding />
         <div className='vic-logo-container'>
-          <img className='vic-logo' src={chatIcon} alt='logo' />
+          <img className='vic-logo' src={chatIcon} alt='logo'>
+          </img>
         </div>
         <div className='faq-title-container'>
           <div className='faq-title'>Frequently Asked Questions</div>
         </div>
         <div className='faq-buttons'>
           {faqs.map((faq, index) => (
-            <input
-              key={index}
-              className='faq-button'
-              type="button"
-              value={faq}
-              onClick={() => faqButtonSubmit(faq)}
-            />
-          ))}
+              <input
+                key={index}
+                className='faq-button'
+                type="button"
+                value={faq}
+                onClick={() => faqButtonSubmit(faq)}
+              />
+            ))}
         </div>
       </div>
-
-      {/* Main Chatbot Container */}
       <div className='parent-container-chatbot'>
         <div className="chatbot-container">
           <div className="chatbot-messages">
@@ -504,6 +432,7 @@ const Chatbot = () => {
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           <form onSubmit={handleSubmit} className="chatbot-input-container">
@@ -528,7 +457,8 @@ const Chatbot = () => {
               <MicIcon color={isRecording ? 'red' : 'black'} />
             </button>
             <button type="submit" className="chatbot-submit">
-              <img className='send-logo' src={sendIcon} alt='send-icon' />
+              <img className='send-logo' src={sendIcon} alt='send-icon'>
+              </img>
             </button>
           </form>
 
@@ -537,6 +467,6 @@ const Chatbot = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Chatbot;
