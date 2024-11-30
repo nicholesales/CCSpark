@@ -9,6 +9,8 @@ import './sidebar.css'; // Import CSS for styling
 import ReactMarkdown from 'react-markdown';
 
 const GOOGLE_SPEECH_API_KEY = process.env.REACT_APP_GOOGLE_SPEECH_API_KEY; // Load API key from .env
+const API_CHATBOT = "http://127.0.0.1:8000/api/chatbot/";
+const API_FAQS = "http://127.0.0.1:8000/api/faqs/";
 
 function UserIconHandler({ sender }) {
   return (
@@ -72,8 +74,8 @@ const Chatbot = () => {
   useEffect(() => {
     const fetchInitialMessage = async () => {
       try {
-        const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', {
-          question: 'Introduce yourself. make it short and concise.'
+        const res = await axios.post(API_CHATBOT, {
+          question: 'Introduce yourself. make it short and concise but informative.'
         });
 
         const chatbotResponse = {
