@@ -9,8 +9,11 @@ import './sidebar.css'; // Import CSS for styling
 import ReactMarkdown from 'react-markdown';
 
 const GOOGLE_SPEECH_API_KEY = process.env.REACT_APP_GOOGLE_SPEECH_API_KEY; // Load API key from .env
-const API_CHATBOT = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/chatbot/";
-const API_FAQS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/faqs/";
+const API_CHATBOT = "http://127.0.0.1:8000/api/chatbot/";
+const API_FAQS = "http://127.0.0.1:8000/api/faqs/";
+
+// const API_CHATBOT = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/chatbot/";
+// const API_FAQS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/faqs/";
 
 function UserIconHandler({ sender }) {
   return (
