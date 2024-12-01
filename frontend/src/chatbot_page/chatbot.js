@@ -8,7 +8,7 @@ import sendIcon from "./icons/send.png";
 import './sidebar.css'; // Import CSS for styling
 import ReactMarkdown from 'react-markdown';
 
-const GOOGLE_SPEECH_API_KEY = process.env.REACT_APP_GOOGLE_SPEECH_API_KEY; // Load API key from .env
+const GOOGLE_SPEECH_API_KEY = ''; // Load API key 
 const API_CHATBOT = "http://127.0.0.1:8000/api/chatbot/";
 const API_FAQS = "http://127.0.0.1:8000/api/faqs/";
 
