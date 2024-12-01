@@ -7,21 +7,25 @@ function Admin({ handleLogout }) {
 
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [appliedFilter, setAppliedFilter] = useState('all');
-  
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false); // State to control visibility of the edit form
   const [newQuestion, setNewQuestion] = useState('');
   const [newAnswer, setNewAnswer] = useState('');
-  const [newCategory, setNewCategory] = useState('CCS Faculty-related Queries'); 
+  const [newCategory, setNewCategory] = useState('CCS Faculty-related Queries');
   const [editingQueryId, setEditingQueryId] = useState(null); // Track the ID of the query being edited
   const [queries, setQueries] = useState([]);
+
+  // const API_QUERY = "http://127.0.0.1:8000/api/queries/";
+
+  const API_QUERY = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/";
 
   useEffect(() => {
     fetchQueries();
   }, []);
 
   const fetchQueries = async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/queries/'); // Adjust according to your Django server
+    const response = await fetch(API_QUERY); // Adjust according to your Django server
     const data = await response.json();
     setQueries(data);
   };
@@ -43,7 +47,7 @@ function Admin({ handleLogout }) {
         answer: newAnswer,
       };
 
-      await fetch('http://127.0.0.1:8000/api/queries/add/', {
+      await fetch(API_QUERY + 'add/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,13 +58,13 @@ function Admin({ handleLogout }) {
       setQueries([...queries, newQuery]);
       setNewQuestion('');
       setNewAnswer('');
-      setNewCategory('CCS Faculty-related Queries'); 
-      setShowAddForm(false); 
+      setNewCategory('CCS Faculty-related Queries');
+      setShowAddForm(false);
     }
   };
 
   const deleteQuery = async (queryId) => {
-    const response = await fetch(`http://127.0.0.1:8000/api/queries/delete/${queryId}/`, {
+    const response = await fetch(API_QUERY + `delete/${queryId}/`, {
       method: 'DELETE',
     });
 
@@ -90,15 +94,15 @@ function Admin({ handleLogout }) {
           answer: newAnswer,
           category: newCategory,
         };
-  
-        const response = await fetch(`http://127.0.0.1:8000/api/queries/edit/${editingQueryId}/`, {
+
+        const response = await fetch(API_QUERY+ `edit/${editingQueryId}/`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(updatedQuery),
         });
-  
+
         const result = await response.json(); // Parse response for error handling
         if (response.ok) {
           setQueries(queries.map(query => (query._id === editingQueryId ? { ...query, ...updatedQuery } : query)));
@@ -116,7 +120,7 @@ function Admin({ handleLogout }) {
       alert("Editing query ID is not set. Please select a query to edit.");
     }
   };
-  
+
   const groupedQueries = appliedFilter === 'all'
     ? queries
     : queries.filter(query => query.category === appliedFilter);
@@ -132,7 +136,7 @@ function Admin({ handleLogout }) {
   return (
     <div className="admin-container">
       <nav className="navbar">
-      <span className="welcome-message">Welcome, Admin</span>
+        <span className="welcome-message">Welcome, Admin</span>
         <div className="navbar-brand">CCSpark</div>
         <button className="logout-btn" onClick={logout}>LOG OUT</button>
       </nav>
@@ -238,7 +242,7 @@ function Admin({ handleLogout }) {
               <option value="CCS Events">CCS Events</option>
               <option value="Frequently Asked Questions">FAQs</option>
             </select>
-            
+
             <label htmlFor="question">Question</label>
             <input
               id="question"
@@ -247,7 +251,7 @@ function Admin({ handleLogout }) {
               onChange={(e) => setNewQuestion(e.target.value)}
               placeholder="Enter your question"
             />
-            
+
             <label htmlFor="answer">Answer</label>
             <input
               id="answer"
@@ -256,7 +260,7 @@ function Admin({ handleLogout }) {
               onChange={(e) => setNewAnswer(e.target.value)}
               placeholder="Enter the answer"
             />
-            
+
             <button className="save-btn" onClick={addQuestion}>Save</button>
             <button className="cancel-btn" onClick={() => setShowAddForm(false)}>Cancel</button>
           </div>
