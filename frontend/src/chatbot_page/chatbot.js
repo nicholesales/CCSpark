@@ -126,7 +126,7 @@ const Chatbot = () => {
         ? [...internalContext.slice(-5), userMessage] // Last 5 messages from internal context
         : [...conversation.slice(-10), userMessage];  // Last 10 messages from full conversation
 
-      const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', {
+      const res = await axios.post(API_CHATBOT, {
         question,
         context: contextToUse
       }, {
@@ -159,7 +159,7 @@ const Chatbot = () => {
         ? [...internalContext, userMessage]
         : [...conversation, userMessage];
 
-      const res = await axios.post('http://127.0.0.1:8000/api/chatbot/', {
+      const res = await axios.post(API_CHATBOT, {
         question: predefinedQuestion,
         context: contextToUse
       });
@@ -174,7 +174,7 @@ const Chatbot = () => {
           .map(msg => `${msg.sender}: ${msg.text}`)
           .join('\n');
 
-        const summaryRes = await axios.post('http://127.0.0.1:8000/api/chatbot/', {
+        const summaryRes = await axios.post(API_CHATBOT, {
           question: `Please summarize this conversation concisely, preserving key points: ${conversationText}`
         });
 
@@ -348,7 +348,7 @@ const Chatbot = () => {
   useEffect(() => {
     const fetchFAQs = async () => {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/faqs/', {
+        const res = await axios.get(API_FAQS, {
           params: { category: 'Frequently Asked Questions' }
         });
         const faqsData = res.data.faqs.map(faq => faq.question);
