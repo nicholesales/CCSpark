@@ -14,7 +14,48 @@ environ.Env.read_env()  # Read the .env file
 client = pymongo.MongoClient(settings.MONGODB_URI)
 db = client['chatbot']
 collection = db['faqs']
+user_queries_collection = db['user_queries']
 
+@csrf_exempt
+def get_user_queries(request):
+    if request.method == 'GET':
+        queries = list(user_queries_collection.find())
+        for query in queries:
+            query['_id'] = str(query['_id'])
+        return JsonResponse(queries, safe=False)
+
+@csrf_exempt
+def delete_user_query(request, query_id):
+    if request.method == 'DELETE':
+        result = user_queries_collection.delete_one({'_id': ObjectId(query_id)})
+        if result.deleted_count == 1:
+            return JsonResponse({'status': 'success'}, status=200)
+        return JsonResponse({'status': 'failed'}, status=404)
+
+@csrf_exempt
+def edit_user_query(request, query_id):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            print('Received data:', data)  # Debug log
+            print('Category received:', data.get('category'))  # Debug log
+            
+            # Define a default category if not provided
+            update_data = {
+                'question': data['question'],
+                'answer': data['answer'], 
+                'status': data.get('status', 'answered'),  # Default to 'answered'
+                'category': data['category']
+            }
+            
+            user_queries_collection.update_one(
+                {'_id': ObjectId(query_id)},
+                {'$set': update_data}
+            )
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
 @csrf_exempt
 def get_queries(request):
     if request.method == 'GET':

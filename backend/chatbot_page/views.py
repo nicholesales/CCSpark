@@ -17,6 +17,7 @@ from admin_page.utils import decrypt_data  # Adjust the import path as needed
 client = pymongo.MongoClient(settings.MONGODB_URI)
 db = client['chatbot']
 collection = db['faqs']
+user_queries_collection = db['user_queries']  # New collection for user inputs
 
 # Groq API Setup
 groq_api_key = os.getenv('GROQ_API_KEY')
@@ -63,19 +64,20 @@ def chatbot_view(request):
     global conversation_history
 
     try:
-        # Get user question from the request
+        # Get user question and message type from the request
         question = request.data.get('question', None)
+        is_user_message = request.data.get('is_user_message', True)  # New flag to indicate message type
+
         if not question:
             print("No question provided")
             return Response({'error': 'No question provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get FAQ data from MongoDB
-        # Example: filter FAQs by a specific category (e.g., CCS Faculty-related queries)
-        #category = request.data.get('category', None)
-        #formatted_data = get_faq_data(category)
-        faq_data = get_faq_data()
+        # Save only user queries to the `user_queries` collection
+        if is_user_message:
+            user_queries_collection.insert_one({'question': question, 'status': 'unanswered'})
 
-        
+        # Get FAQ data from MongoDB
+        faq_data = get_faq_data()
 
         # Append the user's message to the conversation history
         conversation_history.append({"role": "user", "content": question})
@@ -89,7 +91,7 @@ def chatbot_view(request):
                 },
                 *conversation_history  # Send the entire conversation history
             ],
-            model="llama3-70b-8192",
+            model="llama3-8b-8192",
             max_tokens=520,
         )
 

@@ -15,10 +15,27 @@ function Admin({ handleLogout }) {
   const [newCategory, setNewCategory] = useState('CCS Faculty-related Queries');
   const [editingQueryId, setEditingQueryId] = useState(null); // Track the ID of the query being edited
   const [queries, setQueries] = useState([]);
+  const [activeTab, setActiveTab] = useState('faqs');
+  const [userQueries, setUserQueries] = useState([]);
+  
+  const API_USER_QUERIES = "http://127.0.0.1:8000/api/user-queries/";
+  const API_QUERY = "http://127.0.0.1:8000/api/queries/";
 
-  // const API_QUERY = "http://127.0.0.1:8000/api/queries/";
+ // const API_QUERY = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/";
 
-  const API_QUERY = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/";
+const fetchUserQueries = async () => {
+  const response = await fetch(API_USER_QUERIES);
+  const data = await response.json();
+  setUserQueries(data);
+};
+
+useEffect(() => {
+  if (activeTab === 'faqs') {
+    fetchQueries();
+  } else {
+    fetchUserQueries();
+  }
+}, [activeTab]);
 
   useEffect(() => {
     fetchQueries();
@@ -28,6 +45,60 @@ function Admin({ handleLogout }) {
     const response = await fetch(API_QUERY); // Adjust according to your Django server
     const data = await response.json();
     setQueries(data);
+  };
+
+  const promoteToFAQ = async (query) => {
+    try {
+      // First add to FAQs
+      const newFAQ = {
+        question: query.question,
+        answer: query.answer,
+        category: query.category
+      };
+  
+      const addResponse = await fetch(API_QUERY + 'add/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newFAQ)
+      });
+  
+      if (!addResponse.ok) {
+        throw new Error('Failed to add to FAQs');
+      }
+  
+      // Then delete from user queries
+      const deleteResponse = await fetch(API_USER_QUERIES + `delete/${query._id}/`, {
+        method: 'DELETE'
+      });
+  
+      if (!deleteResponse.ok) {
+        throw new Error('Failed to delete user query');
+      }
+  
+      // Update both states
+      await fetchQueries(); // Refresh FAQs
+      setUserQueries(userQueries.filter(q => q._id !== query._id)); // Update user queries state
+  
+      alert('Query has been successfully promoted to FAQ!');
+    } catch (error) {
+      console.error('Error promoting query:', error);
+      alert('Failed to promote query: ' + error.message);
+    }
+  };
+
+  const deleteUserQuery = async (queryId) => {
+    const response = await fetch(API_USER_QUERIES + `delete/${queryId}/`, {
+      method: 'DELETE',
+    });
+  
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Error deleting query:', error);
+      alert("Failed to delete user query.");
+    } else {
+      setUserQueries(userQueries.filter(query => query._id !== queryId));
+      alert("User query deleted successfully.");
+    }
   };
 
   const logout = () => {
@@ -78,42 +149,91 @@ function Admin({ handleLogout }) {
     }
   };
 
+
   const handleEditClick = (query) => {
     setEditingQueryId(query._id);
     setNewQuestion(query.question);
-    setNewAnswer(query.answer);
-    setNewCategory(query.category);
+    setNewAnswer(query.answer)
+    setNewCategory(query.category || 'CCS Faculty-related Queries'); // Default category for promoted queries
     setShowEditForm(true); // Show the edit form
   };
 
   const updateQuestion = async () => {
-    if (editingQueryId) { // Check if editingQueryId is valid
+    
+    if (editingQueryId) {
       if (newQuestion.trim() !== '' && newAnswer.trim() !== '') {
+
+        // Ensure category has a default if somehow undefined
+      const category = newCategory || 'CCS Faculty-related Queries';
+
         const updatedQuery = {
           question: newQuestion,
           answer: newAnswer,
           category: newCategory,
         };
-
-        const response = await fetch(API_QUERY+ `edit/${editingQueryId}/`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedQuery),
-        });
-
-        const result = await response.json(); // Parse response for error handling
-        if (response.ok) {
-          setQueries(queries.map(query => (query._id === editingQueryId ? { ...query, ...updatedQuery } : query)));
-          setShowEditForm(false); // Hide the edit form
-          // Reset the input fields
-          setNewQuestion('');
-          setNewAnswer('');
-          setNewCategory('CCS Faculty-related Queries');
-        } else {
-          console.error('Update failed:', result); // Log error message for debugging
-          alert(`Failed to update the query: ${result.message || 'Unknown error'}`);
+        console.log('Category being sent:', category); // Debug log
+        console.log('Full update data:', updatedQuery); // Debug log
+        try {
+          const endpoint = activeTab === 'queries' 
+            ? `${API_USER_QUERIES}edit/${editingQueryId}/`
+            : `${API_QUERY}edit/${editingQueryId}/`;
+  
+          console.log('Sending update request:', {
+            endpoint,
+            queryId: editingQueryId,
+            data: updatedQuery
+          });
+  
+          const response = await fetch(endpoint, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedQuery),
+          });
+  
+          // Log the full response for debugging
+          const responseBody = await response.text();
+          console.log('Response status:', response.status);
+          console.log('Response body:', responseBody);
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}, body: ${responseBody}`);
+          }
+  
+          const result = await JSON.parse(responseBody);
+  
+          if (result.status === 'success') {
+            if (activeTab === 'queries') {
+              setUserQueries(userQueries.map(query => 
+                query._id === editingQueryId 
+                  ? { 
+                      ...query, 
+                      ...updatedQuery,
+                     status: 'answered'
+                    }
+                  : query
+              ));
+            } else {
+              setQueries(queries.map(query => 
+                query._id === editingQueryId 
+                  ? { ...query, ...updatedQuery }
+                  : query
+              ));
+            }
+            
+            setShowEditForm(false);
+            setNewQuestion('');
+            setNewAnswer('');
+            setNewCategory('CCS Faculty-related Queries');
+            alert('Query updated successfully!');
+          } else {
+            console.error('Update failed:', result);
+            alert(`Failed to update the query: ${result.message || 'Unknown error'}`);
+          }
+        } catch (error) {
+          console.error('Error updating query:', error);
+          alert(`Failed to update the query: ${error.message}`);
         }
       }
     } else {
@@ -138,6 +258,10 @@ function Admin({ handleLogout }) {
       <nav className="navbar">
         <span className="welcome-message">Welcome, Admin</span>
         <div className="navbar-brand">CCSpark</div>
+      <div className="nav-buttons">
+        <button className={`nav-btn ${activeTab === 'faqs' ? 'active' : ''}`} onClick={() => setActiveTab('faqs')}>FAQs</button>
+        <button className={`nav-btn ${activeTab === 'queries' ? 'active' : ''}`} onClick={() => setActiveTab('queries')}>User Queries</button>
+      </div>
         <button className="logout-btn" onClick={logout}>LOG OUT</button>
       </nav>
 
@@ -205,26 +329,59 @@ function Admin({ handleLogout }) {
         </aside>
 
         <main className="filter-results">
-          {Object.keys(groupedByCategory).length === 0 ? (
-            <p>No queries found.</p>
-          ) : (
-            Object.keys(groupedByCategory).map(category => (
-              <div key={category} className="query-section">
-                <div className="query-category">{category}</div>
-                {groupedByCategory[category].map(query => (
-                  <div key={query._id} className="query-box">
-                    <p><strong>Q:</strong> {query.question}</p>
-                    <p><strong>A:</strong> {query.answer}</p>
-                    <div className="action-buttons">
-                      <button className="edit-btn" onClick={() => handleEditClick(query)}>Edit</button>
-                      <button className="delete-btn" onClick={() => deleteQuery(query._id)}>Delete</button>
-                    </div>
-                  </div>
-                ))}
+  {activeTab === 'faqs' ? (
+    // FAQ content
+    Object.keys(groupedByCategory).length === 0 ? (
+      <p>No FAQs found.</p>
+    ) : (
+      Object.keys(groupedByCategory).map(category => (
+        <div key={category} className="query-section">
+          <div className="query-category">{category}</div>
+          {groupedByCategory[category].map(query => (
+            <div key={query._id} className="query-box">
+              <p><strong>Q:</strong> {query.question}</p>
+              <p><strong>A:</strong> {query.answer}</p>
+              <div className="action-buttons">
+                <button className="edit-btn" onClick={() => handleEditClick(query)}>Edit</button>
+                <button className="delete-btn" onClick={() => deleteQuery(query._id)}>Delete</button>
               </div>
-            ))
-          )}
-        </main>
+            </div>
+          ))}
+        </div>
+      ))
+    )
+  ) : (
+    // User queries content
+<div>
+  {userQueries.length === 0 ? (
+    <p>No user queries found.</p>
+  ) : (
+    <div className="query-section">
+      <div className="query-category">User Queries</div>
+      {userQueries.map(query => (
+        <div key={query._id} className="query-box">
+          <p><strong>Question:</strong> {query.question}</p>
+          <p><strong>Answer:</strong> {query.answer}</p>
+          <p><strong>Category:</strong> {query.category}</p>
+          <p><strong>Status:</strong> {query.status}</p>
+          <div className="action-buttons">
+            <button className="promote-btn" onClick={() => promoteToFAQ(query)}>
+              Promote to FAQ
+            </button>
+            <button className="edit-btn" onClick={() => handleEditClick(query)}>
+              Edit
+            </button>
+            <button className="delete-btn" onClick={() => deleteUserQuery(query._id)}>
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+  )}
+  </main>
 
         <button className="add-question-btn" onClick={() => setShowAddForm(true)}>+</button>
 

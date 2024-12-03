@@ -77,27 +77,27 @@ const Chatbot = () => {
   useEffect(() => {
     const fetchInitialMessage = async () => {
       try {
-        const res = await axios.post(API_CHATBOT, {
-          question: 'Introduce yourself. make it short and concise but informative.'
-        });
-
-        const chatbotResponse = {
-          sender: 'bot',
-          text: res.data.response
-        };
-
-        setConversation([chatbotResponse]);
+          const res = await axios.post(API_CHATBOT, {
+              question: 'Introduce yourself. make it short and concise but informative.',
+              is_initial_message: true, // New flag
+              is_user_message: false
+          });
+  
+          const chatbotResponse = {
+              sender: 'bot',
+              text: res.data.response
+          };
+  
+          setConversation([chatbotResponse]);
       } catch (err) {
-        console.error(err);
-        // Fallback to a default message if API call fails
-        const defaultMessage = {
-          sender: 'bot',
-          text: 'Hello! I am V.I.C, your virtual chatbot assistant. How can I help you today?'
-        };
-        setConversation([defaultMessage]);
+          console.error(err);
+          const defaultMessage = {
+              sender: 'bot',
+              text: 'Hello! I am V.I.C, your virtual chatbot assistant. How can I help you today?'
+          };
+          setConversation([defaultMessage]);
       }
-    };
-
+  };
     fetchInitialMessage();
   }, []);
 
