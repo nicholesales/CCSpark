@@ -9,4 +9,7 @@ urlpatterns = [
     path('user-queries/', views.get_user_queries, name='get_user_queries'),
     path('user-queries/delete/<str:query_id>/', views.delete_user_query, name='delete_user_query'),
     path('user-queries/edit/<str:query_id>/', views.edit_user_query, name='edit_user_query'),
+    path('panoramics/add/', views.add_panoramics, name='add_panoramics'),
+    path('panoramics/', views.get_panoramics, name='get_panoramics'),
+    path('panoramics/delete/<str:panoramic_id>/', views.delete_panoramics, name='delete_panoramic'),
 ]

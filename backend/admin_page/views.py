@@ -15,6 +15,7 @@ client = pymongo.MongoClient(settings.MONGODB_URI)
 db = client['chatbot']
 collection = db['faqs']
 user_queries_collection = db['user_queries']
+panoramics_collection = db["panoramics"]
 
 @csrf_exempt
 def get_user_queries(request):
@@ -68,6 +69,34 @@ def get_queries(request):
             # Ensure category is passed as it is (not encrypted)
             query['category'] = query.get('category', 'No Category Specified')
         return JsonResponse(queries, safe=False)
+
+@csrf_exempt
+def add_panoramics(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        panoramics_collection.insert_one({
+            'filename': data['fileName'],
+            's3url': data['s3Url'],
+            'uploaddate': data['uploadDate']
+        })
+    return JsonResponse({'status': 'success'})
+
+@csrf_exempt
+def get_panoramics(request):
+    if request.method == 'GET':
+        queries = list(panoramics_collection.find())
+        for query in queries:
+            query['_id'] = str(query['_id'])  # Convert ObjectId to string
+        return JsonResponse(queries, safe=False)
+    return
+
+@csrf_exempt
+def delete_panoramics(request, panoramic_id):
+    if request.method == 'DELETE':
+        result = panoramics_collection.delete_one({'_id', ObjectId(panoramic_id)})
+        if result.deleted_count == 1:
+            return JsonResponse({"status": "success"}, status=200)
+    return JsonResponse({'status': 'failed'}, status=404)
 
 @csrf_exempt
 def add_query(request):

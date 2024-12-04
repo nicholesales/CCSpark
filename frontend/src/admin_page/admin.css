@@ -194,17 +194,47 @@ body {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #28a745;
-  color: white;
+  background-color: #d4f348;
+  color: rgb(0, 0, 0);
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 50%;
+  font-size: 30px;
+}
+
+.add-image-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 100px;
+  background-color: #d4f348;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 500px;
   font-size: 20px;
+  
+}
+
+.upload-image-icon {
+  height: auto;
+  width: 30px;
+}
+
+.panoramic-item {
+  background-color: #8cc9f1;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.panoramic-image {
+  width: 80%;
 }
 
 .add-question-form,
-.edit-question-form {
+.edit-question-form, .upload-image-form {
   position: fixed;
   bottom: 80px;
   right: 20px;
