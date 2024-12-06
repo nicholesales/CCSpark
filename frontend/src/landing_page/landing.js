@@ -5,19 +5,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import './landing.css';
-import image1 from './assets/roomThumbnail/comp_lab_thumbnail.png';
-import image2 from "./assets/roomThumbnail/dept_thumbnail.png";
-import image3 from "./assets/roomThumbnail/maclab_thumbnail.png";
-import image4 from "./assets/roomThumbnail/oracle_thumbnail.png";
-import image5 from "./assets/roomThumbnail/lecture_thumbnail.png";
 import logo from "./assets/CCSpark-logo.png";
 import panorama1 from "./assets/cylindricalPhotos/comp_lab_smaller.png";
-import panorama2 from "./assets/cylindricalPhotos/dept_smaller.png";
-import panorama3 from "./assets/cylindricalPhotos/mac_lab_smaller.png";
-import panorama4 from "./assets/cylindricalPhotos/oracle_room_smaller.png";
-import panorama5 from "./assets/cylindricalPhotos/lecture_room_smaller.png";
+import { set } from "mongoose";
 
 const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
+
+const API_PANORAMICS = "http://127.0.0.1:8000/api/panoramics/";
+
+//  const API_PANORAMICS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/panoramics/";
 
 const FontSizeContext = createContext();
 
@@ -57,7 +53,6 @@ const useFontSize = () => {
     return useContext(FontSizeContext);
 };
 
-
 function TopDiv() {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -92,38 +87,29 @@ function TopDiv() {
 }
 
 function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive, isSpeaking }) {
+    console.log(`Thumbnail URL for ${roomname}:`, thumbnailURL); // Debug log
     return (
-        <>
-            <div
-                className={amIActive ? "col thumbnail active-thumbnail" : "col thumbnail hoverable"}
-                style={{ backgroundImage: `url(${thumbnailURL})` }}
-                onClick={changePanorama}
-                id={divID}
-            >
-                <div className="thumbnail-desc">
-                    {roomname}
-                    {isSpeaking && (
-                        <FontAwesomeIcon
-                            icon={faVolumeUp}
-                            className="speaker-icon ml-2"
-                            style={{ marginLeft: '8px' }}
-                        />
-                    )}
-                </div>
+        <div
+            className={amIActive ? "col thumbnail active-thumbnail" : "col thumbnail hoverable"}
+            style={{ backgroundImage: `url(${thumbnailURL})` }}
+            onClick={changePanorama}
+            id={divID}
+        >
+            <div className="thumbnail-desc">
+                {roomname}
+                {isSpeaking && (
+                    <FontAwesomeIcon
+                        icon={faVolumeUp}
+                        className="speaker-icon ml-2"
+                        style={{ marginLeft: '8px' }}
+                    />
+                )}
             </div>
-        </>
+        </div>
     );
 }
 
 function RoomGrid() {
-    const roomnames = [
-        <><strong>Computer Laboratory</strong></>,
-        <><strong>CCS Department</strong></>,
-        <><strong>MAC Laboratory</strong></>,
-        <><strong>Oracle Laboratory</strong></>,
-        <><strong>Lecture Room</strong></>
-    ];
-
     const locations = [
         ["A205", "A206", "A207"],
         ["2nd Floor Arlegui Bldg."],
@@ -140,8 +126,7 @@ function RoomGrid() {
         <>The <strong>Lecture Room</strong> is a <strong>well-equipped educational space</strong> designed for up to <strong>40 students</strong>, with additional <strong>auxiliary seating</strong> for special sessions. Each room includes a <strong>wall-mounted whiteboard</strong> and a <strong>ceiling-mounted projector screen</strong> for versatile instruction. Dual <strong>air-conditioning units</strong> ensure a comfortable environment during standard 2-hour sessions. To block sunlight from outside, windows are fitted with a <strong>tarpaulin cover</strong>. The <strong>organized seating</strong> provides clear sightlines, ideal for both traditional lectures and multimedia presentations.</>
     ];
 
-    const [imageSource, setImageSource] = useState(panorama1);
-    const [roomName, setRoomName] = useState(roomnames[0]);
+    // const [roomName, setRoomName] = useState(roomnames[0]); // Remove this after determining that it works
     const [location, setLocation] = useState(locations[0]);
     const [description, setDescription] = useState(descriptions[0]);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -149,6 +134,77 @@ function RoomGrid() {
     const [audio, setAudio] = useState(null);
     const [hasUserInteracted, setHasUserInteracted] = useState(false);
     const [isClosableVisible, setIsClosableVisible] = useState(true); // State for closable div
+    const [panoramicsDb, setPanoramicsDb] = useState([]);
+    const [thumbnailsDb, setThumbnailsDb] = useState([]);
+    const [roomNamesDb, setRoomNamesDb] = useState([]);
+    const [locationDb, setLocationDb] = useState([]);
+    const [descriptionDb, setDescriptionDb] = useState([]);
+    const [panoramicImages, setPanoramicImages] = useState([]);
+    const [imageSource, setImageSource] = useState(panorama1);
+
+
+    const fetchPanoramics = async () => {
+        try {
+            const response = await fetch(API_PANORAMICS);
+            const data = await response.json();
+            console.log('Fetched data:', data); // Debug log
+            setPanoramicsDb(data);
+
+            // Extract room names, thumbnails, descriptions, and locations from the fetched data
+            const fetchedRoomNames = [...new Set(data.map(group => group.groupname))];
+            const fetchedThumbnails = data.filter(group => group.category === 'thumbnail').map(group => group.s3url);
+            console.log('Fetched thumbnails:', fetchedThumbnails); // Debug log
+            const fetchedDescriptions = data.filter(group => group.category === 'thumbnail').map(group => group.description);
+            console.log('Fetched ddescription:', fetchedDescriptions); // Debug log
+            const fetchedLocations = data.filter(group => group.category === 'thumbnail').map(group => group.location);
+            const fetchedPanoramicImages = data.filter(group => group.category === 'panoramic').map(group => group.s3url);
+            console.log('Fetched panoramic images:', fetchedPanoramicImages); // Debug log
+
+            setRoomNamesDb(fetchedRoomNames);
+            setThumbnailsDb(fetchedThumbnails);
+            setDescriptionDb(fetchedDescriptions);
+            setLocationDb(fetchedLocations);
+            setPanoramicImages(fetchedPanoramicImages);
+
+            // Set the initial image source to the first panoramic image
+            if (fetchedPanoramicImages.length > 0) {
+                setImageSource(fetchedPanoramicImages[0]);
+            }
+        } catch (error) {
+            console.error('Error fetching panoramics:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPanoramics();
+    }, []);
+
+    // Convert the String description to JSX description
+    const convertToJSX = (description) => {
+        const parts = description.split(/(<strong>|<\/strong>)/g);
+        return (
+            <>
+                {parts.map((part, index) => {
+                    if (part === '<strong>') {
+                        return <strong key={index}>{parts[index + 1]}</strong>;
+                    } else if (part === '</strong>') {
+                        return null;
+                    } else if (parts[index - 1] === '<strong>') {
+                        return null;
+                    } else {
+                        return part;
+                    }
+                })}
+            </>
+        );
+    };
+
+    const jsxDescriptions = descriptionDb.map(convertToJSX);
+
+
+    // _________________________________________________________________________________________
+
+
 
     useEffect(() => {
         const handleUserInteraction = () => {
@@ -166,6 +222,8 @@ function RoomGrid() {
         };
     }, []);
 
+
+
     const stopCurrentAudio = () => {
         if (audio) {
             audio.pause();
@@ -181,7 +239,13 @@ function RoomGrid() {
             // Always stop the current audio first
             stopCurrentAudio();
 
+            if (!description || !description.props || !description.props.children) {
+                console.error('Invalid description format:', description);
+                return;
+            }
+
             const plainText = description.props.children.map(child => {
+                if (child === null || child === undefined) return ''; // Add a check for null or undefined
                 if (typeof child === 'string') return child;
                 if (child.type === 'strong') return child.props.children;
                 return '';
@@ -242,26 +306,26 @@ function RoomGrid() {
         };
     }, [audio]);
 
-    const images = [image1, image2, image3, image4, image5];
-    const panoramaImages = [panorama1, panorama2, panorama3, panorama4, panorama5];
+    const roomnames = Array.isArray(roomNamesDb) ? roomNamesDb.map(name => <><strong>{name}</strong></>) : [];
 
     const handleRoomChange = async (index) => {
+        console.log('Changing room to index:', index); // Debug log
         if (index === activeIndex) {
             // If clicking the same room, toggle audio
             if (isSpeaking) {
                 stopCurrentAudio();
             } else {
-                await speakDescription(descriptions[index]);
+                await speakDescription(jsxDescriptions[index]);
             }
         } else {
             // If clicking a different room, update everything and start new audio
             setActiveIndex(index);
-            setImageSource(panoramaImages[index]);
-            setRoomName(roomnames[index]);
-            setLocation(locations[index]);
-            setDescription(descriptions[index]);
+            setImageSource(panoramicImages[index]);
+            setRoomNamesDb(roomNamesDb); // Ensure this line correctly sets the room name
+            setLocationDb(locationDb);
+            setDescription(jsxDescriptions[index]);
             activeThumbnailChange(index);
-            await speakDescription(descriptions[index]);
+            await speakDescription(jsxDescriptions[index]);
         }
     };
 
@@ -276,7 +340,7 @@ function RoomGrid() {
                     <img className="logo" src={logo} alt="logo" />
                 </div>
                 <div className="row-container">
-                    {images.map((thumbnailURL, index) => (
+                    {thumbnailsDb.map((thumbnailURL, index) => (
                         <div className="row" key={index}>
                             <RoomThumbnail
                                 thumbnailURL={thumbnailURL}
@@ -295,7 +359,7 @@ function RoomGrid() {
             </div>
             <div className="subdivider-right">
                 <div className="room-title">
-                    {roomName}
+                    {roomNamesDb[activeIndex]}
                 </div>
                 <div className="location-contents">
                     <div className="location-title">
@@ -303,16 +367,16 @@ function RoomGrid() {
                     </div>
                     <div className="location-list-container">
                         <ul className="location-list">
-                            {location.map((loc, index) => (
-                                <li className="location-item" key={index}>{loc}</li>
-                            ))}
+                            {locationDb[activeIndex] && (
+                                <li className="location-item">{locationDb[activeIndex]}</li>
+                            )}
                         </ul>
                     </div>
                 </div>
                 <div className="description-container">
                     <div className="description-content">
                         <p className="description">
-                            {description}
+                            {jsxDescriptions[activeIndex]}
                         </p>
                     </div>
                 </div>
@@ -338,8 +402,6 @@ function RoomGrid() {
                                     <p className="closable-content"><strong>At this side</strong>, you can see the descriptions of the room and a button to go to the chatbot if you have any questions.</p>
                                 </div>
                             </div>
-
-                            
                         </div>
                     </div>
                 )}
@@ -351,12 +413,14 @@ function RoomGrid() {
 
 function activeThumbnailChange(id) {
     const thumbnail = document.getElementById(id);
-    var otherThumbnails;
+    if (!thumbnail) return; // Add a check to ensure the element exists
 
     for (let i = 0; i < 5; i++) {
-        otherThumbnails = document.getElementById(i);
-        otherThumbnails.classList.remove("active-thumbnail");
-        otherThumbnails.classList.add("hoverable")
+        const otherThumbnails = document.getElementById(i);
+        if (otherThumbnails) { // Add a check to ensure the element exists
+            otherThumbnails.classList.remove("active-thumbnail");
+            otherThumbnails.classList.add("hoverable");
+        }
     }
     thumbnail.classList.remove("hoverable");
     thumbnail.classList.add("active-thumbnail");

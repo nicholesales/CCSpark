@@ -44,6 +44,7 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+
 .nav-buttons {
   display: flex;
   gap: 10px;
@@ -183,6 +184,7 @@ body {
 
 .delete-btn {
   background-color: #e63d3d;
+  margin-top: 10px;
 }
 
 .edit-btn:hover,
@@ -214,7 +216,6 @@ body {
   cursor: pointer;
   border-radius: 500px;
   font-size: 20px;
-  
 }
 
 .upload-image-icon {
@@ -226,7 +227,18 @@ body {
   background-color: #8cc9f1;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panoramic-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.panoramic-content {
+  display: flex;
 }
 
 .panoramic-image {
@@ -234,7 +246,8 @@ body {
 }
 
 .add-question-form,
-.edit-question-form, .upload-image-form {
+.edit-question-form,
+.upload-image-form {
   position: fixed;
   bottom: 80px;
   right: 20px;
@@ -243,6 +256,59 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   width: 300px;
+}
+
+.upload-image-form {
+  height: auto;
+  width: 25vw;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.image-button-containers {
+  padding: 10px 10px 0px 0px;
+}
+
+.upload-container,
+.group-name-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0px 0px 20px 0px;
+}
+
+.upload-title-container {
+  margin-bottom: 20px;
+}
+
+.thumbnail-image {
+  width: 50%;
+  height: auto;
+}
+
+.panoramic-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-name-title {
+  font-weight: bold;
+}
+
+.thumbnail {
+  flex-direction: column;
+  color: black;
+}
+
+.thumbnail-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-image {
+  margin-top: 10px;
 }
 
 .add-question-form h3,
@@ -272,7 +338,8 @@ body {
 }
 
 .save-btn,
-.cancel-btn {
+.cancel-btn,
+.upload-btn {
   padding: 8px 12px;
   font-size: 14px;
   border: none;
@@ -280,7 +347,8 @@ body {
   border-radius: 5px;
 }
 
-.save-btn {
+.save-btn,
+.upload-btn {
   background-color: #28a745;
   color: white;
 }

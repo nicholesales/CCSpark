@@ -20,9 +20,12 @@ function Admin({ handleLogout }) {
   const [queries, setQueries] = useState([]);
   const [activeTab, setActiveTab] = useState('faqs');
   const [userQueries, setUserQueries] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-
   const [panoramics, setPanoramics] = useState([]);
+  const [selectedThumbnailFile, setSelectedThumbnailFile] = useState(null);
+  const [selectedPanoramicFile, setSelectedPanoramicFile] = useState(null);
+  const [newGroupName, setNewGroupName] = useState('');
+  const [newLocation, setNewLocation] = useState('');
+  const [newDescription, setNewDescription] = useState('');
 
   const API_USER_QUERIES = "http://127.0.0.1:8000/api/user-queries/";
   const API_QUERY = "http://127.0.0.1:8000/api/queries/";
@@ -62,26 +65,54 @@ function Admin({ handleLogout }) {
 
   // Handle file selection
   const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const { id, files } = event.target;
+    console.log(`File selected for ${id}:`, files[0]); // Debug log
+    if (id === 'thumbnail') {
+      setSelectedThumbnailFile(files[0]);
+    } else if (id === 'panoramic') {
+      setSelectedPanoramicFile(files[0]);
+    }
   };
 
-  // Handle file upload to S3 and MongoDB
   const handleFileUpload = async () => {
-    if (!selectedFile) {
-      alert('Please select a file first!');
+    console.log('handleFileUpload called'); // Debug log
+
+    // Check if both files are selected
+    if (!selectedThumbnailFile || !selectedPanoramicFile) {
+      alert('Please select both thumbnail and panoramic files!');
       return;
     }
 
     try {
-      // Upload to S3
-      const s3Result = await uploadFileToS3(selectedFile);
+      // Upload thumbnail to S3
+      const thumbnailS3Result = await uploadFileToS3(selectedThumbnailFile);
+      console.log('Thumbnail uploaded:', thumbnailS3Result); // Debug log
 
-      // Store reference in MongoDB
-      const imageData = {
-        fileName: selectedFile.name,
-        s3Url: s3Result.Location,
-        uploadDate: new Date()
-      };
+      // Upload panoramic to S3
+      const panoramicS3Result = await uploadFileToS3(selectedPanoramicFile);
+      console.log('Panoramic uploaded:', panoramicS3Result); // Debug log
+
+      // Prepare image data for MongoDB
+      const imageData = [
+        {
+          fileName: selectedThumbnailFile.name,
+          s3Url: thumbnailS3Result.Location,
+          uploadDate: new Date(),
+          category: 'thumbnail', // Specify category as thumbnail
+          groupName: newGroupName, // Get the Group Name
+          location: newLocation, // Get the Location of the image
+          description: newDescription, // Get the Description of the image
+        },
+        {
+          fileName: selectedPanoramicFile.name,
+          s3Url: panoramicS3Result.Location,
+          uploadDate: new Date(),
+          category: 'panoramic', // Specify category as panoramic
+          groupName: newGroupName, // Get the Group Name for the panoramic
+          location: newLocation, // Get the Location of the image for the panoramic
+          description: newDescription, // Get the Description of the image for the panoramic
+        }
+      ];
 
       // Add your MongoDB API endpoint
       const response = await fetch(API_PANORAMICS + 'add/', {
@@ -93,14 +124,18 @@ function Admin({ handleLogout }) {
       });
 
       if (response.ok) {
-        alert('File uploaded successfully!');
-        setSelectedFile(null);
+        alert('Files uploaded successfully!');
+        setSelectedThumbnailFile(null);
+        setSelectedPanoramicFile(null);
+        setNewGroupName(null);
+        setShowUploadForm(false);
+        fetchPanoramics(); // Refresh the list of panoramics
       } else {
-        throw new Error('Failed to store file reference in MongoDB');
+        throw new Error('Failed to store file references in MongoDB');
       }
     } catch (error) {
       console.error('Error in file upload:', error);
-      alert('Failed to upload file');
+      alert('Failed to upload files');
     }
   };
 
@@ -116,38 +151,51 @@ function Admin({ handleLogout }) {
 
   useEffect(() => {
     fetchPanoramics();
-}, []);
+  }, []);
 
   // No update of images
 
-  // Delete panoramic from both S3 and MongoDB
-  const deletePanoramic = async (panoramicId, s3Key) => {
+  const deletePanoramicsByGroupName = async (groupName) => {
     try {
-      // Delete from S3
-      const s3Params = {
-        Bucket: 'capstoneimagesbucket',
-        Key: s3Key
-      };
-      await s3.deleteObject(s3Params).promise();
+      // Fetch all panoramics by group name
+      const response = await fetch(`${API_PANORAMICS}?groupname=${groupName}`);
+      const panoramics = await response.json();
 
-      // Delete from MongoDB
-      const response = await fetch(`${API_PANORAMICS}delete/${panoramicId}/`, {
-        method: 'DELETE'
-      });
+      // Delete each panoramic from S3 and MongoDB
+      for (const panoramic of panoramics) {
+        // Delete from S3
+        const s3Params = {
+          Bucket: 'capstoneimagesbucket',
+          Key: panoramic.filename
+        };
+        await s3.deleteObject(s3Params).promise();
 
-      if (response.ok) {
-        alert('Panoramic deleted successfully');
-        fetchPanoramics(); // Refresh the list
-      } else {
-        throw new Error('Failed to delete panoramic reference from MongoDB');
+        // Delete from MongoDB
+        await fetch(`${API_PANORAMICS}delete-by-groupname/${groupName}/`, {
+          method: 'DELETE'
+        });
       }
+
+      alert('All panoramics in the group deleted successfully');
+      fetchPanoramics(); // Refresh the list
     } catch (error) {
-      console.error('Error deleting panoramic:', error);
-      alert('Failed to delete panoramic');
+      console.error('Error deleting panoramics:', error);
+      alert('Failed to delete panoramics');
     }
   };
 
+  const groupPanoramicsByGroupName = (panoramics) => {
+    return panoramics.reduce((groups, panoramic) => {
+      const groupName = panoramic.groupname;
+      if (!groups[groupName]) {
+        groups[groupName] = [];
+      }
+      groups[groupName].push(panoramic);
+      return groups;
+    }, {});
+  };
 
+  const groupedPanoramics = groupPanoramicsByGroupName(panoramics);
 
 
 
@@ -478,22 +526,40 @@ function Admin({ handleLogout }) {
           {activeTab === 'faqs' ? (
             // FAQ content
             Object.keys(groupedByCategory).length === 0 ? (
+              // For Panoramics
               <div className="panoramic-list">
-                {panoramics.map(panoramic => (
-                  <div key={panoramic._id} className="panoramic-item">
-                    <img
-                      src={panoramic.s3url}
-                      alt={panoramic.filename}
-                      className='panoramic-image'
-                    />
-                    <div>
-                      <p className='file-name-title'> File Name: </p>
-                      {panoramic.filename}
+                {Object.keys(groupedPanoramics).map(groupName => (
+                  <div key={groupName} className="panoramic-item">
+                    <div className="panoramic-header">
+                      <h3>{groupName}</h3>
                     </div>
-                    <p>{panoramic.fileName}</p>
-                    <button className="delete-btn" onClick={() => deletePanoramic(panoramic._id, panoramic.filename)}>
-                      Delete
-                    </button>
+                    <div className="panoramic-content">
+                      {groupedPanoramics[groupName].map(panoramic => (
+                        <div
+                          key={panoramic._id}
+                          className={panoramic.category === 'thumbnail' ? 'thumbnail-image-container' : 'panoramic-image-container'}
+                          style={{ flex: panoramic.category === 'thumbnail' ? '0 0 30%' : '1' }}
+                        >
+                          <p className='image-title'>
+                            {panoramic.category === 'thumbnail' ? "Thumbnail Image" : "Panoramic Image"}
+                          </p>
+                          <img
+                            src={panoramic.s3url}
+                            alt={panoramic.filename}
+                            className={panoramic.category === 'thumbnail' ? 'thumbnail-image admin-image' : 'panoramic-image admin-image'}
+                          />
+                          {panoramic.category === 'thumbnail' && (
+                            <>
+                              <p className='image-location'><strong>Location:</strong> {panoramic.location}</p>
+                              <p className='image-description'><strong>Description: </strong>{panoramic.description}</p>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                      <button className="delete-btn" onClick={() => deletePanoramicsByGroupName(groupName)}>
+                        Delete Group
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -591,14 +657,57 @@ function Admin({ handleLogout }) {
         {showUploadForm && (
           <>
             <div className="upload-image-form">
-              <h3>Upload Panoramic Image</h3>
-              <input
-                type="file"
-                onChange={handleFileSelect}
-                accept="image/*"
-              />
-              <button className="save-btn" onClick={handleFileUpload} disabled={!selectedFile}>Upload Image</button>
-              <button className="cancel-btn" onClick={() => setShowUploadForm(false)}>Cancel</button>
+              <div className='upload-title-container'>
+                <h3>Upload Images</h3>
+              </div>
+              <div className='group-name-container'>
+                <label htmlFor="groupname">Image For:</label>
+                <input
+                  type="text"
+                  id='groupname'
+                  value={newGroupName}
+                  onChange={(e) => setNewGroupName(e.target.value)}
+                  placeholder='ex: Computer Laboratory'
+                />
+              </div>
+              <div className='upload-container'>
+                <label htmlFor="thumbnail">Thumbnail</label>
+                <input
+                  type="file"
+                  onChange={handleFileSelect}
+                  accept="image/*"
+                  id='thumbnail'
+                />
+              </div>
+              <div className='upload-container'>
+                <label htmlFor="panoramic">Panoramic</label>
+                <input
+                  type="file"
+                  onChange={handleFileSelect}
+                  accept="image/*"
+                  id='panoramic'
+                />
+              </div>
+              <div className='upload-container'>
+                <label htmlFor="location">Location</label>
+                <input
+                  type="text"
+                  onChange={(e) => setNewLocation(e.target.value)}
+                  id='location'
+                />
+              </div>
+              <div className='upload-container'>
+                <label htmlFor="description">Description</label>
+                <input
+                  type="text"
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  id='description'
+                />
+              </div>
+              <div className='image-button-containers'>
+                <button className="upload-btn" onClick={handleFileUpload} disabled={!selectedThumbnailFile || !selectedPanoramicFile}>Upload Image</button>
+                <button className="cancel-btn" onClick={() => setShowUploadForm(false)}>Cancel</button>
+              </div>
             </div>
           </>
         )}

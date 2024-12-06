@@ -11,5 +11,5 @@ urlpatterns = [
     path('user-queries/edit/<str:query_id>/', views.edit_user_query, name='edit_user_query'),
     path('panoramics/add/', views.add_panoramics, name='add_panoramics'),
     path('panoramics/', views.get_panoramics, name='get_panoramics'),
-    path('panoramics/delete/<str:panoramic_id>/', views.delete_panoramics, name='delete_panoramic'),
+    path('panoramics/delete-by-groupname/<str:groupname>/', views.delete_panoramics_by_groupname, name='delete_panoramics_by_groupname'),
 ]
