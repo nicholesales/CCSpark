@@ -72,7 +72,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com',
-    'https://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com'
+    'https://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com',
+    'https://capstoneimagesbucket.s3.ap-southeast-2.amazonaws.com/',
 ]
 # settings.py
 CORS_ALLOW_CREDENTIALS = True
