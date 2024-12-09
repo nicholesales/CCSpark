@@ -6,6 +6,7 @@ import json
 from bson.objectid import ObjectId
 from .utils import encrypt_data, decrypt_data  # Import encryption/decryption functions
 import environ
+from datetime import datetime
 
 # Load environment variables
 env = environ.Env()
@@ -134,20 +135,36 @@ def delete_panoramics_by_groupname(request, groupname):
     return JsonResponse({"status": "failed"}, status=404)
 
 @csrf_exempt
+def get_reminder_queries(request):
+    if request.method == "GET":
+        current_date = datetime.now()
+        queries = list(collection.find({"needs_reminder": True}))
+        
+        for query in queries:
+            query["_id"] = str(query["_id"])
+            query["question"] = decrypt_data(query["question"])
+            query["answer"] = decrypt_data(query["answer"])
+            
+        return JsonResponse(queries, safe=False)
+    
+@csrf_exempt
 def add_query(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        # Encrypt question and answer fields, leave category as is
         encrypted_question = encrypt_data(data["question"])
         encrypted_answer = encrypt_data(data["answer"])
-        category = data["category"]  # Store category without encryption
-        collection.insert_one(
-            {
-                "question": encrypted_question,
-                "answer": encrypted_answer,
-                "category": category,
-            }
-        )
+        category = data["category"]
+        
+        query_data = {
+            "question": encrypted_question,
+            "answer": encrypted_answer,
+            "category": category,
+            "needs_reminder": data.get("needs_reminder", False),
+            "reminder_date": data.get("reminder_date", None),
+            "created_at": datetime.now().isoformat()
+        }
+        
+        collection.insert_one(query_data)
         return JsonResponse({"status": "success"})
 
 
@@ -155,19 +172,21 @@ def add_query(request):
 def edit_query(request, query_id):
     if request.method == "PUT":
         data = json.loads(request.body)
-        # Encrypt the updated question and answer, leave category as is
         encrypted_question = encrypt_data(data["question"])
         encrypted_answer = encrypt_data(data["answer"])
         category = data["category"]
+        
+        update_data = {
+            "question": encrypted_question,
+            "answer": encrypted_answer,
+            "category": category,
+            "needs_reminder": data.get("needs_reminder", False),
+            "reminder_date": data.get("reminder_date", None)
+        }
+        
         collection.update_one(
             {"_id": ObjectId(query_id)},
-            {
-                "$set": {
-                    "question": encrypted_question,
-                    "answer": encrypted_answer,
-                    "category": category,
-                }
-            },
+            {"$set": update_data}
         )
         return JsonResponse({"status": "success"})
 
@@ -184,3 +203,56 @@ def delete_query(request, query_id):
             return JsonResponse(
                 {"status": "failed", "message": "Query not found"}, status=404
             )
+
+@csrf_exempt
+def get_dashboard_stats(request):
+    if request.method == "GET":
+        try:
+            # Get counts for each FAQ category with error checking
+            faq_stats = {}
+            categories = [
+                "Frequently Asked Questions",
+                "CCS Faculty-related Queries", 
+                "CCS Student Orgs",
+                "CCS Events"
+            ]
+            
+            for category in categories:
+                try:
+                    count = collection.count_documents({"category": category})
+                    faq_stats[category] = count
+                except Exception as e:
+                    print(f"Error counting {category}: {str(e)}")
+                    faq_stats[category] = 0
+            
+            # Get count of panoramic groups with error checking
+            try:
+                panoramic_groups = len(list(panoramics_collection.distinct("groupname")))
+            except Exception as e:
+                print(f"Error counting panoramic groups: {str(e)}")
+                panoramic_groups = 0
+            
+            # Get count of pending queries with error checking
+            try:
+                pending_queries = user_queries_collection.count_documents({"status": "unanswered"})
+            except Exception as e:
+                print(f"Error counting pending queries: {str(e)}")
+                pending_queries = 0
+            
+            response_data = {
+                "faq_stats": faq_stats,
+                "panoramic_groups": panoramic_groups,
+                "pending_queries": pending_queries
+            }
+            
+            print("Response data:", response_data)  # Debug print
+            return JsonResponse(response_data)
+            
+        except Exception as e:
+            print(f"Main error in get_dashboard_stats: {str(e)}")  # Server-side logging
+            return JsonResponse({
+                "error": str(e),
+                "detail": "An error occurred while fetching dashboard stats"
+            }, status=500)
+            
+    return JsonResponse({"error": "Method not allowed"}, status=405)

@@ -363,3 +363,170 @@ body {
 .edit-question-form input::placeholder {
   color: #888;
 }
+
+.dashboard-container {
+  padding: 20px;
+  background-color: var(--dashboard-background-color);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dashboard-header {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.stat-card {
+  background-color: #2e6aca;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  color: white;
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-right: 20px;
+  color: var(--accents-color);
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.stat-content p {
+  margin: 10px 0 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.stats-container {
+  background-color: #8cc9f1;
+  border: 10px solid #15165a;
+  border-radius: 15px;
+  padding: 25px;
+  margin: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* Reminder Form Styles */
+.reminder-section {
+  margin: 15px 0;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+}
+
+.reminder-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.reminder-checkbox input[type="checkbox"] {
+  margin-right: 10px;
+  width: auto;
+}
+
+.date-picker-wrapper {
+  margin-top: 10px;
+}
+
+.date-picker-wrapper .react-datepicker-wrapper {
+  width: 100%;
+}
+
+.date-picker-wrapper .react-datepicker__input-container input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Dashboard Reminder Section Styles */
+.reminder-queries {
+  background-color: #15165a;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.reminder-item {
+  background-color: #8cc9f1;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  display: flex;
+  gap: 8px;
+  position: relative;
+}
+
+.reminder-content {
+  flex: 1;
+}
+
+.reminder-item p {
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.reminder-item .action-buttons {
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.reminder-item .edit-btn {
+  padding: 12px 20px;
+  font-size: 15px;
+  margin: 0;
+}
+
+.reminder-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #ffd700;
+  color: black;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+.reminder-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.reminder-checkbox input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.reminder-checkbox label {
+  margin: 0;
+  font-weight: normal;
+}
