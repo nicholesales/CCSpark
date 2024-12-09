@@ -1,10 +1,38 @@
 /* landing.css */
+/* landing.css */
 :root {
+    /* Primary Colors */
     --deep-sea: #013a63;
     --midnight-blue: #001f3f;
-    --text-color: #ffffff;
+    --ocean-blue: #005b96;
+    
+    /* Secondary Colors */
+    --light-blue: #0077be;
+    --azure: #007ab8;
     --faculty-card: #1a638a;
+    
+    /* Background Colors */
     --bg-color: #151450;
+    --bg-light: #1a1a6c;
+    --bg-darker: #0f0f3d;
+    
+    /* Text Colors */
+    --text-color: #ffffff;
+    --text-muted: #a3c1db;
+    --text-dark: #0a192f;
+    
+    /* Accent Colors */
+    --accent-light: #64b5f6;
+    --accent-dark: #1565c0;
+    
+    /* Hover States */
+    --hover-light: #1e88e5;
+    --hover-dark: #0d47a1;
+    
+    /* Card Colors */
+    --card-bg: #ffffff;
+    --card-border: #e3f2fd;
+    --card-shadow: rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -13,48 +41,149 @@ h2 {
 
 .landing-main {
     background-color: var(--bg-color);
+    min-height: 100vh;
 }
 
 .header {
     background-color: var(--deep-sea);
     color: var(--text-color);
+    box-shadow: 0 2px 4px var(--card-shadow);
 }
 
 .navbar {
     background-color: var(--midnight-blue);
     color: var(--text-color);
-    padding-top: 1.5rem; /* Add more padding to increase height */
-    padding-bottom: 1.5rem; /* Add more padding to increase height */
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    box-shadow: 0 2px 4px var(--card-shadow);
 }
 
 .navbar a {
     color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: var(--accent-light);
 }
 
 .section {
-    padding-top: 5rem; /* Adjust the value as needed */
-    margin-top: -5rem; /* Adjust the value as needed to offset the padding */
+    padding-top: 5rem;
+    margin-top: -5rem;
+    color: var(--text-color);
 }
 
 .section-title {
-    color: var(--deep-sea);
+    color: var(--text-color);
+    border-bottom: 2px solid var(--ocean-blue);
+    padding-bottom: 0.5rem;
 }
 
 .card {
-    background-color: var(--text-color);
-    color: var(--midnight-blue);
+    background-color: var(--card-bg);
+    color: var(--text-dark);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 6px var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px var(--card-shadow);
 }
 
 .button {
     background-color: var(--deep-sea);
     color: var(--text-color);
+    transition: all 0.3s ease;
 }
 
 .button:hover {
     background-color: var(--midnight-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--card-shadow);
 }
 
 .landing-card {
     background-color: var(--faculty-card);
     color: var(--text-color);
+    transition: all 0.3s ease;
+    border: 1px solid var(--card-border);
+}
+
+.landing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px var(--card-shadow);
+    background-color: var(--ocean-blue);
+}
+
+.virtual-tour-btn {
+    background-color: var(--deep-sea);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    border: 1px solid var(--accent-light);
+}
+
+.virtual-tour-btn:hover {
+    background-color: var(--midnight-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--card-shadow);
+}
+
+.faculty-members-card {
+    background-color: var(--faculty-card);
+    border: 1px solid var(--accent-light);
+}
+
+.faculty-members-card:hover {
+    background-color: var(--ocean-blue);
+}
+
+.program-title {
+    color: var(--accent-light);
+}
+
+.program-description {
+    color: var(--text-muted);
+}
+
+.bg-accreditations-card {
+    background-color: var(--faculty-card);
+}
+
+.hover\:bg-ocean-blue:hover {
+    background-color: var(--ocean-blue);
+}
+
+.from-faculty-card {
+    --tw-gradient-from: var(--faculty-card);
+    --tw-gradient-to: var(--deep-sea);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.-z-1 {
+    z-index: -1;
+}
+
+.faculty-card-hover {
+    transition: all 0.3s ease;
+}
+
+.faculty-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.chatbot-btn {
+    background-color: var(--accent-light);
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+    border: 1px solid var(--accent-dark);
+}
+
+.chatbot-btn:hover {
+    background-color: var(--accent-dark);
+    color: var(--text-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--card-shadow);
 }

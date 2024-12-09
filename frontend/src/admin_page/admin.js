@@ -44,65 +44,65 @@ function Admin({ handleLogout }) {
   // const API_QUERY = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/";
   //  const API_USER_QUERIES = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/user-queries/";
   //  const API_PANORAMICS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/panoramics/";
+  // const API_DASHBOARD = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/dashboard-stats/";
 
-// Add this function to fetch dashboard stats
+  // Add this function to fetch dashboard stats
 
-const fetchDashboardStats = async () => {
-  try {
-    const response = await fetch(API_DASHBOARD);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await fetch(API_DASHBOARD);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Dashboard stats:', data);
+      setDashboardStats(data);
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
     }
-    
-    const data = await response.json();
-    console.log('Dashboard stats:', data);
-    setDashboardStats(data);
-  } catch (error) {
-    console.error('Error fetching dashboard stats:', error);
-  }
-};
+  };
 
-const checkDueReminders = async () => {
-  try {
-    const response = await fetch(API_QUERY + 'reminders/');
-    const data = await response.json();
-    const currentDate = new Date();
-    
-    // Filter queries that are due
-    const dueQueries = data.filter(query => {
-      if (!query.reminder_date) return false;
-      const reminderDate = new Date(query.reminder_date);
-      return reminderDate <= currentDate;
-    });
+  const checkDueReminders = async () => {
+    try {
+      const response = await fetch(API_QUERY + 'reminders/');
+      const data = await response.json();
+      const currentDate = new Date();
 
-    if (dueQueries.length > 0 && activeTab === 'dashboard') {
-      setDueReminders(dueQueries);
-      
-      // Create alert message
-      const message = `The following queries need to be updated:\n\n${
-        dueQueries.map((query, index) => 
+      // Filter queries that are due
+      const dueQueries = data.filter(query => {
+        if (!query.reminder_date) return false;
+        const reminderDate = new Date(query.reminder_date);
+        return reminderDate <= currentDate;
+      });
+
+      if (dueQueries.length > 0 && activeTab === 'dashboard') {
+        setDueReminders(dueQueries);
+
+        // Create alert message
+        const message = `The following queries need to be updated:\n\n${dueQueries.map((query, index) =>
           `${index + 1}. ${query.question} (${new Date(query.reminder_date).toLocaleDateString()})`
         ).join('\n')
-      }`;
-      
-      alert(message);
+          }`;
+
+        alert(message);
+      }
+    } catch (error) {
+      console.error('Error checking due reminders:', error);
     }
-  } catch (error) {
-    console.error('Error checking due reminders:', error);
-  }
-};
+  };
 
 
-const fetchReminderQueries = async () => {
-  try {
-    const response = await fetch(API_QUERY + 'reminders/');
-    const data = await response.json();
-    setReminderQueries(data);
-  } catch (error) {
-    console.error('Error fetching reminders:', error);
-  }
-};
+  const fetchReminderQueries = async () => {
+    try {
+      const response = await fetch(API_QUERY + 'reminders/');
+      const data = await response.json();
+      setReminderQueries(data);
+    } catch (error) {
+      console.error('Error fetching reminders:', error);
+    }
+  };
 
   // Bucket config for images
   AWS.config.update({
@@ -281,6 +281,8 @@ const fetchReminderQueries = async () => {
       fetchQueries();
     } else if (activeTab === 'queries') {
       fetchUserQueries();
+    } else if (activeTab === 'images') {
+      fetchPanoramics();
     }
   }, [activeTab]);
 
@@ -362,7 +364,7 @@ const fetchReminderQueries = async () => {
         needs_reminder: needsReminder,
         reminder_date: needsReminder ? reminderDate.toISOString() : null
       };
-  
+
       try {
         const response = await fetch(API_QUERY + 'add/', {
           method: 'POST',
@@ -371,7 +373,7 @@ const fetchReminderQueries = async () => {
           },
           body: JSON.stringify(newQuery),
         });
-  
+
         if (response.ok) {
           setQueries([...queries, newQuery]);
           setNewQuestion('');
@@ -426,12 +428,12 @@ const fetchReminderQueries = async () => {
         needs_reminder: editReminderNeeded,
         reminder_date: editReminderNeeded ? editReminderDate.toISOString() : null
       };
-  
+
       try {
         const endpoint = activeTab === 'queries'
           ? `${API_USER_QUERIES}edit/${editingQueryId}/`
           : `${API_QUERY}edit/${editingQueryId}/`;
-  
+
         const response = await fetch(endpoint, {
           method: 'PUT',
           headers: {
@@ -439,13 +441,13 @@ const fetchReminderQueries = async () => {
           },
           body: JSON.stringify(updatedQuery),
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         const result = await response.json();
-  
+
         if (result.status === 'success') {
           // Update the queries state
           if (activeTab === 'queries') {
@@ -461,7 +463,7 @@ const fetchReminderQueries = async () => {
                 : query
             ));
           }
-  
+
           // Reset form and close
           setShowEditForm(false);
           setNewQuestion('');
@@ -469,12 +471,12 @@ const fetchReminderQueries = async () => {
           setNewCategory('CCS Faculty-related Queries');
           setEditReminderNeeded(false);
           setEditReminderDate(null);
-          
+
           // Refresh reminders if we're on dashboard
           if (activeTab === 'dashboard') {
             fetchReminderQueries();
           }
-  
+
           alert('Query updated successfully!');
         }
       } catch (error) {
@@ -499,16 +501,16 @@ const fetchReminderQueries = async () => {
   }, {});
 
 
-    // Add this component for the stat card
-    const StatCard = ({ title, count, icon }) => (
-      <div className="stat-card">
-        <div className="stat-icon">{icon}</div>
-        <div className="stat-content">
-          <h3>{title}</h3>
-          <p>{count}</p>
-        </div>
+  // Add this component for the stat card
+  const StatCard = ({ title, count, icon }) => (
+    <div className="stat-card">
+      <div className="stat-icon">{icon}</div>
+      <div className="stat-content">
+        <h3>{title}</h3>
+        <p>{count}</p>
       </div>
-    );
+    </div>
+  );
 
   return (
     <div className="admin-container">
@@ -516,25 +518,36 @@ const fetchReminderQueries = async () => {
         <span className="welcome-message">Welcome, Admin</span>
         <div className="navbar-brand">CCSpark</div>
         <div className="nav-buttons">
-  <button 
-    className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`} 
-    onClick={() => setActiveTab('dashboard')}
-  >
-    Dashboard
-  </button>
-  <button 
-    className={`nav-btn ${activeTab === 'faqs' ? 'active' : ''}`} 
-    onClick={() => setActiveTab('faqs')}
-  >
-    FAQs
-  </button>
-  <button 
-    className={`nav-btn ${activeTab === 'queries' ? 'active' : ''}`} 
-    onClick={() => setActiveTab('queries')}
-  >
-    User Queries
-  </button>
-</div>
+          <button
+            className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            Dashboard
+          </button>
+          <button
+            className={`nav-btn ${activeTab === 'faqs' ? 'active' : ''}`}
+            onClick={() => setActiveTab('faqs')}
+          >
+            FAQs
+          </button>
+          <button
+            className={`nav-btn ${activeTab === 'queries' ? 'active' : ''}`}
+            onClick={() => setActiveTab('queries')}
+          >
+            User Queries
+          </button>
+          <button
+            className={`nav-btn ${activeTab === 'images' ? 'active' : ''}`}
+            onClick={() => {
+              console.log('Previous activeTab:', activeTab);
+              setActiveTab('images');
+              console.log('New activeTab:', 'panoramics');
+              console.log('Current panoramics:', panoramics); // Add this to check if data exists
+            }}
+          >
+            Images
+          </button>
+        </div>
         <button className="logout-btn" onClick={logout}>LOG OUT</button>
       </nav>
 
@@ -597,187 +610,184 @@ const fetchReminderQueries = async () => {
               />
               <label htmlFor="events">CCS Events</label>
             </li>
-            <li>
-              <input
-                type="radio"
-                name="filter"
-                id="panoramics"
-                value="panoramics"
-                checked={selectedFilter === 'Panoramic Images'}
-                onChange={() => setSelectedFilter('Panoramic Images')}
-              />
-              <label htmlFor="events">Panoramic Images</label>
-            </li>
           </ul>
           <button className="apply-filter-btn" onClick={applyFilter}>Apply Filter</button>
         </aside>
 
         <main className="filter-results">
-        {activeTab === 'dashboard' ? (
-  <div className="dashboard-container">
-    {dashboardStats && (
-      <>
-        <div className="dashboard-header">
-          <h2>Dashboard Overview</h2>
-        </div>
-        <div className="stats-container">
-          <div className="stats-grid">
-            <StatCard 
-              title="Frequently Asked Questions" 
-              count={dashboardStats.faq_stats["Frequently Asked Questions"]}
-              icon={<FaQuestion />}
-            />
-            <StatCard 
-              title="Faculty Queries" 
-              count={dashboardStats.faq_stats["CCS Faculty-related Queries"]}
-              icon={<FaUsers />}
-            />
-            <StatCard 
-              title="Student Orgs" 
-              count={dashboardStats.faq_stats["CCS Student Orgs"]}
-              icon={<FaUsers />}
-            />
-            <StatCard 
-              title="CCS Events" 
-              count={dashboardStats.faq_stats["CCS Events"]}
-              icon={<FaUsers />}
-            />
-            <StatCard 
-              title="Panoramic Groups" 
-              count={dashboardStats.panoramic_groups}
-              icon={<FaImage />}
-            />
-            <StatCard 
-              title="Unanswered Queries" 
-              count={dashboardStats.pending_queries}
-              icon={<FaExclamationCircle />}
-            />
-          </div>
-        </div>
-        <div className="reminder-queries">
-  <h3 style={{ color: 'white', marginBottom: '15px' }}>Queries Due for Update</h3>
-  {reminderQueries.length > 0 ? (
-    reminderQueries.map(query => {
-      const isDue = new Date(query.reminder_date) <= new Date();
-      
-      return (
-        <div key={query._id} className="reminder-item" style={{
-          borderLeft: isDue ? '4px solid #ff4d4d' : 'none'
-        }}>
-          <div className="reminder-content">
-            <p><strong>Question:</strong> {query.question}</p>
-            <p><strong>Answer:</strong> {query.answer}</p>
-            <p><strong>Category:</strong> {query.category}</p>
-            <p><strong>Update Due:</strong> {' '}
-              <span style={{ color: isDue ? '#ff4d4d' : 'inherit' }}>
-                {new Date(query.reminder_date).toLocaleDateString()}
-              </span>
-            </p>
-          </div>
-          <div className="action-buttons">
-            <button className="edit-btn" onClick={() => handleEditClick(query)}>
-              Update Now
-            </button>
-          </div>
-        </div>
-      );
-    })
-  ) : (
-    <p style={{ color: 'white' }}>No queries pending update</p>
-  )}
-</div>
-      </>
-    )}
-   
-  </div>
-  ) : activeTab === 'faqs' ? (
-    // FAQ content
-    Object.keys(groupedByCategory).length === 0 ? (
-      // For Panoramics
-      <div className="panoramic-list">
-        {Object.keys(groupedPanoramics).map(groupName => (
-          <div key={groupName} className="panoramic-item">
-            <div className="panoramic-header">
-              <h3>{groupName}</h3>
+          {activeTab === 'dashboard' ? (
+            <div className="dashboard-container">
+              {dashboardStats && (
+                <>
+                  <div className="dashboard-header">
+                    <h2>Dashboard Overview</h2>
+                  </div>
+                  <div className="stats-container">
+                    <div className="stats-grid">
+                      <StatCard
+                        title="Frequently Asked Questions"
+                        count={dashboardStats.faq_stats["Frequently Asked Questions"]}
+                        icon={<FaQuestion />}
+                      />
+                      <StatCard
+                        title="Faculty Queries"
+                        count={dashboardStats.faq_stats["CCS Faculty-related Queries"]}
+                        icon={<FaUsers />}
+                      />
+                      <StatCard
+                        title="Student Orgs"
+                        count={dashboardStats.faq_stats["CCS Student Orgs"]}
+                        icon={<FaUsers />}
+                      />
+                      <StatCard
+                        title="CCS Events"
+                        count={dashboardStats.faq_stats["CCS Events"]}
+                        icon={<FaUsers />}
+                      />
+                      <StatCard
+                        title="Panoramic Groups"
+                        count={dashboardStats.panoramic_groups}
+                        icon={<FaImage />}
+                      />
+                      <StatCard
+                        title="Unanswered Queries"
+                        count={dashboardStats.pending_queries}
+                        icon={<FaExclamationCircle />}
+                      />
+                    </div>
+                  </div>
+                  <div className="reminder-queries">
+                    <h3 style={{ color: 'white', marginBottom: '15px' }}>Queries Due for Update</h3>
+                    {reminderQueries.length > 0 ? (
+                      reminderQueries.map(query => {
+                        const isDue = new Date(query.reminder_date) <= new Date();
+
+                        return (
+                          <div key={query._id} className="reminder-item" style={{
+                            borderLeft: isDue ? '4px solid #ff4d4d' : 'none'
+                          }}>
+                            <div className="reminder-content">
+                              <p><strong>Question:</strong> {query.question}</p>
+                              <p><strong>Answer:</strong> {query.answer}</p>
+                              <p><strong>Category:</strong> {query.category}</p>
+                              <p><strong>Update Due:</strong> {' '}
+                                <span style={{ color: isDue ? '#ff4d4d' : 'inherit' }}>
+                                  {new Date(query.reminder_date).toLocaleDateString()}
+                                </span>
+                              </p>
+                            </div>
+                            <div className="action-buttons">
+                              <button className="edit-btn" onClick={() => handleEditClick(query)}>
+                                Update Now
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p style={{ color: 'white' }}>No queries pending update</p>
+                    )}
+                  </div>
+                </>
+              )}
+
             </div>
-            <div className="panoramic-content">
-              {groupedPanoramics[groupName].map(panoramic => (
-                <div
-                  key={panoramic._id}
-                  className={panoramic.category === 'thumbnail' ? 'thumbnail-image-container' : 'panoramic-image-container'}
-                  style={{ flex: panoramic.category === 'thumbnail' ? '0 0 30%' : '1' }}
-                >
-                  <p className='image-title'>
-                    {panoramic.category === 'thumbnail' ? "Thumbnail Image" : "Panoramic Image"}
-                  </p>
-                  <img
-                    src={panoramic.s3url}
-                    alt={panoramic.filename}
-                    className={panoramic.category === 'thumbnail' ? 'thumbnail-image admin-image' : 'panoramic-image admin-image'}
-                  />
-                  {panoramic.category === 'thumbnail' && (
-                    <>
-                      <p className='image-location'><strong>Location:</strong> {panoramic.location}</p>
-                      <p className='image-description'><strong>Description: </strong>{panoramic.description}</p>
-                    </>
-                  )}
+          ) : activeTab === 'faqs' ? (
+            // FAQ content
+            Object.keys(groupedByCategory).length === 0 ? (
+              <div>
+                NO FAQs FOUND
+              </div>
+            ) : (
+              Object.keys(groupedByCategory).map(category => (
+                <div key={category} className="query-section">
+                  <div className="query-category">{category}</div>
+                  {groupedByCategory[category].map(query => (
+                    <div key={query._id} className="query-box">
+                      <p><strong>Q:</strong> {query.question}</p>
+                      <p><strong>A:</strong> {query.answer}</p>
+                      <div className="action-buttons">
+                        <button className="edit-btn" onClick={() => handleEditClick(query)}>Edit</button>
+                        <button className="delete-btn" onClick={() => deleteQuery(query._id)}>Delete</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))
+            )
+          ) : activeTab === 'queries' ? (
+            // User queries content
+            <div>
+              {userQueries.length === 0 ? (
+                <p>No user queries found.</p>
+              ) : (
+                <div className="query-section">
+                  <div className="query-category">User Queries</div>
+                  {userQueries.map(query => (
+                    <div key={query._id} className="query-box">
+                      <p><strong>Question:</strong> {query.question}</p>
+                      <p><strong>Answer:</strong> {query.answer}</p>
+                      <p><strong>Category:</strong> {query.category}</p>
+                      <p><strong>Status:</strong> {query.status}</p>
+                      <div className="action-buttons">
+                        <button className="promote-btn" onClick={() => promoteToFAQ(query)}>
+                          Promote to FAQ
+                        </button>
+                        <button className="edit-btn" onClick={() => handleEditClick(query)}>
+                          Edit
+                        </button>
+                        <button className="delete-btn" onClick={() => deleteUserQuery(query._id)}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : activeTab === 'images' ? (
+            <div className="panoramic-list">
+              {Object.keys(groupedPanoramics).map(groupName => (
+                <div key={groupName} className="panoramic-item rounded-lg shadow-md p-4 mb-6">
+                  <div className="panoramic-header border-b-2 border-deep-sea pb-4 mb-6">
+                    <h3 className="text-3xl font-bold text-deep-sea tracking-wide uppercase">{groupName}</h3>
+                  </div>
+                  <div className="grid grid-cols-10 gap-4">
+                    {groupedPanoramics[groupName].map(panoramic => (
+                      <div
+                        key={panoramic._id}
+                        className={panoramic.category === 'thumbnail' ? 'thumbnail-image-container col-span-4' : 'panoramic-image-container col-span-5'}
+                        style={{ flex: panoramic.category === 'thumbnail' ? '0 0 30%' : '1' }}
+                      >
+                        <p className='image-title font-bold'>
+                          {panoramic.category === 'thumbnail' ? "Thumbnail Image" : "Panoramic Image"}
+                        </p>
+                        <img
+                          src={panoramic.s3url}
+                          alt={panoramic.filename}
+                          className={`w-full h-64 object-cover rounded-lg ${panoramic.category === 'thumbnail' ? 'thumbnail-image' : 'panoramic-image'} admin-image`}
+                        />
+                        {panoramic.category === 'thumbnail' && (
+                          <>
+                            <p className='image-location image-caption'><strong>Location:</strong> {panoramic.location}</p>
+
+                          </>
+                        )}
+                        {panoramic.category === 'panoramic' && (
+                          <>
+                            <p className='image-description image-caption'><strong>Description: </strong>{panoramic.description}</p>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                    <button className="delete-btn col-span-1" onClick={() => deletePanoramicsByGroupName(groupName)}>
+                      Delete Group
+                    </button>
+                  </div>
                 </div>
               ))}
-              <button className="delete-btn" onClick={() => deletePanoramicsByGroupName(groupName)}>
-                Delete Group
-              </button>
             </div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      Object.keys(groupedByCategory).map(category => (
-        <div key={category} className="query-section">
-          <div className="query-category">{category}</div>
-          {groupedByCategory[category].map(query => (
-            <div key={query._id} className="query-box">
-              <p><strong>Q:</strong> {query.question}</p>
-              <p><strong>A:</strong> {query.answer}</p>
-              <div className="action-buttons">
-                <button className="edit-btn" onClick={() => handleEditClick(query)}>Edit</button>
-                <button className="delete-btn" onClick={() => deleteQuery(query._id)}>Delete</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ))
-    )
-  ) : activeTab === 'queries' ? (
-    // User queries content
-    <div>
-      {userQueries.length === 0 ? (
-        <p>No user queries found.</p>
-      ) : (
-        <div className="query-section">
-          <div className="query-category">User Queries</div>
-          {userQueries.map(query => (
-            <div key={query._id} className="query-box">
-              <p><strong>Question:</strong> {query.question}</p>
-              <p><strong>Answer:</strong> {query.answer}</p>
-              <p><strong>Category:</strong> {query.category}</p>
-              <p><strong>Status:</strong> {query.status}</p>
-              <div className="action-buttons">
-                <button className="promote-btn" onClick={() => promoteToFAQ(query)}>
-                  Promote to FAQ
-                </button>
-                <button className="edit-btn" onClick={() => handleEditClick(query)}>
-                  Edit
-                </button>
-                <button className="delete-btn" onClick={() => deleteUserQuery(query._id)}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  ) : null}
+          ) : null}
         </main>
         <button className="add-image-btn" onClick={() => setShowUploadForm(true)}><img src={UploadImage} className='upload-image-icon'></img></button>
         <button className="add-question-btn" onClick={() => setShowAddForm(true)}>+</button>
@@ -815,30 +825,30 @@ const fetchReminderQueries = async () => {
               placeholder="Enter the answer"
             />
 
-<div className="reminder-section">
-      <div className="reminder-checkbox">
-        <input
-          type="checkbox"
-          id="needs-reminder"
-          checked={needsReminder}
-          onChange={(e) => setNeedsReminder(e.target.checked)}
-        />
-        <label htmlFor="needs-reminder">Set Update Reminder</label>
-      </div>
-      
-      {needsReminder && (
-        <div className="date-picker-wrapper">
-          <DatePicker
-            selected={reminderDate}
-            onChange={(date) => setReminderDate(date)}
-            minDate={new Date()}
-            dateFormat="MMMM d, yyyy"
-            placeholderText="Select reminder date"
-            className="date-picker-input"
-          />
-        </div>
-      )}
-    </div>
+            <div className="reminder-section">
+              <div className="reminder-checkbox">
+                <input
+                  type="checkbox"
+                  id="needs-reminder"
+                  checked={needsReminder}
+                  onChange={(e) => setNeedsReminder(e.target.checked)}
+                />
+                <label htmlFor="needs-reminder">Set Update Reminder</label>
+              </div>
+
+              {needsReminder && (
+                <div className="date-picker-wrapper">
+                  <DatePicker
+                    selected={reminderDate}
+                    onChange={(date) => setReminderDate(date)}
+                    minDate={new Date()}
+                    dateFormat="MMMM d, yyyy"
+                    placeholderText="Select reminder date"
+                    className="date-picker-input"
+                  />
+                </div>
+              )}
+            </div>
 
             <button className="save-btn" onClick={addQuestion}>Save</button>
             <button className="cancel-btn" onClick={() => setShowAddForm(false)}>Cancel</button>
@@ -903,68 +913,68 @@ const fetchReminderQueries = async () => {
           </>
         )}
 
-{showEditForm && (
-  <div className="edit-question-form">
-    <h3>Edit Question</h3>
-    <label htmlFor="category">Category</label>
-    <select
-      id="category"
-      value={newCategory}
-      onChange={(e) => setNewCategory(e.target.value)}
-    >
-      <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
-      <option value="CCS Student Orgs">CCS Student Orgs</option>
-      <option value="CCS Events">CCS Events</option>
-      <option value="Frequently Asked Questions">FAQs</option>
-    </select>
+        {showEditForm && (
+          <div className="edit-question-form">
+            <h3>Edit Question</h3>
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+            >
+              <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
+              <option value="CCS Student Orgs">CCS Student Orgs</option>
+              <option value="CCS Events">CCS Events</option>
+              <option value="Frequently Asked Questions">FAQs</option>
+            </select>
 
-    <label htmlFor="question">Question</label>
-    <input
-      id="question"
-      type="text"
-      value={newQuestion}
-      onChange={(e) => setNewQuestion(e.target.value)}
-      placeholder="Edit your question"
-    />
+            <label htmlFor="question">Question</label>
+            <input
+              id="question"
+              type="text"
+              value={newQuestion}
+              onChange={(e) => setNewQuestion(e.target.value)}
+              placeholder="Edit your question"
+            />
 
-    <label htmlFor="answer">Answer</label>
-    <input
-      id="answer"
-      type="text"
-      value={newAnswer}
-      onChange={(e) => setNewAnswer(e.target.value)}
-      placeholder="Edit the answer"
-    />
+            <label htmlFor="answer">Answer</label>
+            <input
+              id="answer"
+              type="text"
+              value={newAnswer}
+              onChange={(e) => setNewAnswer(e.target.value)}
+              placeholder="Edit the answer"
+            />
 
-    <div className="reminder-section">
-      <div className="reminder-checkbox">
-        <input
-          type="checkbox"
-          id="edit-needs-reminder"
-          checked={editReminderNeeded}
-          onChange={(e) => setEditReminderNeeded(e.target.checked)}
-        />
-        <label htmlFor="edit-needs-reminder">Set Update Reminder</label>
-      </div>
-      
-      {editReminderNeeded && (
-        <div className="date-picker-wrapper">
-          <DatePicker
-            selected={editReminderDate}
-            onChange={(date) => setEditReminderDate(date)}
-            minDate={new Date()}
-            dateFormat="MMMM d, yyyy"
-            placeholderText="Select reminder date"
-            className="date-picker-input"
-          />
-        </div>
-      )}
-    </div>
+            <div className="reminder-section">
+              <div className="reminder-checkbox">
+                <input
+                  type="checkbox"
+                  id="edit-needs-reminder"
+                  checked={editReminderNeeded}
+                  onChange={(e) => setEditReminderNeeded(e.target.checked)}
+                />
+                <label htmlFor="edit-needs-reminder">Set Update Reminder</label>
+              </div>
 
-    <button className="save-btn" onClick={updateQuestion}>Update</button>
-    <button className="cancel-btn" onClick={() => setShowEditForm(false)}>Cancel</button>
-  </div>
-)}
+              {editReminderNeeded && (
+                <div className="date-picker-wrapper">
+                  <DatePicker
+                    selected={editReminderDate}
+                    onChange={(date) => setEditReminderDate(date)}
+                    minDate={new Date()}
+                    dateFormat="MMMM d, yyyy"
+                    placeholderText="Select reminder date"
+                    className="date-picker-input"
+                  />
+                </div>
+              )}
+            </div>
+
+            <button className="save-btn" onClick={updateQuestion}>Update</button>
+            <button className="cancel-btn" onClick={() => setShowEditForm(false)}>Cancel</button>
+          </div>
+        )}
       </div>
     </div>
   );

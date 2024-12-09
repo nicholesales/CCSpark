@@ -281,9 +281,14 @@ body {
   margin-bottom: 20px;
 }
 
-.thumbnail-image {
-  width: 50%;
-  height: auto;
+.thumbnail-image,
+.panoramic-image {
+  height: 256px !important; /* Override any other height settings */
+  width: 100%;
+  object-fit: cover;
+}
+.image-caption {
+  padding-top: 2rem;
 }
 
 .panoramic-image-container {

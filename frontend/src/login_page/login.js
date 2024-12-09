@@ -8,10 +8,14 @@ function Login({ setIsAuthenticated }) {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  const API_LOGIN = "http://127.0.0.1:8000/api/login/";
+
+  // const API_USER_QUERIES = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/login/";
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/login/', {
+      const response = await axios.post(API_LOGIN, {
         username,
         password
       });
