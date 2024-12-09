@@ -12,4 +12,6 @@ urlpatterns = [
     path('panoramics/add/', views.add_panoramics, name='add_panoramics'),
     path('panoramics/', views.get_panoramics, name='get_panoramics'),
     path('panoramics/delete-by-groupname/<str:groupname>/', views.delete_panoramics_by_groupname, name='delete_panoramics_by_groupname'),
-]
+    path('dashboard-stats/', views.get_dashboard_stats, name='dashboard-stats'),
+     path('queries/reminders/', views.get_reminder_queries, name='get-reminder-queries'),
+]   

@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import './admin.css';
 import AWS from 'aws-sdk';
 import UploadImage from "./assets/upload.png";
+import { FaQuestion, FaUsers, FaImage, FaExclamationCircle } from 'react-icons/fa';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Admin({ handleLogout }) {
   const navigate = useNavigate();
 
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [appliedFilter, setAppliedFilter] = useState('all');
-
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false); // State to control visibility of the edit form
@@ -18,7 +20,7 @@ function Admin({ handleLogout }) {
   const [newCategory, setNewCategory] = useState('CCS Faculty-related Queries');
   const [editingQueryId, setEditingQueryId] = useState(null); // Track the ID of the query being edited
   const [queries, setQueries] = useState([]);
-  const [activeTab, setActiveTab] = useState('faqs');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [userQueries, setUserQueries] = useState([]);
   const [panoramics, setPanoramics] = useState([]);
   const [selectedThumbnailFile, setSelectedThumbnailFile] = useState(null);
@@ -26,14 +28,81 @@ function Admin({ handleLogout }) {
   const [newGroupName, setNewGroupName] = useState('');
   const [newLocation, setNewLocation] = useState('');
   const [newDescription, setNewDescription] = useState('');
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [needsReminder, setNeedsReminder] = useState(false);
+  const [reminderDate, setReminderDate] = useState(null);
+  const [reminderQueries, setReminderQueries] = useState([]);
+  const [editReminderNeeded, setEditReminderNeeded] = useState(false);
+  const [editReminderDate, setEditReminderDate] = useState(null);
+  const [dueReminders, setDueReminders] = useState([]);
 
   const API_USER_QUERIES = "http://127.0.0.1:8000/api/user-queries/";
   const API_QUERY = "http://127.0.0.1:8000/api/queries/";
   const API_PANORAMICS = "http://127.0.0.1:8000/api/panoramics/";
+  const API_DASHBOARD = "http://127.0.0.1:8000/api/dashboard-stats/";
 
   // const API_QUERY = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/";
   //  const API_USER_QUERIES = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/user-queries/";
   //  const API_PANORAMICS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/panoramics/";
+
+// Add this function to fetch dashboard stats
+
+const fetchDashboardStats = async () => {
+  try {
+    const response = await fetch(API_DASHBOARD);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('Dashboard stats:', data);
+    setDashboardStats(data);
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+  }
+};
+
+const checkDueReminders = async () => {
+  try {
+    const response = await fetch(API_QUERY + 'reminders/');
+    const data = await response.json();
+    const currentDate = new Date();
+    
+    // Filter queries that are due
+    const dueQueries = data.filter(query => {
+      if (!query.reminder_date) return false;
+      const reminderDate = new Date(query.reminder_date);
+      return reminderDate <= currentDate;
+    });
+
+    if (dueQueries.length > 0 && activeTab === 'dashboard') {
+      setDueReminders(dueQueries);
+      
+      // Create alert message
+      const message = `The following queries need to be updated:\n\n${
+        dueQueries.map((query, index) => 
+          `${index + 1}. ${query.question} (${new Date(query.reminder_date).toLocaleDateString()})`
+        ).join('\n')
+      }`;
+      
+      alert(message);
+    }
+  } catch (error) {
+    console.error('Error checking due reminders:', error);
+  }
+};
+
+
+const fetchReminderQueries = async () => {
+  try {
+    const response = await fetch(API_QUERY + 'reminders/');
+    const data = await response.json();
+    setReminderQueries(data);
+  } catch (error) {
+    console.error('Error fetching reminders:', error);
+  }
+};
 
   // Bucket config for images
   AWS.config.update({
@@ -197,15 +266,6 @@ function Admin({ handleLogout }) {
 
   const groupedPanoramics = groupPanoramicsByGroupName(panoramics);
 
-
-
-
-
-
-
-
-
-
   const fetchUserQueries = async () => {
     const response = await fetch(API_USER_QUERIES);
     const data = await response.json();
@@ -213,16 +273,16 @@ function Admin({ handleLogout }) {
   };
 
   useEffect(() => {
-    if (activeTab === 'faqs') {
+    if (activeTab === 'dashboard') {
+      fetchDashboardStats();
+      fetchReminderQueries();
+      checkDueReminders();
+    } else if (activeTab === 'faqs') {
       fetchQueries();
-    } else {
+    } else if (activeTab === 'queries') {
       fetchUserQueries();
     }
   }, [activeTab]);
-
-  useEffect(() => {
-    fetchQueries();
-  }, []);
 
   const fetchQueries = async () => {
     const response = await fetch(API_QUERY); // Adjust according to your Django server
@@ -299,21 +359,35 @@ function Admin({ handleLogout }) {
         category: newCategory,
         question: newQuestion,
         answer: newAnswer,
+        needs_reminder: needsReminder,
+        reminder_date: needsReminder ? reminderDate.toISOString() : null
       };
-
-      await fetch(API_QUERY + 'add/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newQuery),
-      });
-
-      setQueries([...queries, newQuery]);
-      setNewQuestion('');
-      setNewAnswer('');
-      setNewCategory('CCS Faculty-related Queries');
-      setShowAddForm(false);
+  
+      try {
+        const response = await fetch(API_QUERY + 'add/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newQuery),
+        });
+  
+        if (response.ok) {
+          setQueries([...queries, newQuery]);
+          setNewQuestion('');
+          setNewAnswer('');
+          setNewCategory('CCS Faculty-related Queries');
+          setNeedsReminder(false);
+          setReminderDate(null);
+          setShowAddForm(false);
+          if (activeTab === 'dashboard') {
+            fetchReminderQueries();
+            checkDueReminders();
+          }
+        }
+      } catch (error) {
+        console.error('Error adding query:', error);
+      }
     }
   };
 
@@ -336,91 +410,79 @@ function Admin({ handleLogout }) {
   const handleEditClick = (query) => {
     setEditingQueryId(query._id);
     setNewQuestion(query.question);
-    setNewAnswer(query.answer)
-    setNewCategory(query.category || 'CCS Faculty-related Queries'); // Default category for promoted queries
-    setShowEditForm(true); // Show the edit form
+    setNewAnswer(query.answer);
+    setNewCategory(query.category || 'CCS Faculty-related Queries');
+    setEditReminderNeeded(query.needs_reminder || false);
+    setEditReminderDate(query.reminder_date ? new Date(query.reminder_date) : null);
+    setShowEditForm(true);
   };
 
   const updateQuestion = async () => {
-
-    if (editingQueryId) {
-      if (newQuestion.trim() !== '' && newAnswer.trim() !== '') {
-
-        // Ensure category has a default if somehow undefined
-        const category = newCategory || 'CCS Faculty-related Queries';
-
-        const updatedQuery = {
-          question: newQuestion,
-          answer: newAnswer,
-          category: newCategory,
-        };
-        console.log('Category being sent:', category); // Debug log
-        console.log('Full update data:', updatedQuery); // Debug log
-        try {
-          const endpoint = activeTab === 'queries'
-            ? `${API_USER_QUERIES}edit/${editingQueryId}/`
-            : `${API_QUERY}edit/${editingQueryId}/`;
-
-          console.log('Sending update request:', {
-            endpoint,
-            queryId: editingQueryId,
-            data: updatedQuery
-          });
-
-          const response = await fetch(endpoint, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedQuery),
-          });
-
-          // Log the full response for debugging
-          const responseBody = await response.text();
-          console.log('Response status:', response.status);
-          console.log('Response body:', responseBody);
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}, body: ${responseBody}`);
-          }
-
-          const result = await JSON.parse(responseBody);
-
-          if (result.status === 'success') {
-            if (activeTab === 'queries') {
-              setUserQueries(userQueries.map(query =>
-                query._id === editingQueryId
-                  ? {
-                    ...query,
-                    ...updatedQuery,
-                    status: 'answered'
-                  }
-                  : query
-              ));
-            } else {
-              setQueries(queries.map(query =>
-                query._id === editingQueryId
-                  ? { ...query, ...updatedQuery }
-                  : query
-              ));
-            }
-
-            setShowEditForm(false);
-            setNewQuestion('');
-            setNewAnswer('');
-            setNewCategory('CCS Faculty-related Queries');
-            alert('Query updated successfully!');
-          } else {
-            console.error('Update failed:', result);
-            alert(`Failed to update the query: ${result.message || 'Unknown error'}`);
-          }
-        } catch (error) {
-          console.error('Error updating query:', error);
-          alert(`Failed to update the query: ${error.message}`);
+    if (editingQueryId && newQuestion.trim() !== '' && newAnswer.trim() !== '') {
+      const updatedQuery = {
+        question: newQuestion,
+        answer: newAnswer,
+        category: newCategory,
+        needs_reminder: editReminderNeeded,
+        reminder_date: editReminderNeeded ? editReminderDate.toISOString() : null
+      };
+  
+      try {
+        const endpoint = activeTab === 'queries'
+          ? `${API_USER_QUERIES}edit/${editingQueryId}/`
+          : `${API_QUERY}edit/${editingQueryId}/`;
+  
+        const response = await fetch(endpoint, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedQuery),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+  
+        const result = await response.json();
+  
+        if (result.status === 'success') {
+          // Update the queries state
+          if (activeTab === 'queries') {
+            setUserQueries(userQueries.map(query =>
+              query._id === editingQueryId
+                ? { ...query, ...updatedQuery }
+                : query
+            ));
+          } else {
+            setQueries(queries.map(query =>
+              query._id === editingQueryId
+                ? { ...query, ...updatedQuery }
+                : query
+            ));
+          }
+  
+          // Reset form and close
+          setShowEditForm(false);
+          setNewQuestion('');
+          setNewAnswer('');
+          setNewCategory('CCS Faculty-related Queries');
+          setEditReminderNeeded(false);
+          setEditReminderDate(null);
+          
+          // Refresh reminders if we're on dashboard
+          if (activeTab === 'dashboard') {
+            fetchReminderQueries();
+          }
+  
+          alert('Query updated successfully!');
+        }
+      } catch (error) {
+        console.error('Error updating query:', error);
+        alert(`Failed to update the query: ${error.message}`);
       }
     } else {
-      alert("Editing query ID is not set. Please select a query to edit.");
+      alert("Please fill in all required fields");
     }
   };
 
@@ -436,15 +498,43 @@ function Admin({ handleLogout }) {
     return grouped;
   }, {});
 
+
+    // Add this component for the stat card
+    const StatCard = ({ title, count, icon }) => (
+      <div className="stat-card">
+        <div className="stat-icon">{icon}</div>
+        <div className="stat-content">
+          <h3>{title}</h3>
+          <p>{count}</p>
+        </div>
+      </div>
+    );
+
   return (
     <div className="admin-container">
       <nav className="navbar">
         <span className="welcome-message">Welcome, Admin</span>
         <div className="navbar-brand">CCSpark</div>
         <div className="nav-buttons">
-          <button className={`nav-btn ${activeTab === 'faqs' ? 'active' : ''}`} onClick={() => setActiveTab('faqs')}>FAQs</button>
-          <button className={`nav-btn ${activeTab === 'queries' ? 'active' : ''}`} onClick={() => setActiveTab('queries')}>User Queries</button>
-        </div>
+  <button 
+    className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`} 
+    onClick={() => setActiveTab('dashboard')}
+  >
+    Dashboard
+  </button>
+  <button 
+    className={`nav-btn ${activeTab === 'faqs' ? 'active' : ''}`} 
+    onClick={() => setActiveTab('faqs')}
+  >
+    FAQs
+  </button>
+  <button 
+    className={`nav-btn ${activeTab === 'queries' ? 'active' : ''}`} 
+    onClick={() => setActiveTab('queries')}
+  >
+    User Queries
+  </button>
+</div>
         <button className="logout-btn" onClick={logout}>LOG OUT</button>
       </nav>
 
@@ -523,95 +613,171 @@ function Admin({ handleLogout }) {
         </aside>
 
         <main className="filter-results">
-          {activeTab === 'faqs' ? (
-            // FAQ content
-            Object.keys(groupedByCategory).length === 0 ? (
-              // For Panoramics
-              <div className="panoramic-list">
-                {Object.keys(groupedPanoramics).map(groupName => (
-                  <div key={groupName} className="panoramic-item">
-                    <div className="panoramic-header">
-                      <h3>{groupName}</h3>
-                    </div>
-                    <div className="panoramic-content">
-                      {groupedPanoramics[groupName].map(panoramic => (
-                        <div
-                          key={panoramic._id}
-                          className={panoramic.category === 'thumbnail' ? 'thumbnail-image-container' : 'panoramic-image-container'}
-                          style={{ flex: panoramic.category === 'thumbnail' ? '0 0 30%' : '1' }}
-                        >
-                          <p className='image-title'>
-                            {panoramic.category === 'thumbnail' ? "Thumbnail Image" : "Panoramic Image"}
-                          </p>
-                          <img
-                            src={panoramic.s3url}
-                            alt={panoramic.filename}
-                            className={panoramic.category === 'thumbnail' ? 'thumbnail-image admin-image' : 'panoramic-image admin-image'}
-                          />
-                          {panoramic.category === 'thumbnail' && (
-                            <>
-                              <p className='image-location'><strong>Location:</strong> {panoramic.location}</p>
-                              <p className='image-description'><strong>Description: </strong>{panoramic.description}</p>
-                            </>
-                          )}
-                        </div>
-                      ))}
-                      <button className="delete-btn" onClick={() => deletePanoramicsByGroupName(groupName)}>
-                        Delete Group
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              Object.keys(groupedByCategory).map(category => (
-                <div key={category} className="query-section">
-                  <div className="query-category">{category}</div>
-                  {groupedByCategory[category].map(query => (
-                    <div key={query._id} className="query-box">
-                      <p><strong>Q:</strong> {query.question}</p>
-                      <p><strong>A:</strong> {query.answer}</p>
-                      <div className="action-buttons">
-                        <button className="edit-btn" onClick={() => handleEditClick(query)}>Edit</button>
-                        <button className="delete-btn" onClick={() => deleteQuery(query._id)}>Delete</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))
-
-            )
-          ) : (
-            // User queries content
-            <div>
-              {userQueries.length === 0 ? (
-                <p>No user queries found.</p>
-              ) : (
-                <div className="query-section">
-                  <div className="query-category">User Queries</div>
-                  {userQueries.map(query => (
-                    <div key={query._id} className="query-box">
-                      <p><strong>Question:</strong> {query.question}</p>
-                      <p><strong>Answer:</strong> {query.answer}</p>
-                      <p><strong>Category:</strong> {query.category}</p>
-                      <p><strong>Status:</strong> {query.status}</p>
-                      <div className="action-buttons">
-                        <button className="promote-btn" onClick={() => promoteToFAQ(query)}>
-                          Promote to FAQ
-                        </button>
-                        <button className="edit-btn" onClick={() => handleEditClick(query)}>
-                          Edit
-                        </button>
-                        <button className="delete-btn" onClick={() => deleteUserQuery(query._id)}>
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {activeTab === 'dashboard' ? (
+  <div className="dashboard-container">
+    {dashboardStats && (
+      <>
+        <div className="dashboard-header">
+          <h2>Dashboard Overview</h2>
+        </div>
+        <div className="stats-container">
+          <div className="stats-grid">
+            <StatCard 
+              title="Frequently Asked Questions" 
+              count={dashboardStats.faq_stats["Frequently Asked Questions"]}
+              icon={<FaQuestion />}
+            />
+            <StatCard 
+              title="Faculty Queries" 
+              count={dashboardStats.faq_stats["CCS Faculty-related Queries"]}
+              icon={<FaUsers />}
+            />
+            <StatCard 
+              title="Student Orgs" 
+              count={dashboardStats.faq_stats["CCS Student Orgs"]}
+              icon={<FaUsers />}
+            />
+            <StatCard 
+              title="CCS Events" 
+              count={dashboardStats.faq_stats["CCS Events"]}
+              icon={<FaUsers />}
+            />
+            <StatCard 
+              title="Panoramic Groups" 
+              count={dashboardStats.panoramic_groups}
+              icon={<FaImage />}
+            />
+            <StatCard 
+              title="Unanswered Queries" 
+              count={dashboardStats.pending_queries}
+              icon={<FaExclamationCircle />}
+            />
+          </div>
+        </div>
+        <div className="reminder-queries">
+  <h3 style={{ color: 'white', marginBottom: '15px' }}>Queries Due for Update</h3>
+  {reminderQueries.length > 0 ? (
+    reminderQueries.map(query => {
+      const isDue = new Date(query.reminder_date) <= new Date();
+      
+      return (
+        <div key={query._id} className="reminder-item" style={{
+          borderLeft: isDue ? '4px solid #ff4d4d' : 'none'
+        }}>
+          <div className="reminder-content">
+            <p><strong>Question:</strong> {query.question}</p>
+            <p><strong>Answer:</strong> {query.answer}</p>
+            <p><strong>Category:</strong> {query.category}</p>
+            <p><strong>Update Due:</strong> {' '}
+              <span style={{ color: isDue ? '#ff4d4d' : 'inherit' }}>
+                {new Date(query.reminder_date).toLocaleDateString()}
+              </span>
+            </p>
+          </div>
+          <div className="action-buttons">
+            <button className="edit-btn" onClick={() => handleEditClick(query)}>
+              Update Now
+            </button>
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <p style={{ color: 'white' }}>No queries pending update</p>
+  )}
+</div>
+      </>
+    )}
+   
+  </div>
+  ) : activeTab === 'faqs' ? (
+    // FAQ content
+    Object.keys(groupedByCategory).length === 0 ? (
+      // For Panoramics
+      <div className="panoramic-list">
+        {Object.keys(groupedPanoramics).map(groupName => (
+          <div key={groupName} className="panoramic-item">
+            <div className="panoramic-header">
+              <h3>{groupName}</h3>
             </div>
-          )}
+            <div className="panoramic-content">
+              {groupedPanoramics[groupName].map(panoramic => (
+                <div
+                  key={panoramic._id}
+                  className={panoramic.category === 'thumbnail' ? 'thumbnail-image-container' : 'panoramic-image-container'}
+                  style={{ flex: panoramic.category === 'thumbnail' ? '0 0 30%' : '1' }}
+                >
+                  <p className='image-title'>
+                    {panoramic.category === 'thumbnail' ? "Thumbnail Image" : "Panoramic Image"}
+                  </p>
+                  <img
+                    src={panoramic.s3url}
+                    alt={panoramic.filename}
+                    className={panoramic.category === 'thumbnail' ? 'thumbnail-image admin-image' : 'panoramic-image admin-image'}
+                  />
+                  {panoramic.category === 'thumbnail' && (
+                    <>
+                      <p className='image-location'><strong>Location:</strong> {panoramic.location}</p>
+                      <p className='image-description'><strong>Description: </strong>{panoramic.description}</p>
+                    </>
+                  )}
+                </div>
+              ))}
+              <button className="delete-btn" onClick={() => deletePanoramicsByGroupName(groupName)}>
+                Delete Group
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      Object.keys(groupedByCategory).map(category => (
+        <div key={category} className="query-section">
+          <div className="query-category">{category}</div>
+          {groupedByCategory[category].map(query => (
+            <div key={query._id} className="query-box">
+              <p><strong>Q:</strong> {query.question}</p>
+              <p><strong>A:</strong> {query.answer}</p>
+              <div className="action-buttons">
+                <button className="edit-btn" onClick={() => handleEditClick(query)}>Edit</button>
+                <button className="delete-btn" onClick={() => deleteQuery(query._id)}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))
+    )
+  ) : activeTab === 'queries' ? (
+    // User queries content
+    <div>
+      {userQueries.length === 0 ? (
+        <p>No user queries found.</p>
+      ) : (
+        <div className="query-section">
+          <div className="query-category">User Queries</div>
+          {userQueries.map(query => (
+            <div key={query._id} className="query-box">
+              <p><strong>Question:</strong> {query.question}</p>
+              <p><strong>Answer:</strong> {query.answer}</p>
+              <p><strong>Category:</strong> {query.category}</p>
+              <p><strong>Status:</strong> {query.status}</p>
+              <div className="action-buttons">
+                <button className="promote-btn" onClick={() => promoteToFAQ(query)}>
+                  Promote to FAQ
+                </button>
+                <button className="edit-btn" onClick={() => handleEditClick(query)}>
+                  Edit
+                </button>
+                <button className="delete-btn" onClick={() => deleteUserQuery(query._id)}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  ) : null}
         </main>
         <button className="add-image-btn" onClick={() => setShowUploadForm(true)}><img src={UploadImage} className='upload-image-icon'></img></button>
         <button className="add-question-btn" onClick={() => setShowAddForm(true)}>+</button>
@@ -648,6 +814,31 @@ function Admin({ handleLogout }) {
               onChange={(e) => setNewAnswer(e.target.value)}
               placeholder="Enter the answer"
             />
+
+<div className="reminder-section">
+      <div className="reminder-checkbox">
+        <input
+          type="checkbox"
+          id="needs-reminder"
+          checked={needsReminder}
+          onChange={(e) => setNeedsReminder(e.target.checked)}
+        />
+        <label htmlFor="needs-reminder">Set Update Reminder</label>
+      </div>
+      
+      {needsReminder && (
+        <div className="date-picker-wrapper">
+          <DatePicker
+            selected={reminderDate}
+            onChange={(date) => setReminderDate(date)}
+            minDate={new Date()}
+            dateFormat="MMMM d, yyyy"
+            placeholderText="Select reminder date"
+            className="date-picker-input"
+          />
+        </div>
+      )}
+    </div>
 
             <button className="save-btn" onClick={addQuestion}>Save</button>
             <button className="cancel-btn" onClick={() => setShowAddForm(false)}>Cancel</button>
@@ -712,43 +903,68 @@ function Admin({ handleLogout }) {
           </>
         )}
 
-        {showEditForm && ( // Add Edit Form UI
-          <div className="edit-question-form">
-            <h3>Edit Question</h3>
-            <label htmlFor="category">Category</label>
-            <select
-              id="category"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-            >
-              <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
-              <option value="CCS Student Orgs">CCS Student Orgs</option>
-              <option value="CCS Events">CCS Events</option>
-              <option value="Frequently Asked Questions">FAQs</option>
-            </select>
+{showEditForm && (
+  <div className="edit-question-form">
+    <h3>Edit Question</h3>
+    <label htmlFor="category">Category</label>
+    <select
+      id="category"
+      value={newCategory}
+      onChange={(e) => setNewCategory(e.target.value)}
+    >
+      <option value="CCS Faculty-related Queries">CCS Faculty-related Queries</option>
+      <option value="CCS Student Orgs">CCS Student Orgs</option>
+      <option value="CCS Events">CCS Events</option>
+      <option value="Frequently Asked Questions">FAQs</option>
+    </select>
 
-            <label htmlFor="question">Question</label>
-            <input
-              id="question"
-              type="text"
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
-              placeholder="Edit your question"
-            />
+    <label htmlFor="question">Question</label>
+    <input
+      id="question"
+      type="text"
+      value={newQuestion}
+      onChange={(e) => setNewQuestion(e.target.value)}
+      placeholder="Edit your question"
+    />
 
-            <label htmlFor="answer">Answer</label>
-            <input
-              id="answer"
-              type="text"
-              value={newAnswer}
-              onChange={(e) => setNewAnswer(e.target.value)}
-              placeholder="Edit the answer"
-            />
+    <label htmlFor="answer">Answer</label>
+    <input
+      id="answer"
+      type="text"
+      value={newAnswer}
+      onChange={(e) => setNewAnswer(e.target.value)}
+      placeholder="Edit the answer"
+    />
 
-            <button className="save-btn" onClick={updateQuestion}>Update</button>
-            <button className="cancel-btn" onClick={() => setShowEditForm(false)}>Cancel</button>
-          </div>
-        )}
+    <div className="reminder-section">
+      <div className="reminder-checkbox">
+        <input
+          type="checkbox"
+          id="edit-needs-reminder"
+          checked={editReminderNeeded}
+          onChange={(e) => setEditReminderNeeded(e.target.checked)}
+        />
+        <label htmlFor="edit-needs-reminder">Set Update Reminder</label>
+      </div>
+      
+      {editReminderNeeded && (
+        <div className="date-picker-wrapper">
+          <DatePicker
+            selected={editReminderDate}
+            onChange={(date) => setEditReminderDate(date)}
+            minDate={new Date()}
+            dateFormat="MMMM d, yyyy"
+            placeholderText="Select reminder date"
+            className="date-picker-input"
+          />
+        </div>
+      )}
+    </div>
+
+    <button className="save-btn" onClick={updateQuestion}>Update</button>
+    <button className="cancel-btn" onClick={() => setShowEditForm(false)}>Cancel</button>
+  </div>
+)}
       </div>
     </div>
   );
