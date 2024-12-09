@@ -3,8 +3,10 @@ import React, { useState } from 'react'; // Import useState
 import Login from './login_page/login.js';
 import Admin from './admin_page/admin.js';
 import Chatbot from './chatbot_page/chatbot.js';
+import VirtualTour from './virtual_tour/virtual_tour.js';
 import Landing from './landing_page/landing.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './index.css';
 
 function App() {
   // Define state to manage authentication
@@ -26,6 +28,7 @@ function App() {
           element={<Admin handleLogout={handleLogout} />} // Pass handleLogout
         />
         <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/virtual-tour" element={<VirtualTour />} />
         <Route path="/" element={<Landing />} />
       </Routes>
     </Router>
