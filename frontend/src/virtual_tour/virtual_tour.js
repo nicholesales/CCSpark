@@ -9,7 +9,6 @@ import { MdScreenRotation } from 'react-icons/md';
 import './virtual_tour.css';
 import logo from "./assets/CCSpark-logo.png";
 import panorama1 from "./assets/cylindricalPhotos/comp_lab_smaller.png";
-import { set } from "mongoose";
 
 const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
 
@@ -419,7 +418,7 @@ function RoomGrid() {
                     <button
                         onClick={() => window.location.href = '/'}
                         className="w-full px-4 py-2 
-            bg-gradient-to-r from-deep-sea to-ocean-blue  text-sm font-medium
+            bg-gradient-to-r from-deep-sea to-ocean-blue text-white text-sm font-medium
             rounded-lg shadow-lg transform hover:-translate-y-0.5 hover:shadow-xl
             transition-all duration-300 ease-out border border-accent-light/20
             flex items-center justify-center gap-2"
@@ -520,7 +519,7 @@ function ChatIcon() {
 function ViewHandler({ imagesource }) {
     const projection = useMemo(() => new CylindricalProjection({
         src: imagesource,
-        partial: true
+        partial: false
     }), [imagesource]);
 
     return (
