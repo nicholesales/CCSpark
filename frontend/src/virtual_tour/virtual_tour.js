@@ -3,6 +3,8 @@ import View360, { CylindricalProjection } from "@egjs/react-view360";
 import "@egjs/react-view360/css/view360.min.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FaMobileAlt, FaArrowRight } from 'react-icons/fa';
+import { MdScreenRotation } from 'react-icons/md';
 
 import './virtual_tour.css';
 import logo from "./assets/CCSpark-logo.png";
@@ -75,10 +77,54 @@ function TopDiv() {
     return (
         <div>
             {isVisible && (
-                <div className="top-div" id="topDiv">
-                    <div className="landscape-warning">
-                        Please rotate your screen to <b>Landscape</b> to view the Virtual Tour or go to chatbot
-                        <ChatIcon />
+                <div className="fixed inset-0 orientation-modal z-50 flex items-center justify-center">
+                    <div className="max-w-md p-8 rounded-xl bg-midnight-blue/30 backdrop-blur-md border border-accent-light/20 text-center space-y-6">
+                        <div className="flex justify-center mb-4">
+                            <div className="relative">
+                                <FaMobileAlt className="text-6xl text-accent-light rotate-0" />
+                                <MdScreenRotation className="absolute -right-8 -bottom-4 text-4xl text-accent-light animate-pulse" />
+                            </div>
+                        </div>
+                        <h2 className="text-2xl font-bold text-text-color">
+                            This is the Virtual Tour Page
+                        </h2>
+                        <div className="flex items-center justify-center space-x-4 text-text-muted">
+                            <div className="transform rotate-0">
+                                <FaMobileAlt className="text-3xl" />
+                            </div>
+                            <FaArrowRight className="text-xl animate-bounce" />
+                            <div className="transform rotate-90">
+                                <FaMobileAlt className="text-3xl" />
+                            </div>
+                        </div>
+
+                        <p className="text-lg text-text-color">
+                            For the best experience, please switch to <span className="font-bold text-accent-light">landscape mode</span>
+                        </p>
+
+                        <div className="pt-4">
+                            <p className="text-sm text-text-muted">or</p>
+                            <button
+                                onClick={() => window.location.href = '/chatbot'}
+                                className="mt-4 px-6 py-3 bg-accent-light text-text-color font-medium
+                                    rounded-lg shadow-lg hover:shadow-xl
+                                    transform hover:-translate-y-0.5 hover:scale-105
+                                    transition-all duration-300 ease-out
+                                    border border-accent-light/20
+                                    active:transform active:translate-y-0.5
+                                    cursor-pointer
+                                    relative
+                                    after:absolute after:inset-0 after:rounded-lg
+                                    after:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]"
+                            >
+                                <span className="relative z-10 flex items-center justify-center">
+                                    Go to Chatbot
+                                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -87,8 +133,9 @@ function TopDiv() {
 }
 
 function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActive, isSpeaking }) {
-    console.log(`Thumbnail URL for ${roomname}:`, thumbnailURL); // Debug log
+    // console.log(`Thumbnail URL for ${roomname}:`, thumbnailURL); // Debug log
     return (
+
         <div
             className={amIActive ? "col thumbnail active-thumbnail" : "col thumbnail hoverable"}
             style={{ backgroundImage: `url(${thumbnailURL})` }}
@@ -110,25 +157,10 @@ function RoomThumbnail({ thumbnailURL, changePanorama, roomname, divID, amIActiv
 }
 
 function RoomGrid() {
-    const locations = [
-        ["A205", "A206", "A207"],
-        ["2nd Floor Arlegui Bldg."],
-        ["A207"],
-        ["A222", "A223"],
-        ["A211", "A213", "A215"]
-    ];
-
-    const descriptions = [
-        <>The computer laboratories used by the <strong>CCS Department</strong> at T.I.P Manila are equipped with <strong>40 Windows PCs</strong> for student use, along with one dedicated PC for the professor. Each workstation has <strong>two power sockets</strong> for added convenience. To ensure a comfortable learning environment, the lab features <strong>two air-conditioning units</strong>, <strong>four wall fans</strong>, and <strong>two ceiling fans</strong>. The room also includes a <strong>glass whiteboard</strong> for collaborative discussions, as well as a <strong>projector</strong> and <strong>projector screen</strong> for multimedia presentations, making it an ideal space for both lectures and hands-on learning.</>,
-        <>The <strong>College of Computer Studies (CCS) Department</strong> at T.I.P Manila is located on the <strong>2nd floor of the Arlegui Building</strong>, right across from Room A-211. Here, students can find the Dean's Office, the Secretary, and faculty offices, where dedicated staff and instructors are available to assist. This department houses the Program Chairs for <strong>Computer Science (CS)</strong>, <strong>Information Technology (IT)</strong>, <strong>Information Systems (IS)</strong>, and <strong>Entertainment and Multimedia Computing (EMC)</strong>. The CCS Department is a hub for academic support and guidance, offering students resources and advising in their chosen fields.</>,
-        <>The <strong>MAC Laboratory</strong> at <strong>T.I.P Manila</strong> is situated in Room <strong>A-207</strong> and is equipped with <strong>30 MAC PCs</strong> for student use, along with an additional <strong>MAC PC</strong> dedicated to the professor. The lab provides a comfortable learning environment with <strong>two window-type air conditioning units</strong> to ensure a cool atmosphere. It also features a <strong>projector</strong>, allowing instructors to share presentations and demonstrate software in real-time, making it an ideal space for interactive and hands-on learning in multimedia and design applications.</>,
-        <>The <strong>Oracle Room</strong> at <strong>T.I.P Manila</strong> is a modern computer lab equipped with <strong>30 Windows PCs</strong> for students and a <strong>central PC</strong> dedicated to the professor for optimal visibility and interaction. The room is designed for a focused learning experience, featuring a <strong>glass whiteboard</strong> for collaborative discussions, a <strong>projector</strong>, and a <strong>projector screen</strong> for multimedia presentations. Depending on the specific Oracle Room, it is cooled by either <strong>one or two split-type air-conditioning units</strong>, ensuring a comfortable environment. Security is enhanced with a <strong>360-degree CCTV camera</strong>, providing comprehensive coverage of the room.</>,
-        <>The <strong>Lecture Room</strong> is a <strong>well-equipped educational space</strong> designed for up to <strong>40 students</strong>, with additional <strong>auxiliary seating</strong> for special sessions. Each room includes a <strong>wall-mounted whiteboard</strong> and a <strong>ceiling-mounted projector screen</strong> for versatile instruction. Dual <strong>air-conditioning units</strong> ensure a comfortable environment during standard 2-hour sessions. To block sunlight from outside, windows are fitted with a <strong>tarpaulin cover</strong>. The <strong>organized seating</strong> provides clear sightlines, ideal for both traditional lectures and multimedia presentations.</>
-    ];
 
     // const [roomName, setRoomName] = useState(roomnames[0]); // Remove this after determining that it works
-    const [location, setLocation] = useState(locations[0]);
-    const [description, setDescription] = useState(descriptions[0]);
+    const [location, setLocation] = useState([]);
+    const [description, setDescription] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [audio, setAudio] = useState(null);
