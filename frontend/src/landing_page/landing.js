@@ -114,46 +114,85 @@ const LandingPage = () => {
             </nav>
             <main className="p-4">
                 <section id="programs" className="mb-8 section">
-                    <h2 className="text-4xl font-bold mb-8 text-text-color border-b-4 border-ocean-blue pb-4 text-center tracking-wide uppercase">Programs Offered</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="bg-white rounded shadow landing-card">
-                            <img src={CSImage} alt="Program 1" className="w-full h-48 object-cover rounded" />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold">Computer Science</h3>
-                                <p className="">The Bachelor of Science in Computer Science program prepares students for the digital future through rigorous training in programming, algorithms, artificial intelligence, and software development. Students learn to solve complex problems using computational thinking and cutting-edge technologies.</p>
+                    <h2 className="text-4xl font-bold mb-8 text-text-color border-b-4 border-ocean-blue pb-4 text-center tracking-wide uppercase">
+                        Programs Offered
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="bg-gradient-to-br from-faculty-card to-deep-sea rounded-xl shadow-xl overflow-hidden flex flex-col">
+                            <img src={CSImage} alt="Computer Science" className="w-full h-48 object-cover" />
+                            <div className="p-6 flex flex-col flex-grow">
+                                <h3 className="text-xl font-semibold text-text-color mb-3">Computer Science</h3>
+                                <p className="text-text-muted mb-4 flex-grow">
+                                    The Bachelor of Science in Computer Science program prepares students for the digital future through rigorous training in programming, algorithms, artificial intelligence, and software development. Students learn to solve complex problems using computational thinking and cutting-edge technologies.
+                                </p>
+                                <a
+                                    href="https://drive.google.com/file/d/1GRXxoT1PwLUqQE1BNIkfQCFC_fxQ8Cxa/view"
+                                    className="inline-block w-full text-center px-4 py-2 bg-accent-light/20 rounded-lg 
+                        hover:bg-accent-light/30 transition-all duration-300 text-text-color 
+                        border border-accent-light/30 mt-auto"
+                                >
+                                    View Courses and Prerequisites
+                                </a>
                             </div>
                         </div>
-                        <div className="bg-white rounded shadow landing-card">
-                            <img src={ITImage} alt="Program 2" className="w-full h-48 object-cover rounded" />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold">Information Technology</h3>
-                                <p className="text-justify">The Bachelor of Science in Information Technology program equips students with practical skills in network administration, database management, web development, and IT infrastructure. Students learn to implement, maintain, and secure technology solutions for modern business needs.</p>
+
+                        <div className="bg-gradient-to-br from-faculty-card to-deep-sea rounded-xl shadow-xl overflow-hidden flex flex-col">
+                            <img src={ITImage} alt="Information Technology" className="w-full h-48 object-cover" />
+                            <div className="p-6 flex flex-col flex-grow">
+                                <h3 className="text-xl font-semibold text-text-color mb-3">Information Technology</h3>
+                                <p className="text-text-muted mb-4 flex-grow">
+                                    The Bachelor of Science in Information Technology program equips students with practical skills in network administration, database management, web development, and IT infrastructure. Students learn to implement, maintain, and secure technology solutions for modern business needs.
+                                </p>
+                                <a
+                                    href="https://drive.google.com/file/d/1DDayvvJUIeeXbCyIUwHLN3O1DnMSrfa-/view"
+                                    className="inline-block w-full text-center px-4 py-2 bg-accent-light/20 rounded-lg 
+                        hover:bg-accent-light/30 transition-all duration-300 text-text-color 
+                        border border-accent-light/30 mt-auto"
+                                >
+                                    View Courses and Prerequisites
+                                </a>
                             </div>
                         </div>
-                        <div className="bg-white rounded shadow landing-card">
-                            <img src={EMCImage} alt="Program 3" className="w-full h-48 object-cover rounded" />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold">Entertainment and Multimedia Computing</h3>
-                                <p className="text-justify">The Bachelor of Science in Entertainment and Multimedia Computing program focuses on digital content creation, game development, animation, and interactive media. Students develop creative and technical skills in designing engaging digital experiences while learning industry-standard tools and technologies.</p>
+
+                        <div className="bg-gradient-to-br from-faculty-card to-deep-sea rounded-xl shadow-xl overflow-hidden flex flex-col">
+                            <img src={EMCImage} alt="Entertainment and Multimedia Computing" className="w-full h-48 object-cover" />
+                            <div className="p-6 flex flex-col flex-grow">
+                                <h3 className="text-xl font-semibold text-text-color mb-3">Entertainment and Multimedia Computing</h3>
+                                <p className="text-text-muted mb-4 flex-grow">
+                                    The Bachelor of Science in Entertainment and Multimedia Computing program focuses on digital content creation, game development, animation, and interactive media. Students develop creative and technical skills in designing engaging digital experiences while learning industry-standard tools and technologies.
+                                </p>
+                                <a
+                                    href="https://drive.google.com/file/d/1TZtuvsN7pSnGlIxGMHhnezwVcTinRI6o/view"
+                                    className="inline-block w-full text-center px-4 py-2 bg-accent-light/20 rounded-lg 
+                        hover:bg-accent-light/30 transition-all duration-300 text-text-color 
+                        border border-accent-light/30 mt-auto"
+                                >
+                                    View Courses and Prerequisites
+                                </a>
                             </div>
                         </div>
-                        <div className="bg-white rounded shadow landing-card">
-                            <img src={ISImage} alt="Program 4" className="w-full h-48 object-cover rounded" />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold">Information Systems</h3>
-                                <p className="text-justify">The Bachelor of Science in Information Systems program combines business and technology, focusing on how information technology supports organizational strategy and operations. Students learn to analyze business needs, design technology solutions, and manage information systems that drive organizational success.</p>
+
+                        <div className="bg-gradient-to-br from-faculty-card to-deep-sea rounded-xl shadow-xl overflow-hidden flex flex-col">
+                            <img src={ISImage} alt="Information Systems" className="w-full h-48 object-cover" />
+                            <div className="p-6 flex flex-col flex-grow">
+                                <h3 className="text-xl font-semibold text-text-color mb-3">Information Systems</h3>
+                                <p className="text-text-muted mb-4 flex-grow">
+                                    The Bachelor of Science in Information Systems program combines business and technology, focusing on how information technology supports organizational strategy and operations. Students learn to analyze business needs, design technology solutions, and manage information systems that drive organizational success.
+                                </p>
                             </div>
                         </div>
-                        <div className="bg-white rounded shadow landing-card">
-                            <img src={DSAImage} alt="Program 4" className="w-full h-48 object-cover rounded" />
-                            <div className="p-4">
-                                <h3 className="text-xl font-semibold">Data Science and Analytics</h3>
-                                <p className="text-justify">The Bachelor of Science in Data Science and Analytics program prepares students to extract insights from complex data sets using statistical analysis, machine learning, and visualization techniques. Students develop expertise in data mining, predictive modeling, and business intelligence to drive data-informed decision making.</p>
+
+                        <div className="bg-gradient-to-br from-faculty-card to-deep-sea rounded-xl shadow-xl overflow-hidden flex flex-col">
+                            <img src={DSAImage} alt="Data Science and Analytics" className="w-full h-48 object-cover" />
+                            <div className="p-6 flex flex-col flex-grow">
+                                <h3 className="text-xl font-semibold text-text-color mb-3">Data Science and Analytics</h3>
+                                <p className="text-text-muted mb-4 flex-grow">
+                                    The Bachelor of Science in Data Science and Analytics program prepares students to extract insights from complex data sets using statistical analysis, machine learning, and visualization techniques. Students develop expertise in data mining, predictive modeling, and business intelligence to drive data-informed decision making.
+                                </p>
                             </div>
                         </div>
                     </div>
                 </section>
-                // Replace the faculty section with:
                 <section id="faculty" className="mb-8 section">
                     <h2 className="text-4xl font-bold mb-8 text-text-color border-b-4 border-ocean-blue pb-4 text-center tracking-wide uppercase">Faculty Members</h2>
 
