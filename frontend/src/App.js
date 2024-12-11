@@ -5,6 +5,9 @@ import Admin from './admin_page/admin.js';
 import Chatbot from './chatbot_page/chatbot.js';
 import VirtualTour from './virtual_tour/virtual_tour.js';
 import Landing from './landing_page/landing.js';
+import CSPrereq from './courses_page/cs/cs_prereq.js';
+import EMCPrereq from './courses_page/emc/emc_prereq.js';
+import ITPrereq from './courses_page/it/it_prereq.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 
@@ -29,6 +32,9 @@ function App() {
         />
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/virtual-tour" element={<VirtualTour />} />
+        <Route path="/cs-courses" element={<CSPrereq />} />
+        <Route path="/emc-courses" element={<EMCPrereq />} />
+        <Route path="/it-courses" element={<ITPrereq />} />
         <Route path="/" element={<Landing />} />
       </Routes>
     </Router>
