@@ -1,0 +1,17 @@
+.overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #CBD5E0 #EDF2F7;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+    height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: #EDF2F7;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background-color: #CBD5E0;
+    border-radius: 4px;
+}
