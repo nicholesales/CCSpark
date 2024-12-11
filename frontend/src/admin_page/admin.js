@@ -562,7 +562,7 @@ function Admin({ handleLogout }) {
       </nav>
 
       <div className="content">
-        <aside className="filters">
+        {activeTab == 'faqs' && (<aside className="filters">
           <h2>Filters</h2>
           <ul>
             <li>
@@ -623,6 +623,7 @@ function Admin({ handleLogout }) {
           </ul>
           <button className="apply-filter-btn" onClick={applyFilter}>Apply Filter</button>
         </aside>
+        )}
 
         <main className="filter-results">
           {activeTab === 'dashboard' ? (
