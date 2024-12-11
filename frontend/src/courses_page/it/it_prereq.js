@@ -1,138 +1,144 @@
 import React from 'react';
-import './cs_prereq.css';
+import './it_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
 
-function CSPrereg() {
+function ITPrereg() {
     const tableHeader = ["Cat.", "No.", "Descriptive Title", "Prerequisite/s", "Lec Hrs/Wk", "Lab Hrs/Wk", "Units"];
 
     const prereq_headers = [
-        "1st Year, First Semester (20 Units)",
-        "1st Year, Second Semester (21 Units)",
-        "2nd Year, First Semester (24 Units)",
-        "2nd Year, Second Semester (24 Units)",
+        "1st Year, First Semester (17 Units)",
+        "1st Year, Second Semester (20 Units)",
+        "2nd Year, First Semester (23 Units)",
+        "2nd Year, Second Semester (23 Units)",
         "3rd Year, First Semester (24 Units)",
-        "3rd Year, Second Semester (25 Units)",
+        "3rd Year, Second Semester (24 Units)",
         "3rd Year, Summer (9 Units)",
-        "4th Year, First Semester (15 Units)",
-        "4th Year, Second Semester (6 Units)",
-        "Track Elective 1: Intelligent Systems",
-        "Track Elective 2: Game Development",
-        "Free Elective Courses (3 Units)"
+        "4th Year, First Semester (18 Units)",
+        "4th Year, Second Semester (12 Units)",
+        "Track Elective 1: Animation and Mobile Application Development",
+        "Track Elective 2: Cyber Security",
+        "Track Elective 3: Analytics",
+        "Prof. Elective Courses (12 Units)"
     ];
 
-    // Done
     const firstyr_firstsem_prerequisites = [
+        ["GEC", "002", "Reading in Philippine History", "", "3", "0", "3"],
         ["GEC", "004", "Mathematics in the Modern World", "", "3", "0", "3"],
-        ["GEC", "001", "Understanding the Self", "", "3", "0", "3"],
-        ["MATH", "002A", "Linear Algebra with MATLAB", "", "2", "3", "3"],
         ["CITE", "001", "Introduction to Computing", "", "2", "3", "3"],
         ["CITE", "002", "Computer Programming 1", "", "2", "3", "3"],
+        ["MATH", "022", "Linear Algebra", "", "3", "0", "3"],
         ["PE", "101", "Physical Education 1", "", "2", "0", "2"],
-        ["NSTP", "101", "National Service Training Program 1", "", "(3)", "0", "(3)"],
+        ["NSTP", "101", "National Service Training Program 1", "", "(3)", "0", "(3)"]
     ];
 
-    // Done
     const firstyr_secondsem_prerequisites = [
+        ["GEC", "001", "Understanding the Self", "", "3", "0", "3"],
         ["GEC", "005", "Purposive Communication", "", "3", "0", "3"],
-        ["GEC", "003", "The Contemporary World", "", "3", "0", "3"],
         ["GEC", "006", "Art Appreciation", "", "3", "0", "3"],
-        ["MATH", "031", "Symbolic Logic", "MATH 027", "3", "0", "3"],
-        ["MATH", "018", "Calculus 1 (Differential Calculus)", "MATH 002A", "4", "0", "4"],
+        ["MATH", "025", "Discrete Mathematics", "MATH 031", "3", "0", "3"],
         ["CITE", "003", "Computer Programming 2", "CITE 002", "2", "3", "3"],
+        ["CITE", "012", "Introduction to Human Computer Interaction", "CITE 002", "2", "3", "3"],
         ["PE", "102", "Physical Education 2", "PE 101", "2", "0", "2"],
-        ["NSTP", "102", "National Service Training Program 2", "NSTP 101", "(3)", "0", "(3)"],
+        ["NSTP", "002", "National Service Training Program 2", "NSTP 001", "(3)", "0", "(3)"]
     ];
 
-    // Done
     const secondyr_firstsem_prerequisites = [
+        ["CITE", "004", "Data Structures and Algorithms", "CITE 003", "2", "3", "3"],
+        ["PELEC", "001", "Pref. Elective 1", "", "2", "3", "3"],
+        ["CIT", "202", "Web Systems and Technologies", "CITE 003, CITE 012", "2", "3", "3"],
+        ["CIT", "201", "System Analysis and Design", "CITE 003, CITE 012", "2", "3", "3"],
+        ["BIO", "001A", "Modern Biology", "", "2", "3", "3"],
         ["GEC", "008", "Ethics", "", "3", "0", "3"],
-        ["GEC", "002", "Readings in Philippine History", "", "3", "0", "3"],
-        ["MATH", "019", "Calculus 2 (Integral Calculus)", "MATH 018", "4", "0", "4"],
-        ["CCS", "201", "Object-Oriented Programming", "CITE 003", "2", "3", "3"],
-        ["CIT", "306", "Mobile Computing", "CITE 002", "2", "3", "3"],
-        ["CCS", "202", "Principles of Programming Languages", "CITE 001, CITE 002", "3", "0", "3"],
-        ["CCS", "203", "Computer Architecture and Organization", "CITE 001", "2", "3", "3"],
+        ["GEC", "007", "Science, Technology, and Society", "", "3", "0", "3"],
         ["PE", "201", "Physical Education 3", "PE 102", "2", "0", "2"]
     ];
 
-    // Done
     const secondyr_secondsem_prerequisites = [
-        ["GEC", "007", "Science, Technology, and Society", "", "3", "0", "3"],
-        ["MATH", "029", "Introduction to Numerical Analysis", "MATH 018", "3", "0", "3"],
-        ["PHYS", "001S", "Calculus-Based Physics 1", "MATH 019", "3", "3", "4"],
-        ["MATH", "025", "Discrete Mathematics", "MATH 031", "3", "0", "3"],
-        ["CCS", "204", "Operating Systems", "CCS 203", "3", "0", "3"],
-        ["CITE", "004", "Data Structures and Algorithms", "CCS 201", "2", "3", "3"],
-        ["CITE", "005", "Information Management", "CITE 003", "2", "3", "3"],
+        ["GEM", "001", "Life and Works of Rizal", "", "3", "0", "3"],
+        ["GEC", "003", "The Contemporary World", "", "3", "0", "3"],
+        ["MATH", "028", "Applied Statistics", "MATH 022", "2", "3", "3"],
+        ["CITE", "005A", "Information Management", "CITE 003, CITE 004", "2", "3", "3"],
+        ["PELEC", "002", "Prof. Elective 2", "", "2", "3", "3"],
+        ["CIT", "203", "Platform Technologies", "CITE 004", "2", "3", "3"],
+        ["CHM", "001A", "General Chemistry", "", "2", "3", "3"],
         ["PE", "202", "Physical Education 4", "PE 201", "2", "0", "2"]
     ];
 
-    // Done
     const thirdyr_firstsem_prerequisites = [
-        ["GEE", "001", "GEC Elective 1", "", "3", "0", "3"],
-        ["GEM", "007", "Life and Works of Rizal", "", "3", "0", "3"],
-        ["MATH", "032", "Probability and Statistics", "MATH 027", "2", "3", "3"],
-        ["CCS", "301", "Networks and Communications", "CCS 204", "2", "3", "3"],
-        ["CITE", "306", "Application Development and Emerging Technologies", "CIT 306", "2", "3", "3"],
-        ["CCS", "303", "Intelligent Agents", "MATH 029", "2", "3", "3"],
-        ["CCS", "304", "Automate Theory and Formal Languages", "MATH 025", "3", "0", "3"],
-        ["CCS", "305", "Software Engineering 1", "CITE 004", "2", "3", "3"],
+        ["GEE", "001B", "GE Elective 1 - Gender and Society", "", "3", "0", "3"],
+        ["ITELEC", "001", "IT Elective 1", "", "2", "3", "3"],
+        ["CIT", "301", "Integrative Programming and Technologies", "CIT 202, CITE 005A", "2", "3", "3"],
+        ["CIT", "302", "Quantitative Methods (incl Modeling and Simulation)", "MATH 025, MATH 028", "2", "3", "3"],
+        ["CIT", "303", "Networking 1", "CIT 202, CIT 203", "2", "3", "3"],
+        ["CIT", "304", "Advanced Database Systems", "CITE 005A", "2", "3", "3"],
+        ["CITE", "009", "Technopreneurship", "3rd Year Standing", "3", "0", "3"],
+        ["CIT", "305", "Systems Integration and Architecture", "CIT 202, CIT 303(C)", "2", "3", "3"]
     ];
 
-    // Done
     const thirdyr_secondsem_prerequisites = [
-        ["GEE", "002", "GEC Elective 2", "", "3", "0", "3"],
-        ["CHM", "001", "Chemistry for Engineers", "", "3", "3", "4"],
-        ["CITE", "008", "Social Issues and Professional Practice", "CCS 305", "3", "0", "3"],
-        ["CITE", "007", "Information Assurance and Security", "CITE 005, CCS 301", "3", "0", "3"],
-        ["CCS", "306", "Modeling and Simulation", "MATH 032, MATH 029", "2", "3", "3"],
-        ["CCS", "307", "Algorithm and Complexity", "MATH 029, CCS 304", "3", "0", "3"],
-        ["CITE", "012", "Human-Computer Interaction", "CITE 306", "2", "3", "3"],
-        ["CCSELEC", "001", "CCS Elective 1", "CITE 306", "2", "3", "3"],
+        ["GEE", "002B", "GE Elective 2 - Living in the IT Era", "GEE 001B", "3", "0", "3"],
+        ["CIS", "202", "Data Mining and Warehousing", "MATH 028, CIT 304", "2", "3", "3"],
+        ["CIT", "306", "Mobile Computing", "CITE 003, CIT 304", "2", "3", "3"],
+        ["PELEC", "003", "Prof. Elective 3", "", "2", "3", "3"],
+        ["ITELEC", "002", "IT Elective 2", "ITELEC 001", "2", "3", "3"],
+        ["CITE", "007A", "Information Assurance and Security", "CIT 304", "2", "3", "3"],
+        ["CITE", "006", "Application Development and Emerging Technologies", "CITE 005A", "2", "3", "3"],
+        ["CIT", "307", "Networking 2", "CIT 303", "2", "3", "3"]
     ];
 
-    // Done
     const thirdyear_summer_prerequisites = [
-        ["CS", "306", "Intelligent Systems", "MATH 012A", "2", "3", "3"],
-        ["ITE", "010", "Foundation of Human Computer Interaction", "ITE 004", "2", "3", "3"],
-        ["CS", "307", "Thesis 1", "CS 304", "3", "0", "3"]
+        ["CIT", "308", "Capstone 1", "CITE 006, CITE 007A", "2", "3", "3"],
+        ["CIT", "309", "IT Project Management", "CITE 006", "2", "3", "3"],
+        ["CIT", "310", "Information Assurance and Security 2", "CITE 007A", "2", "3", "3"]
     ];
 
-    // Done
     const fourthyear_firstsem_prerequisites = [
-        ["GEE", "003", "GEC Elective 3", "", "3", "0", "3"],
-        ["CITE", "009", "Technopreneurship", "CITE 008", "3", "0", "3"],
-        ["CCS", "401", "Thesis 1", "CCS 308", "3", "0", "3"],
-        ["CSFELEC", "001", "Free Elective", "", "0", "0", "3"],
-        ["CSELEC", "003", "CCS Elective 3", "CCS ELECT2", "2", "3", "3"]
+        ["GEE", "004", "GE Elective 3 - Great Books", "GEE 002B", "3", "0", "3"],
+        ["PELEC", "004", "Prof. Elective 4", "", "2", "3", "3"],
+        ["ITELEC", "003", "IT Elective 3", "ITELEC 002", "2", "3", "3"],
+        ["CIT", "400", "Capstone 2", "CIT 308", "0", "9", "3"],
+        ["CITE", "008", "Social Issues and Professional Practice", "3rd Year Standing", "3", "0", "3"],
+        ["CIT", "401", "Systems Administration and Maintenance", "CIT 310", "2", "3", "3"]
     ];
 
-    // Done
     const fourthyear_secondsem_prerequisites = [
-        ["CS", "402", "Internship in Computing", "Software Engineering 2", "0", "9", "3"],
-        ["CS", "403", "Thesis 2", "Thesis 1", "0", "9", "3"]
+        ["CIT", "402", "Internship In Computing", "Graduating", "0", "18", "6"],
+        ["ITELEC", "004", "IT Elective 4", "ITELEC 003", "2", "3", "3"],
+        ["CIT", "403", "Systems Integration and Architecture 2", "CIT 307, CIT 305, CIT 401", "2", "3", "3"],
     ];
 
     const track_elective_1_prerequisites = [
-        ["CCS", "310", "Expert Systems", "CCS 306", "2", "3", "3"],
-        ["CCS", "311", "Natural Language Processing", "CCS 310", "2", "3", "3"],
-        ["CCS", "312", "Machine Learning", "CCS 311", "2", "3", "3"],
+        ["CAM", "401", "3D Modeling, Texturing, Rendering and Lighting", "3rd Year Standing", "2", "3", "3"],
+        ["CAM", "402", "3D Animation and Special Effects", "CAM 401", "2", "3", "3"],
+        ["CAM", "403", "3D Post Production and Composting", "CAM 402", "2", "3", "3"],
+        ["CAM", "404", "Mobile Development Integration", "CAM 403", "2", "3", "3"]
     ];
 
     const track_elective_2_prerequisites = [
-        ["CCS", "313", "Multimedia Technology", "CITE 306", "2", "3", "3"],
-        ["CCS", "314", "Level Design and Scripting", "CCS 313", "2", "3", "3"],
-        ["CCS", "312", "Multiplayer and Online Programming", "CCS 314", "2", "3", "3"]
+        ["CBS", "401A", "Network Security", "3rd Year Standing", "2", "3", "3"],
+        ["CBS", "402A", "Data and Application Security", "CBS 401A", "2", "3", "3"],
+        ["CBS", "403A", "Ethical Hacking and Penetration Testing", "CBS 402A", "2", "3", "3"],
+        ["CBS", "404A", "Cyber Threat Analysis and Modelling", "CBS 403A", "2", "3", "3"]
     ];
 
-    const free_elective_prerequisites = [
-        ["CIT", "503", "Current Trends and Issues in Computing", "CITE 306", "3", "0", "3"],
-        ["CIT", "504", "SAP/SAS", "CITE 005", "2", "3", "3"],
-        ["CISELEC", "113", "Development, Maintenance, and Services", "CCS 301", "3", "0", "3"],
-        ["CISELEC", "501A", "Big Data Analytics", "CITE 005", "2", "3", "3"],
-        ["CISELEC", "201", "Introduction to Project Management", "CCS 308", "3", "0", "3"],
+    const track_elective_3_prerequisites = [
+        ["CIT", "401A", "Fundamentals of Bus Analytics", "3rd Year Standing", "2", "3", "3"],
+        ["CIT", "402A", "Analytics, Techniques and Tools", "CIT 401A", "2", "3", "3"],
+        ["CIT", "403A", "Fundamentals of Predictive Analytics", "CIT 402A", "2", "3", "3"],
+        ["CIT", "404A", "Fundamentals of Prescriptive Analytics", "CIT 403A", "2", "3", "3"]
+    ];
+
+    const prof_elective_prerequisites = [
+        ["CIT", "503", "Current Trends and Issues in Computing", "", "3", "0", "3"],
+        ["CIT", "504", "SAP / SAS", "CIT 309", "2", "3", "3"],
+        ["CIT", "505", "Event Driven Programming", "CITE 004", "2", "3", "3"],
+        ["FLE", "213", "Spanish", "", "2", "3", "3"],
         ["FLE", "313", "Mandarin", "", "2", "3", "3"],
-        ["FLE", "213", "Spanish", "", "2", "3", "3"]
+        ["CIT", "506", "Introduction to Game Development", "CITE 012", "2", "3", "3"],
+        ["CIT", "508", "Object-Oriented Programming", "CITE 003", "2", "3", "3"],
+        ["CIT", "509", "Human Computer Interaction 2", "CITE 012", "2", "3", "3"],
+        ["CIT", "510", "Integrative Programming and Technologies 2", "CIT 301", "2", "3", "3"],
+        ["CIT", "511", "Web Systems and Technologies 2", "CIT 202", "2", "3", "3"],
     ];
 
     return (
@@ -336,7 +342,7 @@ function CSPrereg() {
                                 {prereq_headers[11]}
                             </td>
                         </tr>
-                        {free_elective_prerequisites.map((row, index) => (
+                        {prof_elective_prerequisites.map((row, index) => (
                             <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
                                 {row.map((cell, cellIndex) => (
                                     <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
@@ -353,4 +359,4 @@ function CSPrereg() {
 }
 
 
-export default CSPrereg;
+export default ITPrereg;

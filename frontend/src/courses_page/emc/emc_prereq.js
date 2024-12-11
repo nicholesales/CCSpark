@@ -1,143 +1,124 @@
 import React from 'react';
-import './cs_prereq.css';
+import './emc_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
 
-function CSPrereg() {
+function EMCPrereg() {
     const tableHeader = ["Cat.", "No.", "Descriptive Title", "Prerequisite/s", "Lec Hrs/Wk", "Lab Hrs/Wk", "Units"];
 
     const prereq_headers = [
-        "1st Year, First Semester (20 Units)",
-        "1st Year, Second Semester (21 Units)",
+        "1st Year, First Semester (17 Units)",
+        "1st Year, Second Semester (18 Units)",
+        "1st Year, Summer (6 Units)",
         "2nd Year, First Semester (24 Units)",
-        "2nd Year, Second Semester (24 Units)",
-        "3rd Year, First Semester (24 Units)",
-        "3rd Year, Second Semester (25 Units)",
-        "3rd Year, Summer (9 Units)",
-        "4th Year, First Semester (15 Units)",
-        "4th Year, Second Semester (6 Units)",
-        "Track Elective 1: Intelligent Systems",
-        "Track Elective 2: Game Development",
+        "2nd Year, Second Semester (23 Units)",
+        "2nd Year, Summer (6 Units)",
+        "3rd Year, First Semester (21 Units)",
+        "3rd Year, Second Semester (21 Units)",
+        "3rd Year, Summer (6 Units)",
+        "4th Year, First Semester (21 Units)",
+        "4th Year, Second Semester (9 Units)",
         "Free Elective Courses (3 Units)"
     ];
 
-    // Done
     const firstyr_firstsem_prerequisites = [
-        ["GEC", "004", "Mathematics in the Modern World", "", "3", "0", "3"],
         ["GEC", "001", "Understanding the Self", "", "3", "0", "3"],
-        ["MATH", "002A", "Linear Algebra with MATLAB", "", "2", "3", "3"],
-        ["CITE", "001", "Introduction to Computing", "", "2", "3", "3"],
+        ["GEC", "002", "Readings in Philippine History", "", "3", "0", "3"],
+        ["MATH", "017", "Analytic Geometry", "", "3", "0", "3"],
+        ["CITE", "001A", "Introduction to ICT", "", "2", "3", "3"],
         ["CITE", "002", "Computer Programming 1", "", "2", "3", "3"],
         ["PE", "101", "Physical Education 1", "", "2", "0", "2"],
-        ["NSTP", "101", "National Service Training Program 1", "", "(3)", "0", "(3)"],
+        ["NSTP", "001", "National Service Training Program 1", "", "(3)", "0", "(3)"]
     ];
 
-    // Done
     const firstyr_secondsem_prerequisites = [
         ["GEC", "005", "Purposive Communication", "", "3", "0", "3"],
-        ["GEC", "003", "The Contemporary World", "", "3", "0", "3"],
-        ["GEC", "006", "Art Appreciation", "", "3", "0", "3"],
-        ["MATH", "031", "Symbolic Logic", "MATH 027", "3", "0", "3"],
-        ["MATH", "018", "Calculus 1 (Differential Calculus)", "MATH 002A", "4", "0", "4"],
+        ["CITE", "001B", "Introduction to Computing", "CITE 001A", "2", "3", "3"],
+        ["PHYS", "001", "Calculus-Based Physics 1", "MATH 017", "3", "3", "4"],
         ["CITE", "003", "Computer Programming 2", "CITE 002", "2", "3", "3"],
+        ["CEMC", "001", "Freehand and Digital Writing", "CITE 002", "2", "3", "3"],
         ["PE", "102", "Physical Education 2", "PE 101", "2", "0", "2"],
-        ["NSTP", "102", "National Service Training Program 2", "NSTP 101", "(3)", "0", "(3)"],
+        ["NSTP", "002", "National Service Training Program 2", "NSTP 001", "(3)", "0", "(3)"]
     ];
 
-    // Done
-    const secondyr_firstsem_prerequisites = [
+    const firstyr_summer_prerequisites = [
         ["GEC", "008", "Ethics", "", "3", "0", "3"],
-        ["GEC", "002", "Readings in Philippine History", "", "3", "0", "3"],
-        ["MATH", "019", "Calculus 2 (Integral Calculus)", "MATH 018", "4", "0", "4"],
-        ["CCS", "201", "Object-Oriented Programming", "CITE 003", "2", "3", "3"],
-        ["CIT", "306", "Mobile Computing", "CITE 002", "2", "3", "3"],
-        ["CCS", "202", "Principles of Programming Languages", "CITE 001, CITE 002", "3", "0", "3"],
-        ["CCS", "203", "Computer Architecture and Organization", "CITE 001", "2", "3", "3"],
+        ["GEC", "007", "Science, Technology, and Society", "", "3", "0", "3"]
+    ];
+
+    const secondyr_firstsem_prerequisites = [
+        ["MATH", "025", "Discrete Mathematics", "", "3", "0", "3"],
+        ["PHYS", "002", "Calculus-Based Physics 2", "PHYS 001", "3", "3", "4"],
+        ["CITE", "004", "Data Structures and Algorithms", "CITE 003", "2", "3", "3"],
+        ["CIT", "506", "Introduction to Game Design and Development", "CEMC 001", "2", "3", "3"],
+        ["CITE", "006A", "Application Development and Emerging Technologies", "CITE 004 (C)", "2", "3", "3"],
+        ["CEMCPG", "001", "EMC Professional Course 1 (Game Programming 1)", "CIT 506 (C)", "2", "3", "3"],
+        ["CEMCPG", "002", "EMC Professional Course 2 (Applied Mathematics for Games)", "CEMCPG 001 (C)", "2", "3", "3"],
         ["PE", "201", "Physical Education 3", "PE 102", "2", "0", "2"]
     ];
 
-    // Done
     const secondyr_secondsem_prerequisites = [
-        ["GEC", "007", "Science, Technology, and Society", "", "3", "0", "3"],
-        ["MATH", "029", "Introduction to Numerical Analysis", "MATH 018", "3", "0", "3"],
-        ["PHYS", "001S", "Calculus-Based Physics 1", "MATH 019", "3", "3", "4"],
-        ["MATH", "025", "Discrete Mathematics", "MATH 031", "3", "0", "3"],
-        ["CCS", "204", "Operating Systems", "CCS 203", "3", "0", "3"],
-        ["CITE", "004", "Data Structures and Algorithms", "CCS 201", "2", "3", "3"],
-        ["CITE", "005", "Information Management", "CITE 003", "2", "3", "3"],
+        ["GEA", "002", "Environmental Science", "", "3", "0", "3"],
+        ["CEMC", "201", "Principles of 2D Animation", "CIT 506", "2", "3", "3"],
+        ["CEMC", "202", "Introduction to Usability, HCI, UI Design", "CIT 506", "3", "0", "3"],
+        ["CEMC", "203", "Computer Graphics Programming", "CITE 006A", "2", "3", "3"],
+        ["CITE", "005", "Information Management", "CITE 004", "2", "3", "3"],
+        ["CEMCPG", "003", "EMC Professional Course 3 (Game Programming 2)", "CEMCPG 002", "2", "3", "3"],
+        ["CEMCPG", "004", "EMC Professional Course 4 (Applied Game Physics)", "CEMCPG 003 (C)", "2", "3", "3"],
         ["PE", "202", "Physical Education 4", "PE 201", "2", "0", "2"]
     ];
 
-    // Done
+    const secondyr_summer_prerequisites = [
+        ["GEC", "006", "Art Appreciation", "", "3", "0", "3"],
+        ["GEC", "004", "Mathematics in the Modern World", "", "3", "0", "3"]
+    ];
+
     const thirdyr_firstsem_prerequisites = [
-        ["GEE", "001", "GEC Elective 1", "", "3", "0", "3"],
-        ["GEM", "007", "Life and Works of Rizal", "", "3", "0", "3"],
-        ["MATH", "032", "Probability and Statistics", "MATH 027", "2", "3", "3"],
-        ["CCS", "301", "Networks and Communications", "CCS 204", "2", "3", "3"],
-        ["CITE", "306", "Application Development and Emerging Technologies", "CIT 306", "2", "3", "3"],
-        ["CCS", "303", "Intelligent Agents", "MATH 029", "2", "3", "3"],
-        ["CCS", "304", "Automate Theory and Formal Languages", "MATH 025", "3", "0", "3"],
-        ["CCS", "305", "Software Engineering 1", "CITE 004", "2", "3", "3"],
+        ["GEE", "001B", "GE Elective 1 - Gender and Society", "", "3", "0", "3"],
+        ["CEMC", "302", "Audio Design & Sound Engineering", "CEMC 203", "2", "3", "3"],
+        ["CEMC", "303", "Script Writing & Story Board Design", "CEMC 001", "3", "0", "3"],
+        ["CEMC", "304", "Principles of 3D Animation", "CEMC 201", "2", "3", "3"],
+        ["CEMC", "305", "Design and Production Process", "CIT 506", "3", "0", "3"],
+        ["CEMCPG", "005", "EMC Professional Course 5 (Game Programming 3)", "CEMCPG 003", "2", "3", "3"],
+        ["EMCELEC", "001", "EMC Professional Elective 1 (Oracle 2)", "", "2", "3", "3"]
     ];
 
-    // Done
     const thirdyr_secondsem_prerequisites = [
-        ["GEE", "002", "GEC Elective 2", "", "3", "0", "3"],
-        ["CHM", "001", "Chemistry for Engineers", "", "3", "3", "4"],
-        ["CITE", "008", "Social Issues and Professional Practice", "CCS 305", "3", "0", "3"],
-        ["CITE", "007", "Information Assurance and Security", "CITE 005, CCS 301", "3", "0", "3"],
-        ["CCS", "306", "Modeling and Simulation", "MATH 032, MATH 029", "2", "3", "3"],
-        ["CCS", "307", "Algorithm and Complexity", "MATH 029, CCS 304", "3", "0", "3"],
-        ["CITE", "012", "Human-Computer Interaction", "CITE 306", "2", "3", "3"],
-        ["CCSELEC", "001", "CCS Elective 1", "CITE 306", "2", "3", "3"],
+        ["GEE", "002B", "GE Elective 2 - Living in the IT Era", "GEE 001B", "3", "0", "3"],
+        ["CEMC", "301", "English - Creative Wrinting", "", "3", "0", "3"],
+        ["GEC", "003", "Contemporary World", "", "3", "0", "3"],
+        ["CEMCPG", "006", "EMC Professional Course 6 (Artificial Intelligence in Games)", "CEMCPG 005", "2", "3", "3"],
+        ["CEMCPG", "007", "EMC Professional Course 7 (Advance Game Design)", "CEMCPG 006", "2", "3", "3"],
+        ["CEMCPG", "008", "EMC Professional Course 8 (Game Networking)", "CEMCPG 007", "2", "3", "3"],
+        ["CEMCPG", "009", "EMC Professional Course 9 (Game Production)", "CEMC 305", "2", "3", "3"]
     ];
 
-    // Done
     const thirdyear_summer_prerequisites = [
-        ["CS", "306", "Intelligent Systems", "MATH 012A", "2", "3", "3"],
-        ["ITE", "010", "Foundation of Human Computer Interaction", "ITE 004", "2", "3", "3"],
-        ["CS", "307", "Thesis 1", "CS 304", "3", "0", "3"]
+        ["GEM", "001", "Life and Works of Rizal", "", "3", "0", "3"],
+        ["CEMC", "306", "Capstone Project 1", "CEMCPG 009", "3", "0", "3"]
     ];
 
-    // Done
     const fourthyear_firstsem_prerequisites = [
-        ["GEE", "003", "GEC Elective 3", "", "3", "0", "3"],
-        ["CITE", "009", "Technopreneurship", "CITE 008", "3", "0", "3"],
-        ["CCS", "401", "Thesis 1", "CCS 308", "3", "0", "3"],
-        ["CSFELEC", "001", "Free Elective", "", "0", "0", "3"],
-        ["CSELEC", "003", "CCS Elective 3", "CCS ELECT2", "2", "3", "3"]
+        ["GEE", "004", "GE Elective 3 - Great Books", "GEE 002B", "3", "0", "3"],
+        ["EMCELEC", "002", "EMC Professional Elective 2 (Computer Security)", "", "3", "0", "3"],
+        ["EMCELEC", "003", "EMC Professional Elective 3 (Business Analytics using SAP)", "", "2", "3", "3"],
+        ["CEMC", "401", "Capstone Project 2", "CEMC 306", "0", "9", "3"]
     ];
 
-    // Done
     const fourthyear_secondsem_prerequisites = [
-        ["CS", "402", "Internship in Computing", "Software Engineering 2", "0", "9", "3"],
-        ["CS", "403", "Thesis 2", "Thesis 1", "0", "9", "3"]
-    ];
-
-    const track_elective_1_prerequisites = [
-        ["CCS", "310", "Expert Systems", "CCS 306", "2", "3", "3"],
-        ["CCS", "311", "Natural Language Processing", "CCS 310", "2", "3", "3"],
-        ["CCS", "312", "Machine Learning", "CCS 311", "2", "3", "3"],
-    ];
-
-    const track_elective_2_prerequisites = [
-        ["CCS", "313", "Multimedia Technology", "CITE 306", "2", "3", "3"],
-        ["CCS", "314", "Level Design and Scripting", "CCS 313", "2", "3", "3"],
-        ["CCS", "312", "Multiplayer and Online Programming", "CCS 314", "2", "3", "3"]
+        ["CEMC", "402", "Internship", "4th Year Standing", "0", "9", "9"]
     ];
 
     const free_elective_prerequisites = [
-        ["CIT", "503", "Current Trends and Issues in Computing", "CITE 306", "3", "0", "3"],
-        ["CIT", "504", "SAP/SAS", "CITE 005", "2", "3", "3"],
-        ["CISELEC", "113", "Development, Maintenance, and Services", "CCS 301", "3", "0", "3"],
-        ["CISELEC", "501A", "Big Data Analytics", "CITE 005", "2", "3", "3"],
-        ["CISELEC", "201", "Introduction to Project Management", "CCS 308", "3", "0", "3"],
+        ["SAP", "501", "Business Analytic using SAP BW", "", "2", "3", "3"],
+        ["CISELEC", "501A", "Big Data Analytics", "", "2", "3", "3"],
+        ["CISELEC", "201", "Introduction to Project Management", "3", "0", "3"],
         ["FLE", "313", "Mandarin", "", "2", "3", "3"],
         ["FLE", "213", "Spanish", "", "2", "3", "3"]
     ];
 
     return (
         <div className="min-h-screen bg-[#0f172a]">
-            <nav className="bg-gray-800 p-4 mb-6">
+            <nav className="bg-[#1e293b] p-4 mb-6 shadow-lg">
                 <button
                     onClick={() => window.location.href = '/'}
                     className="flex items-center gap-2 text-gray-200 hover:text-blue-400 transition-colors duration-200"
@@ -190,10 +171,26 @@ function CSPrereg() {
                             </tr>
                         ))}
 
-                        {/* Second Year First Sem */}
+                        {/* First Year Summer */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
                                 {prereq_headers[2]}
+                            </td>
+                        </tr>
+                        {firstyr_summer_prerequisites.map((row, index) => (
+                            <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
+                                {row.map((cell, cellIndex) => (
+                                    <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
+                                        {cell}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+
+                        {/* Second Year First Sem */}
+                        <tr>
+                            <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
+                                {prereq_headers[3]}
                             </td>
                         </tr>
                         {secondyr_firstsem_prerequisites.map((row, index) => (
@@ -205,9 +202,11 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
+
+                        {/* Second Year Second Sem */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[3]}
+                                {prereq_headers[4]}
                             </td>
                         </tr>
                         {secondyr_secondsem_prerequisites.map((row, index) => (
@@ -219,9 +218,27 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
+
+                        {/* Second Year Summer */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[4]}
+                                {prereq_headers[5]}
+                            </td>
+                        </tr>
+                        {secondyr_summer_prerequisites.map((row, index) => (
+                            <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
+                                {row.map((cell, cellIndex) => (
+                                    <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
+                                        {cell}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+
+                        {/* Third Year First Sem */}
+                        <tr>
+                            <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
+                                {prereq_headers[6]}
                             </td>
                         </tr>
                         {thirdyr_firstsem_prerequisites.map((row, index) => (
@@ -233,9 +250,11 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
+
+                        {/* Third Year Second Sem */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[5]}
+                                {prereq_headers[7]}
                             </td>
                         </tr>
                         {thirdyr_secondsem_prerequisites.map((row, index) => (
@@ -247,9 +266,11 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
+
+                        {/* Third Year Summer */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[6]}
+                                {prereq_headers[8]}
                             </td>
                         </tr>
                         {thirdyear_summer_prerequisites.map((row, index) => (
@@ -261,20 +282,8 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
-                        <tr>
-                            <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[7]}
-                            </td>
-                        </tr>
-                        {fourthyear_firstsem_prerequisites.map((row, index) => (
-                            <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
-                                {row.map((cell, cellIndex) => (
-                                    <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
-                                        {cell}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
+
+                        {/* Fourth Year First Sem */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
                                 {prereq_headers[8]}
@@ -289,26 +298,14 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
-                        <tr>
-                            <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[8]}
-                            </td>
-                        </tr>
-                        {fourthyear_secondsem_prerequisites.map((row, index) => (
-                            <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
-                                {row.map((cell, cellIndex) => (
-                                    <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
-                                        {cell}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
+
+                        {/* Fourth Year Second Sem */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
                                 {prereq_headers[9]}
                             </td>
                         </tr>
-                        {track_elective_1_prerequisites.map((row, index) => (
+                        {fourthyear_secondsem_prerequisites.map((row, index) => (
                             <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
                                 {row.map((cell, cellIndex) => (
                                     <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
@@ -317,23 +314,11 @@ function CSPrereg() {
                                 ))}
                             </tr>
                         ))}
+
+                        {/* Free Electives */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
                                 {prereq_headers[10]}
-                            </td>
-                        </tr>
-                        {track_elective_2_prerequisites.map((row, index) => (
-                            <tr key={index} className="hover:bg-[#2d3a52] transition-colors duration-150">
-                                {row.map((cell, cellIndex) => (
-                                    <td key={cellIndex} className="px-4 py-2 text-sm text-gray-300">
-                                        {cell}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                        <tr>
-                            <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[11]}
                             </td>
                         </tr>
                         {free_elective_prerequisites.map((row, index) => (
@@ -353,4 +338,4 @@ function CSPrereg() {
 }
 
 
-export default CSPrereg;
+export default EMCPrereg;

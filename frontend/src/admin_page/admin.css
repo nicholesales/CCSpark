@@ -535,3 +535,38 @@ body {
   margin: 0;
   font-weight: normal;
 }
+
+.admin-nav {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.nav-btn svg {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.nav-btn.active {
+  background: rgb(115, 236, 255);
+  border-color: rgba(75, 137, 238, 0.676);
+  color: rgb(0, 0, 0);
+}

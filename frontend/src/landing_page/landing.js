@@ -126,7 +126,7 @@ const LandingPage = () => {
                                     The Bachelor of Science in Computer Science program prepares students for the digital future through rigorous training in programming, algorithms, artificial intelligence, and software development. Students learn to solve complex problems using computational thinking and cutting-edge technologies.
                                 </p>
                                 <a
-                                    href="https://drive.google.com/file/d/1GRXxoT1PwLUqQE1BNIkfQCFC_fxQ8Cxa/view"
+                                    href="/cs-courses"
                                     className="inline-block w-full text-center px-4 py-2 bg-accent-light/20 rounded-lg 
                         hover:bg-accent-light/30 transition-all duration-300 text-text-color 
                         border border-accent-light/30 mt-auto"
@@ -144,7 +144,7 @@ const LandingPage = () => {
                                     The Bachelor of Science in Information Technology program equips students with practical skills in network administration, database management, web development, and IT infrastructure. Students learn to implement, maintain, and secure technology solutions for modern business needs.
                                 </p>
                                 <a
-                                    href="https://drive.google.com/file/d/1DDayvvJUIeeXbCyIUwHLN3O1DnMSrfa-/view"
+                                    href="/it-courses"
                                     className="inline-block w-full text-center px-4 py-2 bg-accent-light/20 rounded-lg 
                         hover:bg-accent-light/30 transition-all duration-300 text-text-color 
                         border border-accent-light/30 mt-auto"
@@ -162,7 +162,7 @@ const LandingPage = () => {
                                     The Bachelor of Science in Entertainment and Multimedia Computing program focuses on digital content creation, game development, animation, and interactive media. Students develop creative and technical skills in designing engaging digital experiences while learning industry-standard tools and technologies.
                                 </p>
                                 <a
-                                    href="https://drive.google.com/file/d/1TZtuvsN7pSnGlIxGMHhnezwVcTinRI6o/view"
+                                    href="/emc-courses"
                                     className="inline-block w-full text-center px-4 py-2 bg-accent-light/20 rounded-lg 
                         hover:bg-accent-light/30 transition-all duration-300 text-text-color 
                         border border-accent-light/30 mt-auto"

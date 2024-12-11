@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './admin.css';
 import AWS from 'aws-sdk';
 import UploadImage from "./assets/upload.png";
-import { FaQuestion, FaUsers, FaImage, FaExclamationCircle } from 'react-icons/fa';
+import { FaChartLine, FaQuestion, FaUsers, FaImage, FaExclamationCircle, FaBook } from 'react-icons/fa';
 import DatePicker from "react-datepicker";
+import CourseManagement from './CourseManagement.js';
 import "react-datepicker/dist/react-datepicker.css";
 
 function Admin({ handleLogout }) {
@@ -230,8 +231,11 @@ function Admin({ handleLogout }) {
       const response = await fetch(`${API_PANORAMICS}?groupname=${groupName}`);
       const panoramics = await response.json();
 
+      // Filter panoramics that belong to the group
+      const groupPanoramics = panoramics.filter(p => p.groupname === groupName);
+
       // Delete each panoramic from S3 and MongoDB
-      for (const panoramic of panoramics) {
+      for (const panoramic of groupPanoramics) {
         // Delete from S3
         const s3Params = {
           Bucket: 'capstoneimagesbucket',
@@ -517,35 +521,41 @@ function Admin({ handleLogout }) {
       <nav className="navbar">
         <span className="welcome-message">Welcome, Admin</span>
         <div className="navbar-brand">CCSpark</div>
-        <div className="nav-buttons">
+        <div className="admin-nav">
           <button
             className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
+            <FaChartLine className="mr-2" />
             Dashboard
           </button>
           <button
             className={`nav-btn ${activeTab === 'faqs' ? 'active' : ''}`}
             onClick={() => setActiveTab('faqs')}
           >
+            <FaQuestion className="mr-2" />
             FAQs
           </button>
           <button
             className={`nav-btn ${activeTab === 'queries' ? 'active' : ''}`}
             onClick={() => setActiveTab('queries')}
           >
+            <FaExclamationCircle className="mr-2" />
             User Queries
           </button>
           <button
             className={`nav-btn ${activeTab === 'images' ? 'active' : ''}`}
-            onClick={() => {
-              console.log('Previous activeTab:', activeTab);
-              setActiveTab('images');
-              console.log('New activeTab:', 'panoramics');
-              console.log('Current panoramics:', panoramics); // Add this to check if data exists
-            }}
+            onClick={() => setActiveTab('images')}
           >
+            <FaImage className="mr-2" />
             Images
+          </button>
+          <button
+            className={`nav-btn ${activeTab === 'courses' ? 'active' : ''}`}
+            onClick={() => setActiveTab('courses')}
+          >
+            <FaBook className="mr-2" />
+            Course Management
           </button>
         </div>
         <button className="logout-btn" onClick={logout}>LOG OUT</button>
@@ -787,6 +797,8 @@ function Admin({ handleLogout }) {
                 </div>
               ))}
             </div>
+          ) : activeTab === 'courses' ? (
+            <CourseManagement />
           ) : null}
         </main>
         <button className="add-image-btn" onClick={() => setShowUploadForm(true)}><img src={UploadImage} className='upload-image-icon'></img></button>
