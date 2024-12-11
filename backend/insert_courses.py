@@ -1,13 +1,17 @@
 from pymongo import MongoClient
 from datetime import datetime
+import environ
+from django.conf import settings
+
+# Load environment variables
+env = environ.Env()
+environ.Env.read_env()  # Read the .env file
 
 
 # MongoDB connection
 def connect_to_mongodb():
     try:
-        client = MongoClient(
-            "mongodb+srv://mcnsales:paths@chatbotdb.l51tq.mongodb.net/?retryWrites=true&w=majority&appName=chatbotDB"
-        )
+        client = MongoClient(settings.MONGODB_URI)
         db = client["courses"]
         return db.courses
     except Exception as e:
