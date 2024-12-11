@@ -385,33 +385,6 @@ function RoomGrid() {
                         </div>
                     ))}
                 </div>
-            </div>
-            <div className="subdivider-center">
-                <ViewHandler imagesource={imageSource} />
-            </div>
-            <div className="subdivider-right">
-                <div className="room-title">
-                    {roomNamesDb[activeIndex]}
-                </div>
-                <div className="location-contents">
-                    <div className="location-title">
-                        Location:
-                    </div>
-                    <div className="location-list-container">
-                        <ul className="location-list">
-                            {locationDb[activeIndex] && (
-                                <li className="location-item">{locationDb[activeIndex]}</li>
-                            )}
-                        </ul>
-                    </div>
-                </div>
-                <div className="description-container">
-                    <div className="description-content">
-                        <p className="description">
-                            {jsxDescriptions[activeIndex]}
-                        </p>
-                    </div>
-                </div>
                 {isClosableVisible && (
                     <div className="closable-bg">
                         <div className="closable-div">
@@ -437,6 +410,58 @@ function RoomGrid() {
                         </div>
                     </div>
                 )}
+            </div>
+            <div className="subdivider-center">
+                <ViewHandler imagesource={imageSource} />
+            </div>
+            <div className="subdivider-right">
+                <div className="py-2">
+                    <button
+                        onClick={() => window.location.href = '/'}
+                        className="w-full px-4 py-2 
+            bg-gradient-to-r from-deep-sea to-ocean-blue  text-sm font-medium
+            rounded-lg shadow-lg transform hover:-translate-y-0.5 hover:shadow-xl
+            transition-all duration-300 ease-out border border-accent-light/20
+            flex items-center justify-center gap-2"
+                    >
+                        <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                            />
+                        </svg>
+                        Go to Overview
+                    </button>
+                </div>
+                <div className="room-title">
+                    {roomNamesDb[activeIndex]}
+                </div>
+                <div className="location-contents">
+                    <div className="location-title">
+                        Location:
+                    </div>
+                    <div className="location-list-container">
+                        <ul className="location-list">
+                            {locationDb[activeIndex] && (
+                                <li className="location-item">{locationDb[activeIndex]}</li>
+                            )}
+                        </ul>
+                    </div>
+                </div>
+                <div className="description-container">
+                    <div className="description-content">
+                        <p className="description">
+                            {jsxDescriptions[activeIndex]}
+                        </p>
+                    </div>
+                </div>
                 <ChatIcon />
             </div >
         </>
@@ -461,11 +486,33 @@ function activeThumbnailChange(id) {
 function ChatIcon() {
     return (
         <>
-            <a className="go-to-chatbot" href="/chatbot">
-                <div className="chaticon">
+            <button
+                onClick={() => window.location.href = '/chatbot'}
+                className="px-2 py-1 bg-gradient-to-r from-deep-sea to-ocean-blue font-medium
+        rounded-lg shadow-lg hover:shadow-xl
+        transform hover:-translate-y-0.5 hover:scale-105
+        transition-all duration-300 ease-out
+        border border-accent-light/20
+        group
+        backdrop-filter backdrop-blur-sm chatbot-btn-right-sub"
+            >
+                <span className="flex items-center gap-2">
                     Go To Chatbot
-                </div>
-            </a>
+                    <svg
+                        className="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
+                    </svg>
+                </span>
+            </button>
         </>
     );
 }

@@ -43,7 +43,7 @@ const MicIcon = ({ color }) => (
 function BackToLanding() {
   return (
     <>
-      <a className="go-to-landing" href="/">
+      <a className="go-to-landing" href="/virtual-tour">
         <div className="landing-icon">
           Back to Virtual Tour
         </div>
