@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './cs_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
+import { API_COURSES } from '../../config';
 
 function CSPrereg() {
-    const API_COURSES = "http://127.0.0.1:8000/api/courses/";
-    
     const tableHeader = ["Cat.", "No.", "Descriptive Title", "Prerequisite/s", "Lec Hrs/Wk", "Lab Hrs/Wk", "Units"];
 
     const prereq_headers = [

@@ -5,14 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FaMobileAlt, FaArrowRight } from 'react-icons/fa';
 import { MdScreenRotation } from 'react-icons/md';
+import { API_PANORAMICS } from "../config.js";
 
 import './virtual_tour.css';
 import logo from "./assets/CCSpark-logo.png";
 import panorama1 from "./assets/cylindricalPhotos/comp_lab_smaller.png";
 
-const GOOGLE_TTS_API_KEY = 'AIzaSyBLZzGbZteoJBw5dlWpBozOsTxPf5MV8o4';
-
-const API_PANORAMICS = "http://127.0.0.1:8000/api/panoramics/";
+const GOOGLE_TTS_API_KEY = '';
 
 //  const API_PANORAMICS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/panoramics/";
 

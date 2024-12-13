@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './it_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
-
-
-const API_COURSES = "http://127.0.0.1:8000/api/courses/";
+import { API_COURSES } from '../../config';
 
 
 function ITPrereg() {

@@ -7,6 +7,7 @@ import { FaChartLine, FaQuestion, FaUsers, FaImage, FaExclamationCircle, FaBook 
 import DatePicker from "react-datepicker";
 import CourseManagement from './CourseManagement.js';
 import "react-datepicker/dist/react-datepicker.css";
+import { API_USER_QUERIES, API_QUERY, API_PANORAMICS, API_DASHBOARD } from '../config.js';
 
 function Admin({ handleLogout }) {
   const navigate = useNavigate();
@@ -36,16 +37,6 @@ function Admin({ handleLogout }) {
   const [editReminderNeeded, setEditReminderNeeded] = useState(false);
   const [editReminderDate, setEditReminderDate] = useState(null);
   const [dueReminders, setDueReminders] = useState([]);
-
-  const API_USER_QUERIES = "http://127.0.0.1:8000/api/user-queries/";
-  const API_QUERY = "http://127.0.0.1:8000/api/queries/";
-  const API_PANORAMICS = "http://127.0.0.1:8000/api/panoramics/";
-  const API_DASHBOARD = "http://127.0.0.1:8000/api/dashboard-stats/";
-
-  // const API_QUERY = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/queries/";
-  //  const API_USER_QUERIES = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/user-queries/";
-  //  const API_PANORAMICS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/panoramics/";
-  // const API_DASHBOARD = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/dashboard-stats/";
 
   // Add this function to fetch dashboard stats
 

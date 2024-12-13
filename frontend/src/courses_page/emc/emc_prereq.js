@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './emc_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
-
-const API_COURSES = "http://127.0.0.1:8000/api/courses/";
+import { API_COURSES } from '../../config';
 
 function EMCPrereg() {
     const tableHeader = ["Cat.", "No.", "Descriptive Title", "Prerequisite/s", "Lec Hrs/Wk", "Lab Hrs/Wk", "Units"];

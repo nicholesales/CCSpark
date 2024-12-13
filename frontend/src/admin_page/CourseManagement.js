@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
-
-const API_COURSES = "http://127.0.0.1:8000/api/courses/";
-
+import { API_COURSES } from '../config';
 
 const CourseManagement = () => {
     const [courses, setCourses] = useState([]);

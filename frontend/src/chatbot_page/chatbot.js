@@ -7,13 +7,9 @@ import chatIcon from "./icons/vic-logo.png";
 import sendIcon from "./icons/send.png";
 import './sidebar.css'; // Import CSS for styling
 import ReactMarkdown from 'react-markdown';
+import { API_CHATBOT, API_FAQS } from '../config';
 
 const GOOGLE_SPEECH_API_KEY = ''; // Load API key 
-const API_CHATBOT = "http://127.0.0.1:8000/api/chatbot/";
-const API_FAQS = "http://127.0.0.1:8000/api/faqs/";
-
-// const API_CHATBOT = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/chatbot/";
-// const API_FAQS = "http://ec2-13-238-141-127.ap-southeast-2.compute.amazonaws.com/api/faqs/";
 
 function UserIconHandler({ sender }) {
   return (
