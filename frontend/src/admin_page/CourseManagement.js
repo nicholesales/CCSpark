@@ -165,6 +165,7 @@ const CourseManagement = () => {
                 </button>
             </div>
             <div className="bg-[#2d3a52] p-4 rounded-lg mb-6">
+                <h2 className="text-lg font-bold text-white mb-4">Filter by:</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <select
                         name="program"
@@ -172,7 +173,7 @@ const CourseManagement = () => {
                         onChange={handleFilterChange}
                         className="bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
                     >
-                        <option value="">Filter by Program</option>
+                        <option value="">All Programs</option>
                         <option value="IT">IT</option>
                         <option value="IS">IS</option>
                         <option value="EMC">EMC</option>
@@ -186,7 +187,7 @@ const CourseManagement = () => {
                         onChange={handleFilterChange}
                         className="bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
                     >
-                        <option value="">Filter by Year Level</option>
+                        <option value="">All Year Level</option>
                         <option value="1st">1st Year</option>
                         <option value="2nd">2nd Year</option>
                         <option value="3rd">3rd Year</option>
@@ -199,7 +200,7 @@ const CourseManagement = () => {
                         onChange={handleFilterChange}
                         className="bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
                     >
-                        <option value="">Filter by Semester</option>
+                        <option value="">All Semester</option>
                         <option value="1st Semester">1st Semester</option>
                         <option value="2nd Semester">2nd Semester</option>
                         <option value="Summer">Summer</option>
@@ -267,7 +268,7 @@ const CourseManagement = () => {
                         <div className="border-b border-gray-700 pb-3 mb-3">
                             <div className="flex justify-between items-start">
                                 <h3 className="text-lg font-semibold text-white">{course.title}</h3>
-                                <span className="text-sm text-blue-400">{course.program}</span>
+                                <span className="text-xl text-blue-400">{course.program}</span>
                             </div>
                             <p className="text-gray-400 text-sm">{course.category} {course.number}</p>
                         </div>
@@ -332,7 +333,7 @@ const CourseManagement = () => {
             {/* Add Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-[#2d3a52] p-6 rounded-lg w-full max-w-md">
+                    <div className="bg-[#2d3a52] p-6 rounded-lg w-full max-w-4xl h-auto overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-white">Add New Course</h2>
                             <button
@@ -344,7 +345,7 @@ const CourseManagement = () => {
                                 </svg>
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Program</label>
                                 <select
@@ -384,6 +385,8 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Semester</label>
                                 <select
                                     name="semester"
+                                    value={formData.semester}
+                                    onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
                                     required
                                 >
@@ -398,7 +401,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Course Category</label>
                                 <input
                                     type="text"
-                                    name="category"  // name must match formData property
+                                    name="category"
                                     value={formData.category}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -410,7 +413,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Course Number</label>
                                 <input
                                     type="text"
-                                    name="number"  // name must match formData property
+                                    name="number"
                                     value={formData.number}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -422,7 +425,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Descriptive Title</label>
                                 <input
                                     type="text"
-                                    name="title"  // name must match formData property
+                                    name="title"
                                     value={formData.title}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -434,7 +437,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Prerequisite/s</label>
                                 <input
                                     type="text"
-                                    name="prerequisites"  // name must match formData property
+                                    name="prerequisites"
                                     value={formData.prerequisites}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -446,7 +449,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Lec Hrs/Wk</label>
                                 <input
                                     type="text"
-                                    name="lecture_hours"  // name must match formData property
+                                    name="lecture_hours"
                                     value={formData.lecture_hours}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -458,7 +461,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Lab Hrs/Wk</label>
                                 <input
                                     type="text"
-                                    name="lab_hours"  // name must match formData property
+                                    name="lab_hours"
                                     value={formData.lab_hours}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -470,7 +473,7 @@ const CourseManagement = () => {
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Units</label>
                                 <input
                                     type="text"
-                                    name="units"  // name must match formData property
+                                    name="units"
                                     value={formData.units}
                                     onChange={handleInputChange}
                                     className="w-full bg-[#1e293b] text-gray-200 border border-gray-600 rounded-lg p-2"
@@ -478,19 +481,21 @@ const CourseManagement = () => {
                                 />
                             </div>
 
-                            <button
-                                type="submit"
-                                className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
-                            >
-                                Add Course
-                            </button>
+                            <div className="md:col-span-2">
+                                <button
+                                    type="submit"
+                                    className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                                >
+                                    Add Course
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
             )}
             {showEditModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-[#2d3a52] p-6 rounded-lg w-full max-w-md">
+                    <div className="bg-[#2d3a52] p-6 rounded-lg w-full max-w-4xl h-auto overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-white">Edit Course</h2>
                             <button
@@ -502,7 +507,7 @@ const CourseManagement = () => {
                                 </svg>
                             </button>
                         </div>
-                        <form onSubmit={handleEdit} className="space-y-4">
+                        <form onSubmit={handleEdit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-200 mb-1">Program</label>
                                 <select
@@ -627,12 +632,14 @@ const CourseManagement = () => {
                                 />
                             </div>
 
-                            <button
-                                type="submit"
-                                className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
-                            >
-                                Update Course
-                            </button>
+                            <div className="md:col-span-2">
+                                <button
+                                    type="submit"
+                                    className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                                >
+                                    Update Course
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -641,6 +648,16 @@ const CourseManagement = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-[#2d3a52] p-6 rounded-lg w-full max-w-md">
                         <h2 className="text-xl font-bold text-white mb-4">Delete Course</h2>
+                        {courseToDelete && (
+                            <div className="mb-4">
+                                <p className="text-gray-300">Program: {courseToDelete.program}</p>
+                                <p className="text-gray-300">Year Level: {courseToDelete.year_level}</p>
+                                <p className="text-gray-300">Semester: {courseToDelete.semester}</p>
+                                <p className="text-gray-300">Category: {courseToDelete.category}</p>
+                                <p className="text-gray-300">Number: {courseToDelete.number}</p>
+                                <p className="text-gray-300">Title: {courseToDelete.title}</p>
+                            </div>
+                        )}
                         <p className="text-gray-300 mb-4">
                             Are you sure you want to delete this course? This action cannot be undone.
                         </p>

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './cs_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
 
 function CSPrereg() {
+    const API_COURSES = "http://127.0.0.1:8000/api/courses/";
+    
     const tableHeader = ["Cat.", "No.", "Descriptive Title", "Prerequisite/s", "Lec Hrs/Wk", "Lab Hrs/Wk", "Units"];
 
     const prereq_headers = [
@@ -20,120 +22,82 @@ function CSPrereg() {
         "Free Elective Courses (3 Units)"
     ];
 
-    // Done
-    const firstyr_firstsem_prerequisites = [
-        ["GEC", "004", "Mathematics in the Modern World", "", "3", "0", "3"],
-        ["GEC", "001", "Understanding the Self", "", "3", "0", "3"],
-        ["MATH", "002A", "Linear Algebra with MATLAB", "", "2", "3", "3"],
-        ["CITE", "001", "Introduction to Computing", "", "2", "3", "3"],
-        ["CITE", "002", "Computer Programming 1", "", "2", "3", "3"],
-        ["PE", "101", "Physical Education 1", "", "2", "0", "2"],
-        ["NSTP", "101", "National Service Training Program 1", "", "(3)", "0", "(3)"],
-    ];
-
-    // Done
-    const firstyr_secondsem_prerequisites = [
-        ["GEC", "005", "Purposive Communication", "", "3", "0", "3"],
-        ["GEC", "003", "The Contemporary World", "", "3", "0", "3"],
-        ["GEC", "006", "Art Appreciation", "", "3", "0", "3"],
-        ["MATH", "031", "Symbolic Logic", "MATH 027", "3", "0", "3"],
-        ["MATH", "018", "Calculus 1 (Differential Calculus)", "MATH 002A", "4", "0", "4"],
-        ["CITE", "003", "Computer Programming 2", "CITE 002", "2", "3", "3"],
-        ["PE", "102", "Physical Education 2", "PE 101", "2", "0", "2"],
-        ["NSTP", "102", "National Service Training Program 2", "NSTP 101", "(3)", "0", "(3)"],
-    ];
-
-    // Done
-    const secondyr_firstsem_prerequisites = [
-        ["GEC", "008", "Ethics", "", "3", "0", "3"],
-        ["GEC", "002", "Readings in Philippine History", "", "3", "0", "3"],
-        ["MATH", "019", "Calculus 2 (Integral Calculus)", "MATH 018", "4", "0", "4"],
-        ["CCS", "201", "Object-Oriented Programming", "CITE 003", "2", "3", "3"],
-        ["CIT", "306", "Mobile Computing", "CITE 002", "2", "3", "3"],
-        ["CCS", "202", "Principles of Programming Languages", "CITE 001, CITE 002", "3", "0", "3"],
-        ["CCS", "203", "Computer Architecture and Organization", "CITE 001", "2", "3", "3"],
-        ["PE", "201", "Physical Education 3", "PE 102", "2", "0", "2"]
-    ];
-
-    // Done
-    const secondyr_secondsem_prerequisites = [
-        ["GEC", "007", "Science, Technology, and Society", "", "3", "0", "3"],
-        ["MATH", "029", "Introduction to Numerical Analysis", "MATH 018", "3", "0", "3"],
-        ["PHYS", "001S", "Calculus-Based Physics 1", "MATH 019", "3", "3", "4"],
-        ["MATH", "025", "Discrete Mathematics", "MATH 031", "3", "0", "3"],
-        ["CCS", "204", "Operating Systems", "CCS 203", "3", "0", "3"],
-        ["CITE", "004", "Data Structures and Algorithms", "CCS 201", "2", "3", "3"],
-        ["CITE", "005", "Information Management", "CITE 003", "2", "3", "3"],
-        ["PE", "202", "Physical Education 4", "PE 201", "2", "0", "2"]
-    ];
-
-    // Done
-    const thirdyr_firstsem_prerequisites = [
-        ["GEE", "001", "GEC Elective 1", "", "3", "0", "3"],
-        ["GEM", "007", "Life and Works of Rizal", "", "3", "0", "3"],
-        ["MATH", "032", "Probability and Statistics", "MATH 027", "2", "3", "3"],
-        ["CCS", "301", "Networks and Communications", "CCS 204", "2", "3", "3"],
-        ["CITE", "306", "Application Development and Emerging Technologies", "CIT 306", "2", "3", "3"],
-        ["CCS", "303", "Intelligent Agents", "MATH 029", "2", "3", "3"],
-        ["CCS", "304", "Automate Theory and Formal Languages", "MATH 025", "3", "0", "3"],
-        ["CCS", "305", "Software Engineering 1", "CITE 004", "2", "3", "3"],
-    ];
-
-    // Done
-    const thirdyr_secondsem_prerequisites = [
-        ["GEE", "002", "GEC Elective 2", "", "3", "0", "3"],
-        ["CHM", "001", "Chemistry for Engineers", "", "3", "3", "4"],
-        ["CITE", "008", "Social Issues and Professional Practice", "CCS 305", "3", "0", "3"],
-        ["CITE", "007", "Information Assurance and Security", "CITE 005, CCS 301", "3", "0", "3"],
-        ["CCS", "306", "Modeling and Simulation", "MATH 032, MATH 029", "2", "3", "3"],
-        ["CCS", "307", "Algorithm and Complexity", "MATH 029, CCS 304", "3", "0", "3"],
-        ["CITE", "012", "Human-Computer Interaction", "CITE 306", "2", "3", "3"],
-        ["CCSELEC", "001", "CCS Elective 1", "CITE 306", "2", "3", "3"],
-    ];
-
-    // Done
-    const thirdyear_summer_prerequisites = [
-        ["CS", "306", "Intelligent Systems", "MATH 012A", "2", "3", "3"],
-        ["ITE", "010", "Foundation of Human Computer Interaction", "ITE 004", "2", "3", "3"],
-        ["CS", "307", "Thesis 1", "CS 304", "3", "0", "3"]
-    ];
-
-    // Done
-    const fourthyear_firstsem_prerequisites = [
-        ["GEE", "003", "GEC Elective 3", "", "3", "0", "3"],
-        ["CITE", "009", "Technopreneurship", "CITE 008", "3", "0", "3"],
-        ["CCS", "401", "Thesis 1", "CCS 308", "3", "0", "3"],
-        ["CSFELEC", "001", "Free Elective", "", "0", "0", "3"],
-        ["CSELEC", "003", "CCS Elective 3", "CCS ELECT2", "2", "3", "3"]
-    ];
-
-    // Done
-    const fourthyear_secondsem_prerequisites = [
-        ["CS", "402", "Internship in Computing", "Software Engineering 2", "0", "9", "3"],
-        ["CS", "403", "Thesis 2", "Thesis 1", "0", "9", "3"]
-    ];
-
-    const track_elective_1_prerequisites = [
-        ["CCS", "310", "Expert Systems", "CCS 306", "2", "3", "3"],
-        ["CCS", "311", "Natural Language Processing", "CCS 310", "2", "3", "3"],
-        ["CCS", "312", "Machine Learning", "CCS 311", "2", "3", "3"],
-    ];
-
-    const track_elective_2_prerequisites = [
-        ["CCS", "313", "Multimedia Technology", "CITE 306", "2", "3", "3"],
-        ["CCS", "314", "Level Design and Scripting", "CCS 313", "2", "3", "3"],
-        ["CCS", "312", "Multiplayer and Online Programming", "CCS 314", "2", "3", "3"]
-    ];
-
-    const free_elective_prerequisites = [
-        ["CIT", "503", "Current Trends and Issues in Computing", "CITE 306", "3", "0", "3"],
-        ["CIT", "504", "SAP/SAS", "CITE 005", "2", "3", "3"],
-        ["CISELEC", "113", "Development, Maintenance, and Services", "CCS 301", "3", "0", "3"],
-        ["CISELEC", "501A", "Big Data Analytics", "CITE 005", "2", "3", "3"],
-        ["CISELEC", "201", "Introduction to Project Management", "CCS 308", "3", "0", "3"],
-        ["FLE", "313", "Mandarin", "", "2", "3", "3"],
-        ["FLE", "213", "Spanish", "", "2", "3", "3"]
-    ];
+    const [courses, setCourses] = useState([]);
+        const [firstyr_firstsem_prerequisites, setFirstYrFirstSemPrerequisites] = useState([]);
+        const [firstyr_secondsem_prerequisites, setFirstYrSecondSemPrerequisites] = useState([]);
+        const [secondyr_firstsem_prerequisites, setSecondYrFirstSemPrerequisites] = useState([]);
+        const [secondyr_secondsem_prerequisites, setSecondYrSecondSemPrerequisites] = useState([]);
+        const [thirdyr_firstsem_prerequisites, setThirdYrFirstSemPrerequisites] = useState([]);
+        const [thirdyr_secondsem_prerequisites, setThirdYrSecondSemPrerequisites] = useState([]);
+        const [thirdyear_summer_prerequisites, setThirdYearSummerPrerequisites] = useState([]);
+        const [fourthyear_firstsem_prerequisites, setFourthYrFirstSemPrerequisites] = useState([]);
+        const [fourthyear_secondsem_prerequisites, setFourthYrSecondSemPrerequisites] = useState([]);
+        const [track_elective_1_prerequisites, setTrackElective1Prerequisites] = useState([]);
+        const [track_elective_2_prerequisites, setTrackElective2Prerequisites] = useState([]);
+        const [free_elective_prerequisites, setFreeElectivePrerequisites] = useState([]);
+    
+    
+        useEffect(() => {
+            const fetchCourses = async () => {
+                try {
+                    // Make API call with query params
+                    const response = await fetch(`${API_COURSES}?program=CS`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    console.log('API Response:', data); // Debug server response
+                    console.log('Number of courses returned:', data.length); // Debug result count
+    
+                    // Convert each course to an array
+                    const coursesArray = data.map(course => [
+                        course.category,
+                        course.number,
+                        course.title,
+                        course.prerequisites,
+                        course.lecture_hours,
+                        course.lab_hours,
+                        course.units,
+                        course.year_level,
+                        course.semester,
+                    ]);
+                    console.log('Converted Courses Array:', coursesArray); // Debug converted array
+    
+                    // Set courses data
+                    setCourses(coursesArray);
+    
+                    const firstYrFirstSem = coursesArray.filter(course => course[7] === '1st' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                    const firstYrSecondSem = coursesArray.filter(course => course[7] === '1st' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                    const secondYrFirstSem = coursesArray.filter(course => course[7] === '2nd' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                    const secondYrSecondSem = coursesArray.filter(course => course[7] === '2nd' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                    const thirdYrFirstSem = coursesArray.filter(course => course[7] === '3rd' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                    const thirdYrSecondSem = coursesArray.filter(course => course[7] === '3rd' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                    const thirdYearSummer = coursesArray.filter(course => course[7] === '3rd' && course[8] === 'Summer').map(course => course.slice(0, -2));
+                    const fourthYrFirstSem = coursesArray.filter(course => course[7] === '4th' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                    const fourthYrSecondSem = coursesArray.filter(course => course[7] === '4th' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                    const trackElective1 = coursesArray.filter(course => course[8] === 'Track Elective 1').map(course => course.slice(0, -2));
+                    const trackElective2 = coursesArray.filter(course => course[8] === 'Track Elective 2').map(course => course.slice(0, -2));
+                    const freeElective = coursesArray.filter(course => course[8] === 'Prof. Elective Courses').map(course => course.slice(0, -2));
+    
+                    setFirstYrFirstSemPrerequisites(firstYrFirstSem);
+                    setFirstYrSecondSemPrerequisites(firstYrSecondSem);
+                    setSecondYrFirstSemPrerequisites(secondYrFirstSem);
+                    setSecondYrSecondSemPrerequisites(secondYrSecondSem);
+                    setThirdYrFirstSemPrerequisites(thirdYrFirstSem);
+                    setThirdYrSecondSemPrerequisites(thirdYrSecondSem);
+                    setThirdYearSummerPrerequisites(thirdYearSummer);
+                    setFourthYrFirstSemPrerequisites(fourthYrFirstSem);
+                    setFourthYrSecondSemPrerequisites(fourthYrSecondSem);
+                    setTrackElective1Prerequisites(trackElective1);
+                    setTrackElective2Prerequisites(trackElective2);
+                    setFreeElectivePrerequisites(freeElective);
+                } catch (error) {
+                    console.error('Error fetching courses:', error);
+                }
+            };
+    
+            fetchCourses();
+        }, []);
 
     return (
         <div className="min-h-screen bg-[#0f172a]">

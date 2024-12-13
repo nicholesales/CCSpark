@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './it_prereq.css';
 import { FaArrowLeft } from 'react-icons/fa';
+
+
+const API_COURSES = "http://127.0.0.1:8000/api/courses/";
+
 
 function ITPrereg() {
     const tableHeader = ["Cat.", "No.", "Descriptive Title", "Prerequisite/s", "Lec Hrs/Wk", "Lab Hrs/Wk", "Units"];
@@ -21,128 +25,90 @@ function ITPrereg() {
         "Prof. Elective Courses (12 Units)"
     ];
 
-    const firstyr_firstsem_prerequisites = [
-        ["GEC", "002", "Reading in Philippine History", "", "3", "0", "3"],
-        ["GEC", "004", "Mathematics in the Modern World", "", "3", "0", "3"],
-        ["CITE", "001", "Introduction to Computing", "", "2", "3", "3"],
-        ["CITE", "002", "Computer Programming 1", "", "2", "3", "3"],
-        ["MATH", "022", "Linear Algebra", "", "3", "0", "3"],
-        ["PE", "101", "Physical Education 1", "", "2", "0", "2"],
-        ["NSTP", "101", "National Service Training Program 1", "", "(3)", "0", "(3)"]
-    ];
+    const [courses, setCourses] = useState([]);
+    const [firstyr_firstsem_prerequisites, setFirstYrFirstSemPrerequisites] = useState([]);
+    const [firstyr_secondsem_prerequisites, setFirstYrSecondSemPrerequisites] = useState([]);
+    const [secondyr_firstsem_prerequisites, setSecondYrFirstSemPrerequisites] = useState([]);
+    const [secondyr_secondsem_prerequisites, setSecondYrSecondSemPrerequisites] = useState([]);
+    const [thirdyr_firstsem_prerequisites, setThirdYrFirstSemPrerequisites] = useState([]);
+    const [thirdyr_secondsem_prerequisites, setThirdYrSecondSemPrerequisites] = useState([]);
+    const [thirdyear_summer_prerequisites, setThirdYearSummerPrerequisites] = useState([]);
+    const [fourthyear_firstsem_prerequisites, setFourthYrFirstSemPrerequisites] = useState([]);
+    const [fourthyear_secondsem_prerequisites, setFourthYrSecondSemPrerequisites] = useState([]);
+    const [track_elective_1_prerequisites, setTrackElective1Prerequisites] = useState([]);
+    const [track_elective_2_prerequisites, setTrackElective2Prerequisites] = useState([]);
+    const [track_elective_3_prerequisites, setTrackElective3Prerequisites] = useState([]);
+    const [prof_elective_prerequisites, setProfElectivePrerequisites] = useState([]);
 
-    const firstyr_secondsem_prerequisites = [
-        ["GEC", "001", "Understanding the Self", "", "3", "0", "3"],
-        ["GEC", "005", "Purposive Communication", "", "3", "0", "3"],
-        ["GEC", "006", "Art Appreciation", "", "3", "0", "3"],
-        ["MATH", "025", "Discrete Mathematics", "MATH 031", "3", "0", "3"],
-        ["CITE", "003", "Computer Programming 2", "CITE 002", "2", "3", "3"],
-        ["CITE", "012", "Introduction to Human Computer Interaction", "CITE 002", "2", "3", "3"],
-        ["PE", "102", "Physical Education 2", "PE 101", "2", "0", "2"],
-        ["NSTP", "002", "National Service Training Program 2", "NSTP 001", "(3)", "0", "(3)"]
-    ];
 
-    const secondyr_firstsem_prerequisites = [
-        ["CITE", "004", "Data Structures and Algorithms", "CITE 003", "2", "3", "3"],
-        ["PELEC", "001", "Pref. Elective 1", "", "2", "3", "3"],
-        ["CIT", "202", "Web Systems and Technologies", "CITE 003, CITE 012", "2", "3", "3"],
-        ["CIT", "201", "System Analysis and Design", "CITE 003, CITE 012", "2", "3", "3"],
-        ["BIO", "001A", "Modern Biology", "", "2", "3", "3"],
-        ["GEC", "008", "Ethics", "", "3", "0", "3"],
-        ["GEC", "007", "Science, Technology, and Society", "", "3", "0", "3"],
-        ["PE", "201", "Physical Education 3", "PE 102", "2", "0", "2"]
-    ];
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                // Make API call with query params
+                const response = await fetch(`${API_COURSES}?program=IT`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('API Response:', data); // Debug server response
+                console.log('Number of courses returned:', data.length); // Debug result count
 
-    const secondyr_secondsem_prerequisites = [
-        ["GEM", "001", "Life and Works of Rizal", "", "3", "0", "3"],
-        ["GEC", "003", "The Contemporary World", "", "3", "0", "3"],
-        ["MATH", "028", "Applied Statistics", "MATH 022", "2", "3", "3"],
-        ["CITE", "005A", "Information Management", "CITE 003, CITE 004", "2", "3", "3"],
-        ["PELEC", "002", "Prof. Elective 2", "", "2", "3", "3"],
-        ["CIT", "203", "Platform Technologies", "CITE 004", "2", "3", "3"],
-        ["CHM", "001A", "General Chemistry", "", "2", "3", "3"],
-        ["PE", "202", "Physical Education 4", "PE 201", "2", "0", "2"]
-    ];
+                // Convert each course to an array
+                const coursesArray = data.map(course => [
+                    course.category,
+                    course.number,
+                    course.title,
+                    course.prerequisites,
+                    course.lecture_hours,
+                    course.lab_hours,
+                    course.units,
+                    course.year_level,
+                    course.semester,
+                ]);
+                console.log('Converted Courses Array:', coursesArray); // Debug converted array
 
-    const thirdyr_firstsem_prerequisites = [
-        ["GEE", "001B", "GE Elective 1 - Gender and Society", "", "3", "0", "3"],
-        ["ITELEC", "001", "IT Elective 1", "", "2", "3", "3"],
-        ["CIT", "301", "Integrative Programming and Technologies", "CIT 202, CITE 005A", "2", "3", "3"],
-        ["CIT", "302", "Quantitative Methods (incl Modeling and Simulation)", "MATH 025, MATH 028", "2", "3", "3"],
-        ["CIT", "303", "Networking 1", "CIT 202, CIT 203", "2", "3", "3"],
-        ["CIT", "304", "Advanced Database Systems", "CITE 005A", "2", "3", "3"],
-        ["CITE", "009", "Technopreneurship", "3rd Year Standing", "3", "0", "3"],
-        ["CIT", "305", "Systems Integration and Architecture", "CIT 202, CIT 303(C)", "2", "3", "3"]
-    ];
+                // Set courses data
+                setCourses(coursesArray);
 
-    const thirdyr_secondsem_prerequisites = [
-        ["GEE", "002B", "GE Elective 2 - Living in the IT Era", "GEE 001B", "3", "0", "3"],
-        ["CIS", "202", "Data Mining and Warehousing", "MATH 028, CIT 304", "2", "3", "3"],
-        ["CIT", "306", "Mobile Computing", "CITE 003, CIT 304", "2", "3", "3"],
-        ["PELEC", "003", "Prof. Elective 3", "", "2", "3", "3"],
-        ["ITELEC", "002", "IT Elective 2", "ITELEC 001", "2", "3", "3"],
-        ["CITE", "007A", "Information Assurance and Security", "CIT 304", "2", "3", "3"],
-        ["CITE", "006", "Application Development and Emerging Technologies", "CITE 005A", "2", "3", "3"],
-        ["CIT", "307", "Networking 2", "CIT 303", "2", "3", "3"]
-    ];
+                const firstYrFirstSem = coursesArray.filter(course => course[7] === '1st' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                const firstYrSecondSem = coursesArray.filter(course => course[7] === '1st' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                const secondYrFirstSem = coursesArray.filter(course => course[7] === '2nd' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                const secondYrSecondSem = coursesArray.filter(course => course[7] === '2nd' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                const thirdYrFirstSem = coursesArray.filter(course => course[7] === '3rd' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                const thirdYrSecondSem = coursesArray.filter(course => course[7] === '3rd' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                const thirdYearSummer = coursesArray.filter(course => course[7] === '3rd' && course[8] === 'Summer').map(course => course.slice(0, -2));
+                const fourthYrFirstSem = coursesArray.filter(course => course[7] === '4th' && course[8] === '1st Semester').map(course => course.slice(0, -2));
+                const fourthYrSecondSem = coursesArray.filter(course => course[7] === '4th' && course[8] === '2nd Semester').map(course => course.slice(0, -2));
+                const trackElective1 = coursesArray.filter(course => course[8] === 'Track Elective 1').map(course => course.slice(0, -2));
+                const trackElective2 = coursesArray.filter(course => course[8] === 'Track Elective 2').map(course => course.slice(0, -2));
+                const trackElective3 = coursesArray.filter(course => course[8] === 'Track Elective 3').map(course => course.slice(0, -2));
+                const profElective = coursesArray.filter(course => course[8] === 'Prof. Elective Courses').map(course => course.slice(0, -2));
 
-    const thirdyear_summer_prerequisites = [
-        ["CIT", "308", "Capstone 1", "CITE 006, CITE 007A", "2", "3", "3"],
-        ["CIT", "309", "IT Project Management", "CITE 006", "2", "3", "3"],
-        ["CIT", "310", "Information Assurance and Security 2", "CITE 007A", "2", "3", "3"]
-    ];
+                setFirstYrFirstSemPrerequisites(firstYrFirstSem);
+                setFirstYrSecondSemPrerequisites(firstYrSecondSem);
+                setSecondYrFirstSemPrerequisites(secondYrFirstSem);
+                setSecondYrSecondSemPrerequisites(secondYrSecondSem);
+                setThirdYrFirstSemPrerequisites(thirdYrFirstSem);
+                setThirdYrSecondSemPrerequisites(thirdYrSecondSem);
+                setThirdYearSummerPrerequisites(thirdYearSummer);
+                setFourthYrFirstSemPrerequisites(fourthYrFirstSem);
+                setFourthYrSecondSemPrerequisites(fourthYrSecondSem);
+                setTrackElective1Prerequisites(trackElective1);
+                setTrackElective2Prerequisites(trackElective2);
+                setTrackElective3Prerequisites(trackElective3);
+                setProfElectivePrerequisites(profElective);
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        };
 
-    const fourthyear_firstsem_prerequisites = [
-        ["GEE", "004", "GE Elective 3 - Great Books", "GEE 002B", "3", "0", "3"],
-        ["PELEC", "004", "Prof. Elective 4", "", "2", "3", "3"],
-        ["ITELEC", "003", "IT Elective 3", "ITELEC 002", "2", "3", "3"],
-        ["CIT", "400", "Capstone 2", "CIT 308", "0", "9", "3"],
-        ["CITE", "008", "Social Issues and Professional Practice", "3rd Year Standing", "3", "0", "3"],
-        ["CIT", "401", "Systems Administration and Maintenance", "CIT 310", "2", "3", "3"]
-    ];
+        fetchCourses();
+    }, []);
 
-    const fourthyear_secondsem_prerequisites = [
-        ["CIT", "402", "Internship In Computing", "Graduating", "0", "18", "6"],
-        ["ITELEC", "004", "IT Elective 4", "ITELEC 003", "2", "3", "3"],
-        ["CIT", "403", "Systems Integration and Architecture 2", "CIT 307, CIT 305, CIT 401", "2", "3", "3"],
-    ];
-
-    const track_elective_1_prerequisites = [
-        ["CAM", "401", "3D Modeling, Texturing, Rendering and Lighting", "3rd Year Standing", "2", "3", "3"],
-        ["CAM", "402", "3D Animation and Special Effects", "CAM 401", "2", "3", "3"],
-        ["CAM", "403", "3D Post Production and Composting", "CAM 402", "2", "3", "3"],
-        ["CAM", "404", "Mobile Development Integration", "CAM 403", "2", "3", "3"]
-    ];
-
-    const track_elective_2_prerequisites = [
-        ["CBS", "401A", "Network Security", "3rd Year Standing", "2", "3", "3"],
-        ["CBS", "402A", "Data and Application Security", "CBS 401A", "2", "3", "3"],
-        ["CBS", "403A", "Ethical Hacking and Penetration Testing", "CBS 402A", "2", "3", "3"],
-        ["CBS", "404A", "Cyber Threat Analysis and Modelling", "CBS 403A", "2", "3", "3"]
-    ];
-
-    const track_elective_3_prerequisites = [
-        ["CIT", "401A", "Fundamentals of Bus Analytics", "3rd Year Standing", "2", "3", "3"],
-        ["CIT", "402A", "Analytics, Techniques and Tools", "CIT 401A", "2", "3", "3"],
-        ["CIT", "403A", "Fundamentals of Predictive Analytics", "CIT 402A", "2", "3", "3"],
-        ["CIT", "404A", "Fundamentals of Prescriptive Analytics", "CIT 403A", "2", "3", "3"]
-    ];
-
-    const prof_elective_prerequisites = [
-        ["CIT", "503", "Current Trends and Issues in Computing", "", "3", "0", "3"],
-        ["CIT", "504", "SAP / SAS", "CIT 309", "2", "3", "3"],
-        ["CIT", "505", "Event Driven Programming", "CITE 004", "2", "3", "3"],
-        ["FLE", "213", "Spanish", "", "2", "3", "3"],
-        ["FLE", "313", "Mandarin", "", "2", "3", "3"],
-        ["CIT", "506", "Introduction to Game Development", "CITE 012", "2", "3", "3"],
-        ["CIT", "508", "Object-Oriented Programming", "CITE 003", "2", "3", "3"],
-        ["CIT", "509", "Human Computer Interaction 2", "CITE 012", "2", "3", "3"],
-        ["CIT", "510", "Integrative Programming and Technologies 2", "CIT 301", "2", "3", "3"],
-        ["CIT", "511", "Web Systems and Technologies 2", "CIT 202", "2", "3", "3"],
-    ];
 
     return (
         <div className="min-h-screen bg-[#0f172a]">
+            {console.log('First Year First Sem Prerequisites:', firstyr_firstsem_prerequisites)}
             <nav className="bg-gray-800 p-4 mb-6">
                 <button
                     onClick={() => window.location.href = '/'}
@@ -167,7 +133,7 @@ function ITPrereg() {
                         {/* First Year First Sem */}
                         <tr>
                             <td colSpan="7" className="px-4 py-3 bg-[#374151] font-semibold text-gray-200">
-                                {prereq_headers[0]}
+                                {prereq_headers[1]}
                             </td>
                         </tr>
                         {firstyr_firstsem_prerequisites.map((row, index) => (
